@@ -1,4 +1,3 @@
-# TestApp
-Testing app for Android development
+#ChoreMate App
 
-Just a simple app created to get familiar with Android Studio...
+Team SEGFAULT CSE 110 Project.
