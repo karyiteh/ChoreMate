@@ -1,4 +1,2 @@
-# TestApp
-Testing app for Android development
-
-Just a simple app created to get familiar with Android Studio...
+#ChoreMate
+CSE 110 Team SEGFAULT Android App
