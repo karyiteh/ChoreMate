@@ -1,2 +1,4 @@
-# ChoreMate
-CSE 110 Team SEGFAULT Project Repository - A roommate management app.
+# TestApp
+Testing app for Android development
+
+Just a simple app created to get familiar with Android Studio...
