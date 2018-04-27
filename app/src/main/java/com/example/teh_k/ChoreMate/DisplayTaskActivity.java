@@ -1,4 +1,4 @@
-package com.example.teh_k.testapp;
+package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

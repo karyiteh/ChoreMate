@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.teh_k.testapp"
+        applicationId "com.example.teh_k.ChoreMate"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1

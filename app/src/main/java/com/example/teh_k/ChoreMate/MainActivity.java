@@ -1,4 +1,4 @@
-package com.example.teh_k.testapp;
+package com.example.teh_k.ChoreMate;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager tasklistLayout;
 
     // Intent key.
-    public static final String TASK_TITLE = "com.example.teh_k.testapp.TITLE";
+    public static final String TASK_TITLE = "com.example.teh_k.ChoreMate.TITLE";
 
     /**
      * Creates the main screen. Called when main page is loaded.

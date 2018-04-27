@@ -1,4 +1,4 @@
-package com.example.teh_k.testapp;
+package com.example.teh_k.ChoreMate;
 
 import org.junit.Test;
 
