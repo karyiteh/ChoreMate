@@ -1,4 +1,4 @@
-package com.example.teh_k.testapp;
+package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -8,9 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import static android.support.v4.content.ContextCompat.startActivity;
 
 /**
  * TaskAdapter is a class that links the data from the dataset into the UI.
