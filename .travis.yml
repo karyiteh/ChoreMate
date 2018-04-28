@@ -77,6 +77,8 @@ script:
 # Notification settings
 notification:
   email: false
-  slack: ucsd-sp18-cse110-g4:neWXYj6V6Y4SAMDhCGV1QIml
+  slack:
+    rooms:
+      ucsd-sp18-cse110-g4:neWXYj6V6Y4SAMDhCGV1QIml
     on_success: change
     on_failure: always
