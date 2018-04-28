@@ -75,10 +75,10 @@ script:
 - ./gradlew lint
 
 # Notification settings
-notification:
+notifications:
   email: false
   slack:
     rooms:
-      ucsd-sp18-cse110-g4:neWXYj6V6Y4SAMDhCGV1QIml
+      - ucsd-sp18-cse110-g4:neWXYj6V6Y4SAMDhCGV1QIml
     on_success: change
     on_failure: always
