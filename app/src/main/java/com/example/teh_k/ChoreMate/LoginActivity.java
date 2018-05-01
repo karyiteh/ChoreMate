@@ -171,6 +171,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         } else if (!isLengthValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password_length));
+            focusView = mPasswordView;
+            cancel = true;
         }
 
         // Check for a valid email address.
