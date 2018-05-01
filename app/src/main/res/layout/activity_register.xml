@@ -25,7 +25,7 @@
             android:layout_marginTop="60dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="first name  " />
+            android:text="@string/first_name" />
 
         <EditText
             android:id="@+id/edit_last_name"
@@ -33,14 +33,14 @@
             android:layout_height="60dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="last name  " />
+            android:text="@string/last_name" />
 
         <EditText
             android:id="@+id/edit_email"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:ems="10"
-            android:hint="email  "
+            android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:ems="10"
-            android:hint="@string/error_incorrect_password"
+            android:hint="@string/password"
             android:inputType="textPassword" />
 
         <EditText
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:ems="10"
-            android:hint="confirm password "
+            android:hint="@string/confirm_password"
             android:inputType="textPassword" />
 
         <Button
@@ -67,7 +67,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_corner_button_color_white"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
