@@ -53,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Tries to submit the form to the database.
                 attemptSubmit();
             }
         });
