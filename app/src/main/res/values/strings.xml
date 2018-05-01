@@ -20,7 +20,10 @@
     <string name="e_mail">e_mail</string>
     <string name="password">password</string>
     <string name="birthdate">birthdate</string>
-    <string name="last_name">last name</string>
     <string name="first_name">first name</string>
+    <string name="last_name">last name</string>
+    <string name="email">email</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="submit">Submit</string>
 
 </resources>
