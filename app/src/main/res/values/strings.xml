@@ -1,13 +1,16 @@
 <resources>
-    <string name="app_name">TestApp</string>
+    <string name="app_name">ChoreMate</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_emailExt">Email must be a valid @ucsd.edu email</string>
     <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_password_alphanumeric">Password must contain only alphanumeric characters</string>
+    <string name="error_invalid_password_length">Password must be at least 6 characters long</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email

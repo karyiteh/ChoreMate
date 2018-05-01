@@ -91,6 +91,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        // Set up listener for the register button
+        Button mRegisterButton = (Button) findViewById(R.id.btn_register);
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Brings the user to the register screen.
+                Intent registerIntent = new Intent(view.getContext(), RegisterActivity.class);
+                startActivity(registerIntent);
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -161,8 +172,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        /*
+         * if (!TextUtils.isEmpty(password)) {
+         * mPasswordView.setError(getString(R.string.error_invalid_password)); focusView
+         * = mPasswordView; cancel = true; } else
+         */if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password_alphanumeric));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isLengthValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password_length));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -189,6 +208,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
 
+            // TODO: Not sure if this is supposed to be here.
+            // If login is successful, this moves the user to the correct screen.
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -198,7 +219,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.endsWith("@ucsd.edu");
     }
 
     /**
@@ -219,6 +240,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         }
         return true;
+    }
+
+    /**
+     + * Checks if password is at least 6 characters long.
+     + */
+    private boolean isLengthValid(String password) {
+        if (password.length() >= 6) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
