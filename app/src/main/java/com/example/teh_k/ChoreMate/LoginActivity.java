@@ -161,10 +161,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        /*
+         * if (!TextUtils.isEmpty(password)) {
+         * mPasswordView.setError(getString(R.string.error_invalid_password)); focusView
+         * = mPasswordView; cancel = true; } else
+         */if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password_alphanumeric));
             focusView = mPasswordView;
             cancel = true;
+        } else if (!isLengthValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password_length));
         }
 
         // Check for a valid email address.
@@ -198,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("@ucsd.edu");
     }
 
     /**
@@ -219,6 +225,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         }
         return true;
+    }
+
+    /**
+     + * Checks if password is at least 6 characters long.
+     + */
+    private boolean isLengthValid(String password) {
+        if (password.length() >= 6) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
