@@ -91,11 +91,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mRegisterButton = (Button) findViewById(R.id.btn_submit);
+        // Set up listener for the register button
+        Button mRegisterButton = (Button) findViewById(R.id.btn_register);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Not sure how to do this part
+                // Brings the user to the register screen.
+                Intent registerIntent = new Intent(view.getContext(), RegisterActivity.class);
+                startActivity(registerIntent);
             }
         });
 
@@ -205,6 +208,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
 
+            // TODO: Not sure if this is supposed to be here.
+            // If login is successful, this moves the user to the correct screen.
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
