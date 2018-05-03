@@ -12,7 +12,7 @@ public class Task {
     //recurrence? TODO: figure out what status is
     private boolean status;
     //list of users that the task will be accomplished by
-    private List<User> LUser;
+    private List<User> user_list;
     // TODO: what is time's type?
     //private time
 
@@ -51,10 +51,10 @@ public class Task {
     }
 
     //getter for the list of user
-    public List<User> getLUser() {
-        return LUser;
+    public List<User> getUser_list() {
+        return user_list;
     }
-    public void setLUser(List<User> LUser) {
-        this.LUser = LUser;
+    public void setUser_list(List<User> user_list) {
+        this.user_list = user_list;
     }
 }

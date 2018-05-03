@@ -4,8 +4,7 @@ public class User {
     private String first_name;
     private String last_name;
     private String email;
-    //TODO: do we need password here? its handeled in login
-    //private String password;
+    private String password;
     private Household household;
 
     public String getFirst_name() {
