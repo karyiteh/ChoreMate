@@ -27,7 +27,8 @@
         <activity
             android:name=".DisplayTaskActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".NoHousehold"></activity>
     </application>
 
 </manifest>

@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
 
         android:background="@drawable/bg"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:text="Register!"
+            android:textColor="#4d4dce"
+            android:textSize="30dp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/edit_first_name"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="10dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="@string/first_name" />
+            android:hint="@string/first_name"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/edit_last_name"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="@string/last_name" />
+            android:hint="@string/last_name"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/edit_email"
@@ -68,6 +76,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_corner_button_color_white"
             android:text="@string/submit"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#4d4dce" />
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
