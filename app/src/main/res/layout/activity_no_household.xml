@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg"
-    tools:context=".NoHousehold">
+    tools:context=".NoHouseholdActivity">
 
     <LinearLayout
         android:id="@+id/layout_top"

@@ -28,7 +28,7 @@
             android:name=".DisplayTaskActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".NoHousehold" />
+        <activity android:name=".NoHouseholdActivity" />
         <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 
