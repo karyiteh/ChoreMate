@@ -29,8 +29,7 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".NoHousehold" />
-        <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".CreateHousehold"></activity>
+        <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>
