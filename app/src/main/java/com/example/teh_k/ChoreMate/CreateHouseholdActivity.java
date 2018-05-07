@@ -3,7 +3,7 @@ package com.example.teh_k.ChoreMate;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class CreateHousehold extends AppCompatActivity {
+public class CreateHouseholdActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
