@@ -33,6 +33,7 @@
         <activity android:name=".NoHouseholdActivity" />
         <activity android:name=".ForgotPasswordActivity"/>
         <activity android:name=".CreateHouseholdActivity"/>
+        <activity android:name=".UserProfileActivity"/>
 
     </application>
 
