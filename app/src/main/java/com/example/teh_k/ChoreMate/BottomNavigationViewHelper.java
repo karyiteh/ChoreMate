@@ -1,5 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
@@ -24,6 +25,7 @@ public class BottomNavigationViewHelper extends BottomNavigationView {
         setItemIconTintList(null);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom)
     {
