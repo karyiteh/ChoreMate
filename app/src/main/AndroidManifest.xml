@@ -28,6 +28,9 @@
             android:name=".DisplayTaskActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".NoHouseholdActivity" />
+        <activity android:name=".ForgotPasswordActivity"/>
+        <activity android:name=".CreateHouseholdActivity"/>
     </application>
 
 </manifest>
