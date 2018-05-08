@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * An Activity that allows user to create/join a household
+ */
 public class NoHouseholdActivity extends AppCompatActivity {
 
 
@@ -14,9 +17,13 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private Button joinButton;
     private EditText inviteCode;
 
+    //TODO: Replace all instances of dummyCode when database is set up
     public static final String dummyCode = "123";
 
-
+    /**
+     * Creates the main screen. Called when main page is loaded.
+     * @param savedInstanceState    The last instance state that the activity is in.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +49,13 @@ public class NoHouseholdActivity extends AppCompatActivity {
 
 
         // Set up listener for the Join Button
-        // TODO: Make sure user gets sent to correct group (Ask Database)
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String code = inviteCode.getText().toString();
 
                 if (checkCode(code)) {
-                    // Take user to the Tasks page
+                    // TODO: Take user to correct household task page
                     Intent toTask = new Intent(v.getContext(), MainActivity.class);
                     startActivity(toTask);
                 }
@@ -59,20 +65,35 @@ public class NoHouseholdActivity extends AppCompatActivity {
     }
 
 
-    //TODO: checkCode with database
+    /**
+     * Function that handles the code inserted by the user in the text field
+     * @param code: Code entered by the user.
+     * @return true if the code is correct, false otherwise
+     * TODO: Add database functionality
+     */
     private boolean checkCode(String code){
+        // Reset the error message
         inviteCode.setError(null);
 
+        // Check if the code is correct
         if (isCorrectCode(code)){
             return true;
         }
 
         else {
+            // Set the error
             inviteCode.setError("Please Enter a Valid Code");
             return false;
         }
     }
 
+
+    /**
+     * String compare the code entered with the actual household code
+     * @param code: Code entered by user
+     * @return true if the string matches, false otherwise.
+     * TODO: Replace dummyCode with database code
+     */
     private boolean isCorrectCode(String code){
         return (code.equals(dummyCode));
     }
