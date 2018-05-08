@@ -28,7 +28,10 @@
     <string name="email">email</string>
     <string name="confirm_password">confirm password</string>
     <string name="submit">Submit</string>
-    <string name="profile">Profile</string>
-    <string name="users_name">users\'s name</string>
+    <string name="task_view">Tasks</string>
+    <string name="transaction_view">Transactions</string>
+    <string name="group_view">Groups</string>
+    <string name="profile_view">Profile</string>
+
 
 </resources>

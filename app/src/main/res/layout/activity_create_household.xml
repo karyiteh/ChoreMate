@@ -70,13 +70,13 @@
         android:layout_marginLeft="10dp" >
 
         <Button
-            android:id="@+id/btn_submit"
+            android:id="@+id/btn_create_household"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Household"
-            android:background="#4d4dce"
             android:layout_marginBottom="20dp"
-            android:textColor="#FFFFFF"/>
+            android:background="#4d4dce"
+            android:text="Create Household"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </LinearLayout>
