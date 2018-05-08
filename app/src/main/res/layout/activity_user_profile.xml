@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/displaytask"
+    android:id="@+id/displayProfile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     android:orientation="vertical"
-    tools:context=".DisplayTaskActivity"
-    android:background="@drawable/bg" >
+    tools:context=".DisplayTaskActivity">
 
     <!-- For the toolbar on the top. -->
     <android.support.v7.widget.Toolbar
-        android:id="@+id/appbar_displaytask"
+        android:id="@+id/appbar_displayprofile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -19,7 +19,8 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/profile"
-        app:titleTextColor="@android:color/background_light" />
+        app:titleTextColor="@android:color/background_light"
+        />
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/users_name"
-        android:textSize="25dp" />
+        android:textSize="25sp" />
 
     <HorizontalScrollView
         android:id="@+id/user_task_scroll"
@@ -48,6 +49,7 @@
         android:layout_marginTop="15dp">
 
         <LinearLayout
+            android:id="@+id/user_tasks"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical" />
