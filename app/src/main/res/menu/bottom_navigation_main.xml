@@ -15,10 +15,10 @@
         android:title="@string/transaction_view"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_group"
+        android:id="@+id/action_household"
         android:enabled="true"
         android:icon="@drawable/icon_group"
-        android:title="@string/group_view"
+        android:title="@string/household_view"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_profile"

@@ -23,8 +23,8 @@ public class BottomNavActivity extends AppCompatActivity {
                 case R.id.action_transactions:
                     mTextMessage.setText(R.string.transaction_view);
                     return true;
-                case R.id.action_group:
-                    mTextMessage.setText(R.string.group_view);
+                case R.id.action_household:
+                    mTextMessage.setText(R.string.household_view);
                     return true;
                 case R.id.action_profile:
                     mTextMessage.setText(R.string.profile_view);
