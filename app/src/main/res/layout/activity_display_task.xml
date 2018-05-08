@@ -29,7 +29,7 @@
         android:textSize="36sp" />
 
 
-    <android.support.design.widget.BottomNavigationView
+    <com.example.teh_k.ChoreMate.BottomNavigationViewHelper
         android:id="@+id/bottom_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
