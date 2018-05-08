@@ -34,7 +34,8 @@
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".CreateHouseholdActivity" />
         <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".InviteHousemateActivity"></activity>
+        <activity android:name=".InviteHousemateActivity" />
+        <activity android:name=".HouseholdActivity"></activity>
     </application>
 
 </manifest>
