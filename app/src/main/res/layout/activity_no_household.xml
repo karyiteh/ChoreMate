@@ -67,14 +67,15 @@
 
         <Button
             android:id="@+id/btn_create_household"
-            android:layout_width="50dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="20dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/circular_button"
-            android:text="+"
+            android:layout_marginLeft="20dp"
+            android:background="#4d4dce"
+            android:text="Create Household"
             android:textColor="#FFFFFF"
-            android:textSize="30dp" />
+            android:textSize="20dp" />
 
     </LinearLayout>
 </LinearLayout>
