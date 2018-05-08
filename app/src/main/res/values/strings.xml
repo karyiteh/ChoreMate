@@ -32,6 +32,8 @@
     <string name="transaction_view">Transactions</string>
     <string name="household_view">Household</string>
     <string name="profile_view">Profile</string>
+    <string name="profile">Profile</string>
+    <string name="users_name">User</string>
 
 
 </resources>
