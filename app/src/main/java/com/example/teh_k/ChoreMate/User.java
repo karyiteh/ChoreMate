@@ -1,5 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
+import android.net.Uri;
+
 // This class will handle the logic of the user
 public class User {
     // Strings representing the user's first and last name
@@ -9,6 +11,9 @@ public class User {
     // strings representing the user's email and password
     private String email;
     private String password;
+
+    // The avatar of the user.
+    private Uri avatar;
 
     // household that the user belongs to
     private Household household;
@@ -41,6 +46,15 @@ public class User {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    // Getters and setters for the avatar.
+    public Uri getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Uri avatar) {
+        this.avatar = avatar;
     }
 
     // getters and setters for the household
