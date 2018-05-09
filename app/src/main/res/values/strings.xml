@@ -34,6 +34,7 @@
     <string name="profile_view">Profile</string>
     <string name="profile">Profile</string>
     <string name="users_name">User</string>
+    <string name="housemate_profile">Housemate</string>
 
 
 </resources>
