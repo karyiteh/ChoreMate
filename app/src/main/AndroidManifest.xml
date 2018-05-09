@@ -37,6 +37,7 @@
         <activity android:name=".CreateHouseholdActivity" />
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".InviteHousemateActivity"/>
+        <activity android:name=".HouseholdActivity"></activity>
         <activity android:name=".UserProfileActivity"
                     android:exported="true"/>
 
