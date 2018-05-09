@@ -41,6 +41,7 @@
         <activity android:name=".NotificationSettingsActivity"/>
         <activity android:name=".UserProfileActivity"
                     android:exported="true"/>
+        <activity android:name=".BottomNavActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
