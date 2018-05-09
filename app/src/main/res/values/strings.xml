@@ -34,7 +34,14 @@
     <string name="profile_view">Profile</string>
     <string name="profile">Profile</string>
     <string name="users_name">User</string>
-    <string name="housemate_profile">Housemate</string>
-
+    <string name="snooze_notifications">Snooze Notifications</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="title_activity_test_login">Sign in</string>
+    <string-array name="time_array">
+        <item>1 hour</item>
+        <item>1 day</item>
+        <item>1 year</item>
+        <item>Forever</item>
+    </string-array>
 
 </resources>
