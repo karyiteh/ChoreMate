@@ -218,7 +218,9 @@ public class UserProfileActivity extends AppCompatActivity {
      * Starts the change notification settings activity.
      */
     private void changeNotificationSettings() {
-        // TODO: Create the change notifications intent and starts the activity.
+        // Creates the change notification settings intent and starts the activity.
+        Intent changeNotificationSettingsIntent = new Intent(this, NotificationSettingsActivity.class);
+        startActivity(changeNotificationSettingsIntent);
     }
 
     /**
