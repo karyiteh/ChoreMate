@@ -38,6 +38,7 @@
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".InviteHousemateActivity"/>
         <activity android:name=".HouseholdActivity"></activity>
+        <activity android:name=".NotificationSettingsActivity"/>
         <activity android:name=".UserProfileActivity"
                     android:exported="true"/>
 
@@ -51,6 +52,9 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
+        <activity android:name=".InviteHousemateActivity" />
+        <activity android:name=".HouseholdActivity" />
+        <activity android:name=".NotificationSettingsActivity"></activity>
     </application>
 
 </manifest>
