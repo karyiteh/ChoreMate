@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/displayProfile"
+    android:id="@+id/displayHousemateProfile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
@@ -10,21 +10,20 @@
 
     <!-- For the toolbar on the top. -->
     <android.support.v7.widget.Toolbar
-        android:id="@+id/appbar_displayprofile"
+        android:id="@+id/appbar_displayhousemateprofile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/lightBlue"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/profile"
+        app:title="Housemate"
         app:titleTextColor="@android:color/background_light">
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="150dp"
             android:layout_height="49dp"
-            android:layout_marginStart="60dp"
             android:adjustViewBounds="false"
             android:textAlignment="center"
             app:srcCompat="@drawable/choremate_logo"
@@ -48,7 +47,7 @@
             android:src="@drawable/icon_profile" />
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/housemate_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -58,18 +57,6 @@
             android:textSize="25sp" />
 
     </LinearLayout>
-
-    <com.example.teh_k.ChoreMate.BottomNavigationViewHelper
-        android:id="@+id/bottom_profile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_gravity="start"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/bottom_navigation_main" />
 
     <HorizontalScrollView
         android:id="@+id/user_task_scroll"
@@ -87,4 +74,4 @@
             android:orientation="vertical" />
     </HorizontalScrollView>
 
-</RelativeLayout>
+</LinearLayout>
