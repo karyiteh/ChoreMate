@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg"
+    tools:context=".CreateHouseholdActivity"
+   >
+
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp" >
+
+        <TextView
+            android:id="@+id/text_title_create_household"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Household"
+            android:fontFamily="cursive"
+            android:textSize="30dp"
+            android:height="50dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#4d4dce"
+            android:gravity="center"
+            />
+
+        <EditText
+            android:id="@+id/edit_household_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:layout_marginTop="20dp"
+            android:height="30dp"
+            android:hint="Household Name"/>
+
+        <TextView
+            android:id="@+id/text_invite_roommates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="15dp"
+            android:text="Roommates:" />
+
+        <EditText
+            android:id="@+id/edit_roommates_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="mate1@email.com, mate2@email.com, mate3@email.com"
+            android:inputType="textMultiLine" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp" >
+
+        <Button
+            android:id="@+id/btn_create_household"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="#4d4dce"
+            android:text="Create Household"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+</LinearLayout>

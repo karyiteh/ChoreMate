@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.btn_sign_in);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -225,6 +225,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+
+            // TODO: Not sure if this is supposed to be here.
+            /* TODO 2: WILL NAVIGATE TO NOHOUSEHOLDACTIVITY BY DEFAULT. Implementation for
+               TODO 2: logged in checking/household exist checking later */
+            // If login is successful, this moves the user to the correct screen.
+            //Intent intent = new Intent(this, MainActivity.class);
+            //startActivity(intent);
+            Intent intent = new Intent(this, NoHouseholdActivity.class);
+            startActivity(intent);
         }
 
     }
