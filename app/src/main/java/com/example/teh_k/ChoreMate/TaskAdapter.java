@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -23,7 +24,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         // Each item in this case is just a text view.
-        public ConstraintLayout row;
+        public LinearLayout row;
         public TextView taskView;
 
         /**
@@ -32,7 +33,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            row = (ConstraintLayout) itemView.findViewById(R.id.a_row);
+            row = (LinearLayout) itemView.findViewById(R.id.a_row);
             taskView = (TextView) itemView.findViewById(R.id.a_task);
 
             // IMPORTANT: Set the onclick listener.
