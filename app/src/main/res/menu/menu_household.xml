@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--Menu options-->
+    <item
+        android:id="@+id/action_rename_household"
+        android:title="@string/rename_household"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/action_delete_household"
+        android:title="@string/delete_household"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/action_invite_housemate"
+        android:title="@string/invite_housemate"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/action_remove_housemate"
+        android:title="@string/remove_housemate"
+        app:showAsAction="never"
+        />
+
+
+</menu>
