@@ -225,11 +225,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
-
-            // TODO: Not sure if this is supposed to be here.
-            // If login is successful, this moves the user to the correct screen.
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
         }
 
     }
@@ -411,7 +406,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             });
 
             // TODO: register the new account here.
-            return true;
+            return false;
         }
 
         @Override
