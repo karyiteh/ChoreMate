@@ -21,7 +21,7 @@
         app:titleTextColor="@android:color/background_light" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/toggle_snooze"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/snooze_notifications"

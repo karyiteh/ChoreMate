@@ -43,5 +43,11 @@
         <item>1 year</item>
         <item>Forever</item>
     </string-array>
+    <string name="change_password">Change Password</string>
+    <string name="rename_household">Rename Household</string>
+    <string name="delete_household">Delete Household</string>
+    <string name="invite_housemate">Invite Housemate</string>
+    <string name="remove_housemate">Remove Housemate</string>
+
 
 </resources>
