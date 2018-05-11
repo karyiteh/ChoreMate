@@ -116,7 +116,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         }
 
         // Check if emails are valid
-        // Note: Only works with .edu and .com
         if (isInvalidEmail(emailsList)) {
             editHousematesList.setError(INVALID_EMAIL);
             focusView = editHousematesList;
