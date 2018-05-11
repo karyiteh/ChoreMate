@@ -1,6 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -100,7 +101,7 @@ public class HouseholdFragment extends Fragment {
                 // TODO: Method to delete household.
                 return true;
             case R.id.action_invite_housemate:
-                // TODO: Method to invite housemate.
+                inviteHousemate();
                 return true;
             case R.id.action_remove_housemate:
                 // TODO: Method to remove housemate.
@@ -108,5 +109,13 @@ public class HouseholdFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Starts the invite housemate activity.
+     */
+    private void inviteHousemate() {
+        Intent inviteIntent = new Intent(getContext(), InviteHousemateActivity.class);
+        startActivity(inviteIntent);
     }
 }
