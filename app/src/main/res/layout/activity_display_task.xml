@@ -5,6 +5,7 @@
     android:id="@+id/displaytask"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     android:orientation="vertical"
     tools:context=".DisplayTaskActivity">
 
@@ -41,7 +42,25 @@
         app:itemTextColor="@color/white"
         app:menu="@menu/bottom_navigation_main" />
 
+    <LinearLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btn_create_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="#4d4dce"
+            android:text="Create Task"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
 
 
 </RelativeLayout>
