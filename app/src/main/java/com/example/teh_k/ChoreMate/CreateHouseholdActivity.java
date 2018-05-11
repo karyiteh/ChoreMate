@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.util.Log;
 import java.util.Random;
 
 
@@ -113,7 +112,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         String emailsList[] = emails.split(", ");
 
         // If no emails are entered, no invites need to be sent.
-        Log.d("@@@@@@@@@", "" + emailsList.length);
         if (noEmailsEntered(emailsList)) {
             return;
         }
