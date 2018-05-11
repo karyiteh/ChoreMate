@@ -22,14 +22,13 @@
             android:id="@+id/text_title_create_household"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Household"
-            android:fontFamily="cursive"
-            android:textSize="30dp"
-            android:height="50dp"
             android:layout_marginTop="20dp"
-            android:textColor="#4d4dce"
+            android:height="50dp"
+            android:fontFamily="cursive"
             android:gravity="center"
-            />
+            android:text="Create Household"
+            android:textColor="#4d4dce"
+            android:textSize="30dp" />
 
         <EditText
             android:id="@+id/edit_household_name"

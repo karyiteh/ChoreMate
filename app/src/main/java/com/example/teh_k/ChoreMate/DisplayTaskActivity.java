@@ -26,8 +26,8 @@ public class DisplayTaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_task);
 
         // Initializing the elements on the screen.
-        appbar = findViewById(R.id.appbar_displaytask);
-        taskTitle = findViewById(R.id.tasktitle);
+        //appbar = findViewById(R.id.appbar_displaytask);
+        //taskTitle = findViewById(R.id.tasktitle);
 
         // Making the app bar.
         setSupportActionBar(appbar);
