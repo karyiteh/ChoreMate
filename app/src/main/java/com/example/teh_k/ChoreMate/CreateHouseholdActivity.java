@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
-
+import android.util.Log;
 import java.util.Random;
 
 
@@ -60,13 +60,13 @@ public class CreateHouseholdActivity extends AppCompatActivity {
                 attemptInvite();
 
                 // If invites were not sent, break out of code
-                /*if (cancel) {
+                if (cancel) {
                     return;
-                }*/
+                }
 
                 // TODO: INTENT TO MAINACTIVITY CRASHES FOR SOME REASON
-                /*Intent intent = new Intent(view.getContext(), MainActivity.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(view.getContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -105,23 +105,27 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         // Getting content for email
         String emails = editHousematesList.getText().toString().trim();
         // TODO: Replace [USER] with name of user
-        String subject = "[USER] is inviting you to " + house.getHouse_name() + " in ChoreMate!";
+        String subject = "[USER] is inviting you to " + house.getHouse_name() + " on ChoreMate!";
         String message = "Your invite code to " + house.getHouse_name() + " is: "
                          + house.getHouse_code();
 
         // Parse the String of emails
         String emailsList[] = emails.split(", ");
 
+        // If no emails are entered, no invites need to be sent.
+        Log.d("@@@@@@@@@", "" + emailsList.length);
+        if (noEmailsEntered(emailsList)) {
+            return;
+        }
+
         // Check if emails are valid
         // Note: Only works with .edu and .com
-        for (int i = 0; i < emailsList.length; i++) {
-            if (!emailsList[i].endsWith(".edu") && !emailsList[i].endsWith(".com")) {
-                editHousematesList.setError(INVALID_EMAIL);
-                focusView = editHousematesList;
-                focusView.requestFocus();
+        if (isInvalidEmail(emailsList)) {
+            editHousematesList.setError(INVALID_EMAIL);
+            focusView = editHousematesList;
+            focusView.requestFocus();
 
-                cancel = true;
-            }
+            cancel = true;
         }
 
         if (!cancel) {
@@ -139,5 +143,25 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         int high = 13;
         int low = 6;
         return rand.nextInt(high - low) + low;
+    }
+
+    // Returns true if any email in a list of emails does not end with @ucsd.edu
+    private boolean isInvalidEmail(String[] emailsList) {
+        for (int i = 0; i < emailsList.length; i++) {
+            if (!emailsList[i].endsWith("@ucsd.edu")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Returns true if no emails were entered
+    private boolean noEmailsEntered(String[] emailsList) {
+        if (emailsList[0].equals("")) {
+            return true;
+        }
+
+        return false;
     }
 }
