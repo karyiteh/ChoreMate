@@ -63,7 +63,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
                     return;
                 }
 
-                // TODO: INTENT TO MAINACTIVITY CRASHES FOR SOME REASON
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
                 startActivity(intent);
             }
