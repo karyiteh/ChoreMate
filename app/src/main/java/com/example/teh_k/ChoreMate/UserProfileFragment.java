@@ -2,6 +2,7 @@ package com.example.teh_k.ChoreMate;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,35 +14,33 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.sun.mail.imap.Utility;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
+
 /**
- * Class that controls the UI elements on the User Profile page.
+ * A simple {@link Fragment} subclass.
+ * to handle interaction events.
  */
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileFragment extends Fragment {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -58,35 +57,49 @@ public class UserProfileActivity extends AppCompatActivity {
     private int REQUEST_CAMERA = 0;
     private int BROWSE = 1;
 
-    // UI elements on the screen.
-    private Toolbar appbar;
+    // UI elements on the fragment.
     private CircleImageView mAvatar;
     private TextView mUserName;
 
     // Current user of the app.
     private User currentUser;
+
     // Choice made by user.
     private int userChoice;
     private String imageFilePath = "";
 
+
+    public UserProfileFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Telling Android that this fragment has an option menu.
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_user_profile, container, false);
+    }
+
     /**
-     * Loads the user profile screen when the user profile tab is clicked on.
-     * @param savedInstanceState    The last instance that the activity is in.
+     * Do final initializing of the items in the fragment here.
+     * Sets up listeners for elements in the fragment.
      */
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        // Loads the view onto the screen.
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
-
-        // Creates the app bar.
-        appbar = findViewById(R.id.appbar_displayprofile);
-        setSupportActionBar(appbar);
-
-        // Links the UI elements to code.
-        mAvatar = findViewById(R.id.avatar);
-        mUserName = findViewById(R.id.username);
+        // Get views from the fragment.
+        mAvatar = (CircleImageView) getView().findViewById(R.id.avatar);
+        mUserName = (TextView) getView().findViewById(R.id.username);
 
         // Gets the user profile from the database.
         currentUser = getUserFromDatabase();
@@ -107,17 +120,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+
     /**
-     * Creates the options menu in the appbar.
-     * @param menu  The menu item to be passed in.
-     * @return true if options menu is created successfully.
+     * Creates the fragment menu.
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_user_profile, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_user_profile, menu);
     }
 
     /**
@@ -147,6 +156,7 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    // HELPER METHODS HERE!
     /**
      * Gets the user information from the database.
      * @return  The user data of the current user logged in the app.
@@ -156,7 +166,8 @@ public class UserProfileActivity extends AppCompatActivity {
         // TODO: Replace dummyUser with actual user data from database.
         User dummyUser = new User();
         dummyUser.setFirst_name("TestingJohn");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" + R.drawable.john_emmons_headshot);
+        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
         dummyUser.setAvatar(imageUri);
         return dummyUser;
     }
@@ -171,9 +182,8 @@ public class UserProfileActivity extends AppCompatActivity {
         // Dialog item list.
         final CharSequence[] options = {"Browse", "Use Camera", "Cancel"};
 
-
         // Create a pop-up dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -210,7 +220,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void changePassword() {
         // Creates the change password intent and starts the activity.
-        Intent changePasswordIntent = new Intent(this, ChangePasswordActivity.class);
+        Intent changePasswordIntent = new Intent(getContext(), ChangePasswordActivity.class);
         startActivity(changePasswordIntent);
     }
 
@@ -219,7 +229,7 @@ public class UserProfileActivity extends AppCompatActivity {
      */
     private void changeNotificationSettings() {
         // Creates the change notification settings intent and starts the activity.
-        Intent changeNotificationSettingsIntent = new Intent(this, NotificationSettingsActivity.class);
+        Intent changeNotificationSettingsIntent = new Intent(getContext(), NotificationSettingsActivity.class);
         startActivity(changeNotificationSettingsIntent);
     }
 
@@ -238,11 +248,13 @@ public class UserProfileActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (getActivity().checkSelfPermission(READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED) {
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
-            Snackbar.make(mAvatar, "Permission required for selecting avatar.", Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mAvatar, "Permission required for selecting avatar.",
+                    Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -299,7 +311,7 @@ public class UserProfileActivity extends AppCompatActivity {
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Create file location to store the image taken.
-        if (pictureIntent.resolveActivity(getPackageManager()) != null) {
+        if (pictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
@@ -309,7 +321,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
 
             // Open the camera to take the picture.
-            Uri photoUri = FileProvider.getUriForFile(this, getPackageName()
+            Uri photoUri = FileProvider.getUriForFile(getContext(), getActivity().getPackageName()
                     +".provider", photoFile);
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
             startActivityForResult(pictureIntent, REQUEST_CAMERA);
@@ -326,7 +338,7 @@ public class UserProfileActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         imageFilePath = image.getAbsolutePath();
         return image;
@@ -340,7 +352,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * @param data          The intent that carries the resulting image.
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check if operation is successful.
@@ -389,4 +401,5 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // TODO: Upload the image into the database.
     }
+
 }
