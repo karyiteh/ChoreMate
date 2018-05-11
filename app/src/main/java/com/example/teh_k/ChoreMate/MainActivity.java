@@ -1,20 +1,24 @@
 package com.example.teh_k.ChoreMate;
 
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        BottomNavigationView.OnNavigationItemSelectedListener {
 
     // XML elements on the screen.
     private Toolbar appbar;
-    private RecyclerView tasklist;
-    private RecyclerView.Adapter tasklistAdapter;
-    private RecyclerView.LayoutManager tasklistLayout;
+    private BottomNavigationView navbar;
 
     // Intent key.
     public static final String TASK_TITLE = "com.example.teh_k.ChoreMate.TITLE";
@@ -32,32 +36,54 @@ public class MainActivity extends AppCompatActivity {
         appbar = findViewById(R.id.appbar);
         setSupportActionBar(appbar);
 
-        // Creates the task list.
-        tasklist = findViewById(R.id.tasks);
-        tasklistLayout = new LinearLayoutManager(this);
-        tasklist.setLayoutManager(tasklistLayout);
+        // Loads the default fragment.
+        loadFragment(new UserProfileFragment());
 
-        // Test input dataset.
-        String[] inputDataset = new String[3];
-        inputDataset[0] = "Take out trash";
-        inputDataset[1] = "Wash dishes";
-        inputDataset[2] = "Vacuum the living room";
+        // Create the bottom nav bar.
+        navbar = findViewById(R.id.bottom_profile);
+        navbar.setOnNavigationItemSelectedListener(this);
 
-        // Creates the adapter for the task list.
-        tasklistAdapter = new TaskAdapter(inputDataset);
-        tasklist.setAdapter(tasklistAdapter);
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // The fragment to be loaded.
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.action_tasks:
+                // TODO: Create task fragment.
+                break;
+            case R.id.action_transactions:
+                // TODO: Create transactions fragment.
+                break;
+            case R.id.action_household:
+                // Creates the household fragment.
+                fragment = new HouseholdFragment();
+                break;
+            case R.id.action_profile:
+                // Creates the user profile fragment.
+                fragment = new UserProfileFragment();
+                break;
+        }
+
+        return loadFragment(fragment);
     }
 
     /**
-     * Creates the options menu on the app bar.
-     * @param menu  The menu item to be passed in.
-     * @return  true if options menu is created successfully.
+     * Loads the fragment to the screen.
+     * @param fragment  The fragment to be loaded to the screen.
+     * @return  true if load is successful, false otherwise.
      */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_appbar, menu);
-        return true;
+    private boolean loadFragment(Fragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
+
 }
