@@ -95,10 +95,10 @@ public class HouseholdFragment extends Fragment {
         // Handle item selection.
         switch(item.getItemId()) {
             case R.id.action_rename_household:
-                // TODO: Method to rename household.
+                renameHousehold();
                 return true;
             case R.id.action_delete_household:
-                // TODO: Method to delete household.
+                deleteHousehold();
                 return true;
             case R.id.action_invite_housemate:
                 inviteHousemate();
@@ -117,5 +117,19 @@ public class HouseholdFragment extends Fragment {
     private void inviteHousemate() {
         Intent inviteIntent = new Intent(getContext(), InviteHousemateActivity.class);
         startActivity(inviteIntent);
+    }
+
+    /**
+     * Starts the rename household activity
+     */
+    private void renameHousehold() {
+        // Display pop up menu upon clicking of rename household button
+        Intent renameIntent = new Intent(getContext(), RenameGroup.class);
+        startActivity(renameIntent);
+    }
+
+    private void deleteHousehold() {
+        Intent deleteIntent = new Intent(getContext(), DeleteActivity.class);
+        startActivity(deleteIntent);
     }
 }
