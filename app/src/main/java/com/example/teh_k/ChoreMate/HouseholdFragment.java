@@ -128,6 +128,9 @@ public class HouseholdFragment extends Fragment {
         startActivity(renameIntent);
     }
 
+    /**
+     * Starts the delete household activity
+     */
     private void deleteHousehold() {
         Intent deleteIntent = new Intent(getContext(), DeleteActivity.class);
         startActivity(deleteIntent);
