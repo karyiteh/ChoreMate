@@ -9,36 +9,30 @@
     android:orientation="vertical">
 
     <!-- For the toolbar on the top. -->
+
     <android.support.v7.widget.Toolbar
-        android:id="@+id/appbar_displayhousemateprofile"
+        android:id="@+id/appbar_remove_housemate"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/lightBlue"
+        android:background="#B8B8FF"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Remove Housemate"
         app:titleTextColor="@android:color/background_light">
 
-
-
     </android.support.v7.widget.Toolbar>
 
-
     <!-- For the list -->
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/housemates"
-        android:name="housematesRecyclerView"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
 
-        android:layout_marginTop="20dp"
-        tools:showIn="@layout/activity_remove_housemate" />
+        >
 
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>
