@@ -51,13 +51,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-<<<<<<< HEAD
-        <activity android:name=".RenameGroup" />
-        <activity android:name=".DeleteActivity"></activity>
-=======
         <activity android:name=".TaskViewActivity" />
         <activity android:name=".ViewTaskActivity"></activity>
->>>>>>> ac7cc04bd86f8a1db301738d23bf8e64e0fe744e
     </application>
 
 </manifest>
