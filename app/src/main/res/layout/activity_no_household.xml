@@ -7,6 +7,18 @@
     android:orientation="vertical"
     android:background="@drawable/bg"
     tools:context=".NoHouseholdActivity">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/appbar_no_household"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#B8B8FF"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Create/Join Household"
+        app:titleTextColor="@android:color/background_light">
+
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/layout_top"
@@ -17,17 +29,6 @@
         android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/text_title_no_household"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fontFamily="cursive"
-            android:gravity="center"
-            android:text="Create/Join Household"
-            android:textColor="#4d4dce"
-            android:textSize="30sp"
-            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_enter_invite_code"

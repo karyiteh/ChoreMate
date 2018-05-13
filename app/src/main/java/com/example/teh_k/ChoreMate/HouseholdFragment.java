@@ -1,18 +1,22 @@
 package com.example.teh_k.ChoreMate;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -26,6 +30,8 @@ public class HouseholdFragment extends Fragment {
     private RecyclerView mHousemateList;
     private HousemateAdapter housemateListAdapter;
     private RecyclerView.LayoutManager housemateListManager;
+
+    private String newGroupName = "";
 
     public HouseholdFragment() {
         // Required empty public constructor
@@ -123,16 +129,64 @@ public class HouseholdFragment extends Fragment {
      * Starts the rename household activity
      */
     private void renameHousehold() {
-        // Display pop up menu upon clicking of rename household button
-        Intent renameIntent = new Intent(getContext(), RenameGroup.class);
-        startActivity(renameIntent);
+        // Borrowed some of the AlertDialog code from a stack overflow user
+        // https://stackoverflow.com/questions/2586301/set-inputtype-for-an-edittext
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter New Household Name");
+
+        // For user Input
+        final EditText input = new EditText(getContext());
+
+        // What to expect
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                newGroupName = input.getText().toString();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+
+        builder.show();
+
+        // TODO: The new group name is stored in newGroupName
+
     }
 
     /**
      * Starts the delete household activity
      */
     private void deleteHousehold() {
-        Intent deleteIntent = new Intent(getContext(), DeleteActivity.class);
-        startActivity(deleteIntent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Are you sure you want to Delete this Household?");
+
+
+        // Set up the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO: Delete the household in the database
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

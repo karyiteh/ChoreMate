@@ -10,15 +10,18 @@
 
     <!-- For the toolbar on the top. -->
     <android.support.v7.widget.Toolbar
-        android:id="@+id/appbar"
+        android:id="@+id/appbar_notification_settings"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="#B8B8FF"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Notification Settings"
-        app:titleTextColor="@android:color/background_light" />
+        app:titleTextColor="@android:color/background_light">
+
+    </android.support.v7.widget.Toolbar>
+
 
     <Switch
         android:id="@+id/toggle_snooze"

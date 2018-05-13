@@ -10,6 +10,17 @@
     tools:context=".InviteHousemateActivity"
     >
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/appbar_invite_housemate"
+        android:layout_width="match_parent"
+        android:background="#B8B8FF"
+        app:title="Invite Housemate"
+        app:titleTextColor="@color/white"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        />
+
     <LinearLayout
         android:id="@+id/layout_top"
         android:layout_width="match_parent"
@@ -18,22 +29,10 @@
         android:layout_marginRight="10dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_title_invite_housemate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:height="50dp"
-            android:fontFamily="cursive"
-            android:gravity="center"
-            android:text="Invite Housemate"
-            android:textColor="#4d4dce"
-            android:textSize="30dp" />
-
         <EditText
             android:id="@+id/edit_housemate_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:height="30dp"
             android:ems="10"

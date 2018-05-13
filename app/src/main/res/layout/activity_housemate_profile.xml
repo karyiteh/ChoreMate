@@ -13,21 +13,12 @@
         android:id="@+id/appbar_displayhousemateprofile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/lightBlue"
+        android:background="#B8B8FF"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Housemate"
         app:titleTextColor="@android:color/background_light">
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="150dp"
-            android:layout_height="49dp"
-            android:adjustViewBounds="false"
-            android:textAlignment="center"
-            app:srcCompat="@drawable/choremate_logo"
-            tools:ignore="ContentDescription"/>
 
     </android.support.v7.widget.Toolbar>
 
@@ -61,7 +52,7 @@
     <HorizontalScrollView
         android:id="@+id/user_task_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
@@ -72,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical" />
+
     </HorizontalScrollView>
 
 </LinearLayout>
