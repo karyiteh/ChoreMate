@@ -40,6 +40,8 @@
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".InviteHousemateActivity" />
         <activity android:name=".NotificationSettingsActivity" />
+        <activity android:name=".HousemateProfileActivity" />
+        <activity android:name=".RemoveHousemateActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -51,8 +53,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".TaskViewActivity" />
-        <activity android:name=".ViewTaskActivity"></activity>
+        <activity android:name=".ViewTaskActivity"/>
     </application>
 
 </manifest>

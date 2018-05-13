@@ -3,6 +3,7 @@ package com.example.teh_k.ChoreMate;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,10 +13,13 @@ import android.widget.EditText;
  */
 public class NoHouseholdActivity extends AppCompatActivity {
 
-
+    // UI elements on the screen.
     private Button mCreateButton;
     private Button joinButton;
     private EditText inviteCode;
+
+    // Appbar of the screen.
+    private Toolbar appbar;
 
     //TODO: Replace all instances of dummyCode when database is set up
     public static final String dummyCode = "123";
@@ -28,6 +32,10 @@ public class NoHouseholdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_household);
+
+        // Creates the appbar.
+        appbar = findViewById(R.id.appbar_no_household);
+        setSupportActionBar(appbar);
 
         mCreateButton = (Button) findViewById(R.id.btn_create_household);
         joinButton = (Button) findViewById(R.id.btn_join_household);
