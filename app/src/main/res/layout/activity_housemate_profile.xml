@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".HousemateProfileActivity">
 
     <!-- For the toolbar on the top. -->
     <android.support.v7.widget.Toolbar

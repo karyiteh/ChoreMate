@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import java.util.Random;
 // TODO: IMPORTANT NOTE: CAN ONLY ENTER ONE EMAIL RIGHT NOW
 
 public class CreateHouseholdActivity extends AppCompatActivity {
+
     // Error messages.
     public static final String EMPTY_FIELD = "This field is required!";
     public static final String INVALID_EMAIL = "Please make sure emails are valid and are" +
@@ -24,6 +26,9 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     // Declare Text Fields
     private EditText editHouseholdName;
     private EditText editHousematesList;
+
+    // The app bar for the page.
+    private Toolbar appbar;
 
     private Button buttonCreate;
 
@@ -36,6 +41,10 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_household);
+
+        // Creates the appbar.
+        appbar = findViewById(R.id.appbar_create_household);
+        setSupportActionBar(appbar);
 
         // Initialize the views
         editHouseholdName = (EditText) findViewById(R.id.edit_household_name);
@@ -126,8 +135,8 @@ public class CreateHouseholdActivity extends AppCompatActivity {
 
         if (!cancel) {
             // Create SendMail object and send invites
-            for (int i = 0; i < emailsList.length; i++) {
-                SendMail sm = new SendMail(this, emailsList[i], subject, message);
+            for (String email : emailsList) {
+                SendMail sm = new SendMail(this, email, subject, message);
                 sm.execute();
             }
         }
@@ -143,8 +152,8 @@ public class CreateHouseholdActivity extends AppCompatActivity {
 
     // Returns true if any email in a list of emails does not end with @ucsd.edu
     private boolean isInvalidEmail(String[] emailsList) {
-        for (int i = 0; i < emailsList.length; i++) {
-            if (!emailsList[i].endsWith("@ucsd.edu")) {
+        for (String email : emailsList) {
+            if (!email.endsWith("@ucsd.edu")) {
                 return true;
             }
         }

@@ -2,6 +2,7 @@ package com.example.teh_k.ChoreMate;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,9 @@ public class NotificationSettingsActivity extends AppCompatActivity {
     private Switch toggleSnooze;
     private Spinner dropDown;
 
+    // Appbar for the page.
+    private Toolbar appbar;
+
     // How long the user decides to mute the notifications.
     private String snoozeOption;
     private boolean snoozed;
@@ -35,6 +39,10 @@ public class NotificationSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_settings);
+
+        // Creates the appbar.
+        appbar = findViewById(R.id.appbar_notification_settings);
+        setSupportActionBar(appbar);
 
         // Sets up the toggle switch.
         toggleSnooze = (Switch) findViewById(R.id.toggle_snooze);
@@ -56,14 +64,8 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         toggleSnooze.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    // The toggle is set.
-                    snoozed = true;
-                }
-                else {
-                    // The toggle is disabled.
-                    snoozed = false;
-                }
+                // The toggle is set.
+                snoozed = isChecked;
             }
         });
 
