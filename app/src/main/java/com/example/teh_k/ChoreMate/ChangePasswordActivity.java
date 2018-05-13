@@ -2,6 +2,7 @@ package com.example.teh_k.ChoreMate;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private EditText editConfirmPassword;
     private Button mBtnChangePassword;
 
+    private Toolbar appbar;
+
     // User of the current app.
     private User currentUser;
 
@@ -38,6 +41,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
+
+        // Creates the appbar.
+        appbar = findViewById(R.id.appbar_change_password);
+        setSupportActionBar(appbar);
 
         // Links UI elements to code.
         editCurrentPassword = findViewById(R.id.edit_current_password);
