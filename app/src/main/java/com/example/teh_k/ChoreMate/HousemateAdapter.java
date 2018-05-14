@@ -7,10 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * HousemateAdapter is a class that links the data from the dataset into the UI.
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.ViewHolder> {
 
     ArrayList<User> housemates;
+    boolean assignTask;
 
     /**
      * Provides reference to the views for each data item.
@@ -27,7 +31,8 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
 
         // Each item in this case is just a text view.
         public LinearLayout row;
-        public TextView housemateView;
+        public TextView housemateName;
+        private CircleImageView avatar;
 
         /**
          * Default constructor. Creates the view of the data item.
@@ -35,8 +40,9 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            row = (LinearLayout) itemView.findViewById(R.id.a_row);
-            housemateView = (TextView) itemView.findViewById(R.id.a_task);
+            row = (LinearLayout) itemView.findViewById(R.id.row_housemate);
+            housemateName = (TextView) itemView.findViewById(R.id.text_housemate_name);
+            avatar = itemView.findViewById(R.id.img_avatar);
 
             // IMPORTANT: Set the onclick listener.
             row.setOnClickListener(this);
@@ -50,7 +56,7 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
         public void onClick(View v) {
 
             // Starts a new activity that shows the item in detail.
-            Intent taskIntent = new Intent(v.getContext(), DisplayTaskActivity.class);
+            Intent intent = new Intent(v.getContext(), HousemateProfileActivity.class);
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();
@@ -58,10 +64,10 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
-            taskIntent.putExtra(MainActivity.TASK_TITLE, housemate.getFirst_name());
+            intent.putExtra(MainActivity.HOUSEMATE, housemate);
 
             // Start the next activity.
-            (v.getContext()).startActivity(taskIntent);
+            (v.getContext()).startActivity(intent);
 
         }
     }
@@ -89,7 +95,7 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
         // Creates a new view.
         // Need to create another xml file just for the item in the lists.
         // Then link it to here through inflate!
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_housemate, parent, false);
         return new HousemateAdapter.ViewHolder(view);
     }
 
@@ -104,7 +110,8 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.housemateView.setText(housemates.get(position).getFirst_name());
+        holder.housemateName.setText(housemates.get(position).getFirst_name());
+        holder.avatar.setImageURI(housemates.get(position).getAvatar());
     }
 
     /**

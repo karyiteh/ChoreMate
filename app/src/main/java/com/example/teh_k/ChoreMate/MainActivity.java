@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity implements
     private BottomNavigationView navbar;
 
     // Intent key.
-    public static final String TASK_TITLE = "com.example.teh_k.ChoreMate.TITLE";
+    public static final String TASK = "com.example.teh_k.ChoreMate.TASK";
+    public static final String HOUSEMATE = "com.example.teh_k.ChoreMate.HOUSEMATE";
 
     /**
      * Creates the main screen. Called when main page is loaded.
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(appbar);
 
         // Loads the default fragment.
-        loadFragment(new UserProfileFragment());
+        loadFragment(new TaskFragment());
 
         // Create the bottom nav bar.
         navbar = findViewById(R.id.bottom_profile);
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.action_tasks:
-                // TODO: Create task fragment.
+                // Creates task fragment.
+                fragment = new TaskFragment();
                 break;
             case R.id.action_transactions:
                 // TODO: Create transactions fragment.

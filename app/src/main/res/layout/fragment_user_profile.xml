@@ -35,7 +35,7 @@
     </LinearLayout>
 
 
-    <HorizontalScrollView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/user_task_scroll"
         android:layout_width="match_parent"
         android:layout_height="259dp"
@@ -43,11 +43,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="67dp">
 
-        <LinearLayout
-            android:id="@+id/user_tasks"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
-    </HorizontalScrollView>
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

@@ -56,15 +56,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public void onClick(View v) {
 
             // Starts a new activity that shows the item in detail.
-            Intent taskIntent = new Intent(v.getContext(), DisplayTaskActivity.class);
+            Intent taskIntent = new Intent(v.getContext(), ViewTaskActivity.class);
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();
-            String task = tasks.get(position).getTask_name();
+            Task task = tasks.get(position);
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
-            taskIntent.putExtra(MainActivity.TASK_TITLE, task);
+            taskIntent.putExtra(MainActivity.TASK, task);
 
             // Start the next activity.
             (v.getContext()).startActivity(taskIntent);
@@ -96,7 +96,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         // Need to create another xml file just for the item in the lists.
         // Then link it to here through inflate!
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row, parent, false);
+                .inflate(R.layout.row_view_task, parent, false);
         return new ViewHolder(view);
     }
 

@@ -4,6 +4,7 @@ package com.example.teh_k.ChoreMate;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -69,6 +70,9 @@ public class HouseholdFragment extends Fragment {
         ArrayList<User> housemates = new ArrayList<User>();
         User randomUser = new User();
         randomUser.setFirst_name("John");
+        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
+        randomUser.setAvatar(imageUri);
         housemates.add(randomUser);
 
         // Creates the adapter.
