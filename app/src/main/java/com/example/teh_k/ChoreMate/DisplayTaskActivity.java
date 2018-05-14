@@ -40,7 +40,7 @@ public class DisplayTaskActivity extends AppCompatActivity {
 
         // Getting the intent that started this activity, and extract what task it was.
         Intent intent = getIntent();
-        String title = intent.getStringExtra(MainActivity.TASK_TITLE);
+        String title = intent.getStringExtra(MainActivity.TASK);
 
         // Set the text view to the task title.
         taskTitle.setText(title);

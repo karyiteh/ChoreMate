@@ -58,7 +58,7 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
-            taskIntent.putExtra(MainActivity.TASK_TITLE, housemate.getFirst_name());
+            taskIntent.putExtra(MainActivity.TASK, housemate.getFirst_name());
 
             // Start the next activity.
             (v.getContext()).startActivity(taskIntent);

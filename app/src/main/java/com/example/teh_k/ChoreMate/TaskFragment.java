@@ -1,6 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -69,7 +70,9 @@ public class TaskFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Gets UI elements from the view.
-        mTasklist = getView().findViewById(R.id.tasks);
+        if(getView()!= null) {
+            mTasklist = getView().findViewById(R.id.tasks);
+        }
 
         // Get the task list from the database.
         taskList = initializeTasks();
@@ -122,10 +125,19 @@ public class TaskFragment extends Fragment {
         task1.setTask_name("Do the dishes");
         task1.setTask_detail("Dishes needs to be washed as soon as they are used.");
         task1.setTime(new GregorianCalendar(2018, 6, 10, 12,0));
+        User user1 = new User();
+        user1.setFirst_name("John");
+        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
+        user1.setAvatar(imageUri);
+        ArrayList<User> userList = new ArrayList<>();
+        userList.add(user1);
+        task1.setUser_list(userList);
         Task task2 = new Task();
         task2.setTask_name("Take out the trash");
         task2.setTask_detail("Trash to be taken out when it is full");
         task2.setTime(new GregorianCalendar(2018, 6, 1, 13, 0));
+        task2.setUser_list(userList);
         tasks.add(task1);
         tasks.add(task2);
         tasks.trimToSize();

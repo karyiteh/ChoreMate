@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements
     private BottomNavigationView navbar;
 
     // Intent key.
-    public static final String TASK_TITLE = "com.example.teh_k.ChoreMate.TASK_TITLE";
+    public static final String TASK = "com.example.teh_k.ChoreMate.TASK";
 
     /**
      * Creates the main screen. Called when main page is loaded.
