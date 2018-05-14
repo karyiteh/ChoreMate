@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/row_assign_task"
+    android:id="@+id/row_housemate"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/row_bg">
@@ -32,12 +32,6 @@
         android:text="Housemate"
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="0.25" />
 
 
 </LinearLayout>
