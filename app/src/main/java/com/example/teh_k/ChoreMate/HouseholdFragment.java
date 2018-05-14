@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 
@@ -114,7 +115,7 @@ public class HouseholdFragment extends Fragment {
                 inviteHousemate();
                 return true;
             case R.id.action_remove_housemate:
-                // TODO: Method to remove housemate.
+                removeHousemate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -192,5 +193,23 @@ public class HouseholdFragment extends Fragment {
         });
 
         builder.show();
+    }
+
+    private void removeHousemate() {
+        // TODO: replace with database implementation
+        String[] houseMates = {"housemate #1","housemate #2"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Choose Housemate to Remove");
+        builder.setItems(houseMates, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // The 'which' argument contains the index position
+                // of the selected item
+                // TODO: remove the user from that household object
+            }
+        });
+
+        builder.show();
+
     }
 }
