@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 /**
  * Activity screen that displays the individual task.
+ * Deprecated! Please work on ViewTaskActivity instead.
+ * This will still be here as code reference for things to be done.
+ * TODO: Delete this class when done with coding for tasks.
  */
 public class DisplayTaskActivity extends AppCompatActivity {
 

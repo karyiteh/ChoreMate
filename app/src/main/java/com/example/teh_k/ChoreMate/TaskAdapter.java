@@ -9,22 +9,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * TaskAdapter is a class that links the data from the dataset into the UI.
  * Basically creates the items in the list show on the screen.
  */
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
-    String[] dataset;
+    ArrayList<Task> tasks;
 
     /**
      * Provides reference to the views for each data item.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        // Each item in this case is just a text view.
+        // The UI elements of each row entry.
         public LinearLayout row;
-        public TextView taskView;
+        private TextView taskTitle;
+        private CircleImageView avatar;
 
         /**
          * Default constructor. Creates the view of the data item.
@@ -32,8 +38,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            row = (LinearLayout) itemView.findViewById(R.id.a_row);
-            taskView = (TextView) itemView.findViewById(R.id.a_task);
+
+            // Linking the UI elements.
+            row = (LinearLayout) itemView.findViewById(R.id.view_task_row);
+            taskTitle = (TextView) itemView.findViewById(R.id.text_task_title);
+            avatar = (CircleImageView) itemView.findViewById(R.id.img_avatar);
 
             // IMPORTANT: Set the onclick listener.
             row.setOnClickListener(this);
@@ -51,7 +60,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();
-            String task = dataset[position];
+            String task = tasks.get(position).getTask_name();
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
@@ -67,8 +76,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      * Constructor to feed the task list data.
      * @param myDataset The dataset that contains the tasks.
      */
-    public TaskAdapter(String[] myDataset) {
-        dataset = myDataset;
+    public TaskAdapter(ArrayList<Task> myDataset) {
+        tasks= myDataset;
     }
 
     /**
@@ -88,8 +97,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         // Then link it to here through inflate!
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     /**
@@ -101,9 +109,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.ViewHolder holder, int position) {
 
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.taskView.setText(dataset[position]);
+        // Get element from dataset at this position
+        Task currentTask = tasks.get(position);
+        List<User> currentAssignedUsers =  currentTask.getUser_list();
+
+        // Replace the contents of the view with that element
+        holder.taskTitle.setText(currentTask.getTask_name());
+        holder.avatar.setImageURI(currentAssignedUsers.get(0).getAvatar());
     }
 
     /**
@@ -112,7 +124,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      */
     @Override
     public int getItemCount() {
-        return dataset.length;
+        return tasks.size();
     }
 
 

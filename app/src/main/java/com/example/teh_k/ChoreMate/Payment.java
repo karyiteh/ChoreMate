@@ -1,7 +1,13 @@
 package com.example.teh_k.ChoreMate;
 
-// class that handles the logic of payments
-public class Payment {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * Object class for payments in the app.
+ * Implements Parcelable for passing payment object between activities.
+ */
+public class Payment implements Parcelable {
     // strings representing the names and details of payments
     private String payment_name;
     private String payment_detail;
@@ -15,6 +21,10 @@ public class Payment {
 
     // whether the payment has been paid or not
     private boolean status;
+
+    public Payment() {
+        // Default empty constructor.
+    }
 
     // getters and setters for the payment names and details
     public String getPayment_name() {
@@ -59,4 +69,55 @@ public class Payment {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    // Code generated from www.parcelable.com
+    // Following section of code used for implementing Parcelable.
+
+    /**
+     * Constructor method for when passing object through activities.
+     */
+    protected Payment(Parcel in) {
+        payment_name = in.readString();
+        payment_detail = in.readString();
+        amount = in.readDouble();
+        payer = (User) in.readValue(User.class.getClassLoader());
+        receiver = (User) in.readValue(User.class.getClassLoader());
+        status = in.readByte() != 0x00;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flattens the payment object to a Parcelable.
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(payment_name);
+        dest.writeString(payment_detail);
+        dest.writeDouble(amount);
+        dest.writeValue(payer);
+        dest.writeValue(receiver);
+        dest.writeByte((byte) (status ? 0x01 : 0x00));
+    }
+
+    /**
+     * Interface that must be implemented and provided as a public CREATOR field that generates
+     * instances of your Parcelable class from a Parcel.
+     */
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Payment> CREATOR = new Parcelable.Creator<Payment>() {
+        @Override
+        public Payment createFromParcel(Parcel in) {
+            return new Payment(in);
+        }
+
+        @Override
+        public Payment[] newArray(int size) {
+            return new Payment[size];
+        }
+    };
+
 }
