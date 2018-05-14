@@ -53,10 +53,19 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_task_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="10dp">
 
     </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/btn_remove_housemate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#4d4dce"
+        android:text="@string/remove_housemate"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

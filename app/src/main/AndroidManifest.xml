@@ -41,7 +41,6 @@
         <activity android:name=".InviteHousemateActivity" />
         <activity android:name=".NotificationSettingsActivity" />
         <activity android:name=".HousemateProfileActivity" />
-        <activity android:name=".RemoveHousemateActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
