@@ -4,8 +4,7 @@
     android:id="@+id/displaytask"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".DisplayTaskActivity">
+    android:orientation="vertical">
 
     <!-- For the toolbar on the top. -->
     <TextView
@@ -54,7 +53,7 @@
 
     <Button
         android:id="@+id/recurrence_options"
-        android:layout_width="372dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="start|center_vertical"
@@ -62,6 +61,13 @@
         android:text="recurrence options"
         android:textColor="@color/colorPrimary" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Task"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"/>
 
 
 </LinearLayout>
