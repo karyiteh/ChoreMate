@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/displaytask"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DisplayTaskActivity">
+
+    <!-- For the toolbar on the top. -->
+    <TextView
+        android:id="@+id/text_title_create_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Task"
+        android:fontFamily="cursive"
+        android:textSize="30sp"
+        android:height="50dp"
+        android:layout_marginTop="20dp"
+        android:textColor="#4d4dce"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/task_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="30dp"
+        android:ems="10"
+        android:hint="Task Name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/task_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Task Description"
+        android:inputType="textMultiLine" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/assign_task"
+        android:text="Assign Task"
+        android:textSize="18sp"
+        android:layout_margin="5dp"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pick_housemates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp" />
+
+    <Button
+        android:id="@+id/recurrence_options"
+        android:layout_width="372dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="start|center_vertical"
+        android:layout_marginStart="5dp"
+        android:text="recurrence options"
+        android:textColor="@color/colorPrimary" />
+
+
+
+</LinearLayout>
