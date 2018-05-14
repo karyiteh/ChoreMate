@@ -63,7 +63,9 @@ public class HouseholdFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Get UI elements from the view.
-        mHousemateList = (RecyclerView) getView().findViewById(R.id.housemate_list);
+        if(getView() != null) {
+            mHousemateList = (RecyclerView) getView().findViewById(R.id.housemate_list);
+        }
 
         // TODO: Method to retrieve user list from database.
 
@@ -113,9 +115,6 @@ public class HouseholdFragment extends Fragment {
                 return true;
             case R.id.action_invite_housemate:
                 inviteHousemate();
-                return true;
-            case R.id.action_remove_housemate:
-                removeHousemate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -176,7 +175,6 @@ public class HouseholdFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Are you sure you want to Delete this Household?");
 
-
         // Set up the buttons
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -195,21 +193,4 @@ public class HouseholdFragment extends Fragment {
         builder.show();
     }
 
-    private void removeHousemate() {
-        // TODO: replace with database implementation
-        String[] houseMates = {"housemate #1","housemate #2"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Choose Housemate to Remove");
-        builder.setItems(houseMates, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // The 'which' argument contains the index position
-                // of the selected item
-                // TODO: remove the user from that household object
-            }
-        });
-
-        builder.show();
-
-    }
 }
