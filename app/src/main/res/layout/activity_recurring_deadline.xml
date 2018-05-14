@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/appbar_view_task"
+        android:id="@+id/appbar_recurrence"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#B8B8FF"
@@ -15,7 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Recurrence Options"
-        app:titleTextColor="@android:color/background_light"/>
+        app:titleTextColor="@android:color/background_light" />
 
 
 
