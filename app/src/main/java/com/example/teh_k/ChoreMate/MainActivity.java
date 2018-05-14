@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(appbar);
 
         // Loads the default fragment.
-        loadFragment(new UserProfileFragment());
+        loadFragment(new TaskFragment());
 
         // Create the bottom nav bar.
         navbar = findViewById(R.id.bottom_profile);
@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.action_tasks:
-                // TODO: Create task fragment.
+                // Creates task fragment.
+                fragment = new TaskFragment();
                 break;
             case R.id.action_transactions:
                 // TODO: Create transactions fragment.

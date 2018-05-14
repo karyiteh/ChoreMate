@@ -9,13 +9,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
 /**
  * TaskAdapter is a class that links the data from the dataset into the UI.
  * Basically creates the items in the list show on the screen.
  */
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
-    String[] dataset;
+    ArrayList<Task> tasks;
 
     /**
      * Provides reference to the views for each data item.
@@ -51,7 +53,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();
-            String task = dataset[position];
+            String task = tasks.get(position).getTask_name();
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
@@ -67,8 +69,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      * Constructor to feed the task list data.
      * @param myDataset The dataset that contains the tasks.
      */
-    public TaskAdapter(String[] myDataset) {
-        dataset = myDataset;
+    public TaskAdapter(ArrayList<Task> myDataset) {
+        tasks= myDataset;
     }
 
     /**
@@ -103,7 +105,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.taskView.setText(dataset[position]);
+        holder.taskView.setText(tasks.get(position).getTask_name());
     }
 
     /**
@@ -112,7 +114,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      */
     @Override
     public int getItemCount() {
-        return dataset.length;
+        return tasks.size();
     }
 
 

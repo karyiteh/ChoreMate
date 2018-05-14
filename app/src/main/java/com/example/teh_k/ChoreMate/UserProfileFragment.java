@@ -37,8 +37,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * to handle interaction events.
+ * Displays the user profile on MainActivity.
  */
 public class UserProfileFragment extends Fragment {
 
