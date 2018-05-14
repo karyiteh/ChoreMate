@@ -10,6 +10,9 @@ import android.widget.TextView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * TaskAdapter is a class that links the data from the dataset into the UI.
@@ -24,9 +27,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        // Each item in this case is just a text view.
+        // The UI elements of each row entry.
         public LinearLayout row;
-        public TextView taskView;
+        private TextView taskTitle;
+        private CircleImageView avatar;
 
         /**
          * Default constructor. Creates the view of the data item.
@@ -34,8 +38,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            row = (LinearLayout) itemView.findViewById(R.id.a_row);
-            taskView = (TextView) itemView.findViewById(R.id.a_task);
+
+            // Linking the UI elements.
+            row = (LinearLayout) itemView.findViewById(R.id.view_task_row);
+            taskTitle = (TextView) itemView.findViewById(R.id.text_task_title);
+            avatar = (CircleImageView) itemView.findViewById(R.id.img_avatar);
 
             // IMPORTANT: Set the onclick listener.
             row.setOnClickListener(this);
@@ -90,8 +97,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         // Then link it to here through inflate!
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     /**
@@ -103,9 +109,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.ViewHolder holder, int position) {
 
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.taskView.setText(tasks.get(position).getTask_name());
+        // Get element from dataset at this position
+        Task currentTask = tasks.get(position);
+        List<User> currentAssignedUsers =  currentTask.getUser_list();
+
+        // Replace the contents of the view with that element
+        holder.taskTitle.setText(currentTask.getTask_name());
+        holder.avatar.setImageURI(currentAssignedUsers.get(0).getAvatar());
     }
 
     /**
