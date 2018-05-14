@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // Intent key.
     public static final String TASK = "com.example.teh_k.ChoreMate.TASK";
+    public static final String HOUSEMATE = "com.example.teh_k.ChoreMate.HOUSEMATE";
 
     /**
      * Creates the main screen. Called when main page is loaded.
