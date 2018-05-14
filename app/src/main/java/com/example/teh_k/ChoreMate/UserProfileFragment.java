@@ -17,6 +17,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +30,10 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -60,8 +65,14 @@ public class UserProfileFragment extends Fragment {
     private CircleImageView mAvatar;
     private TextView mUserName;
 
+    // The list view for the tasks.
+    private RecyclerView mTaskList;
+    private TaskAdapter taskListAdapter;
+    private RecyclerView.LayoutManager taskListManager;
+
     // Current user of the app.
     private User currentUser;
+    private ArrayList<Task> userTasks;
 
     // Choice made by user.
     private int userChoice;
@@ -97,8 +108,11 @@ public class UserProfileFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Get views from the fragment.
-        mAvatar = (CircleImageView) getView().findViewById(R.id.avatar);
-        mUserName = (TextView) getView().findViewById(R.id.username);
+        if(getView() != null) {
+            mAvatar = (CircleImageView) getView().findViewById(R.id.avatar);
+            mUserName = (TextView) getView().findViewById(R.id.username);
+            mTaskList = getView().findViewById(R.id.user_task_scroll);
+        }
 
         // Gets the user profile from the database.
         currentUser = getUserFromDatabase();
@@ -115,7 +129,12 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
-        // TODO: Implement the recycler view code when tasks are ready.
+        // Set up the recycler view for the tasks.
+        userTasks = getTasksFromDatabase();
+        taskListAdapter = new TaskAdapter(userTasks);
+        mTaskList.setAdapter(taskListAdapter);
+        taskListManager = new LinearLayoutManager(getContext());
+        mTaskList.setLayoutManager(taskListManager);
 
     }
 
@@ -169,6 +188,40 @@ public class UserProfileFragment extends Fragment {
                 R.drawable.john_emmons_headshot);
         dummyUser.setAvatar(imageUri);
         return dummyUser;
+    }
+
+    /**
+     * Gets the tasks for the current user.
+     * @return  A list of tasks that is assigned to the current user.
+     */
+    private ArrayList<Task> getTasksFromDatabase() {
+        // TODO: Replace code with code that gets tasks from database.
+        // Dummy task list.
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        Task task1 = new Task();
+        task1.setTask_name("Do the dishes");
+        task1.setTask_detail("Dishes needs to be washed as soon as they are used.");
+        task1.setTime(new GregorianCalendar(2018, 6, 10, 12,0));
+        User user1 = new User();
+        user1.setFirst_name("John");
+        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
+        user1.setAvatar(imageUri);
+        ArrayList<User> userList = new ArrayList<>();
+        userList.add(user1);
+        task1.setUser_list(userList);
+        Task task2 = new Task();
+        task2.setTask_name("Take out the trash");
+        task2.setTask_detail("Trash to be taken out when it is full");
+        task2.setTime(new GregorianCalendar(2018, 6, 1, 13, 0));
+        task2.setUser_list(userList);
+        tasks.add(task1);
+        tasks.add(task2);
+        tasks.trimToSize();
+
+        // Return the task list obtained from the database.
+        return tasks;
+
     }
 
     /**

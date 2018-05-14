@@ -46,9 +46,12 @@ public class ViewTaskActivity extends AppCompatActivity {
         // Updates the text fields.
         appbar.setTitle(task.getTask_name());
         textUser.setText(task.getUser_list().get(0).getFirst_name());
+        // TODO: Do more processing to the date to be displayed nicely.
         Calendar dueDate = task.getTime();
         textDueDate.setText(dueDate.getTime().toString());
         textTaskInfo.setText(task.getTask_detail());
+
+        // TODO: Set the button listeners and logic.
 
     }
 }
