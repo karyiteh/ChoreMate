@@ -62,12 +62,12 @@
         android:textColor="@color/colorPrimary" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_create_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Task"
         android:background="@color/colorPrimary"
-        android:textColor="@color/white"/>
+        android:text="Create Task"
+        android:textColor="@color/white" />
 
 
 </LinearLayout>

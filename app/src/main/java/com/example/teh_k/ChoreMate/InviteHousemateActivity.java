@@ -35,27 +35,70 @@ public class InviteHousemateActivity extends AppCompatActivity {
         buttonInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendInvite();
+                attemptInvite();
             }
         });
     }
 
-    private void sendInvite() {
-        // TODO: GET HOUSE NAME AND CODE FROM DATABASE (FROM HOUSEHOLD OBJECT)
-        // TODO: ADD EMAIL ERROR CHECKS
-        // Retrieve house name and code from database
-        String house_code = "";
+    private void attemptInvite() {
+        // Initialize local variables
+        View focusView;
+
+        String houseCode = "";
         String householdName = "";
 
-        String email = editHousemateEmail.getText().toString().trim();
-        String subject = "PLACEHOLDER SUBJECT";
-        String message = "Your invite code to " + householdName + " is: " + house_code;
+        boolean cancel = false;
 
-        //Creating SendMail object
-        SendMail sm = new SendMail(this, email, subject, message);
+        // Getting content for email
+        String emails = editHousemateEmail.getText().toString().trim();
+        // TODO: Replace [USER] with name of user
+        // TODO: GET HOUSE NAME AND CODE FROM DATABASE (FROM HOUSEHOLD OBJECT)
+        String subject = "[USER] is inviting you to " + householdName + " on ChoreMate!";
+        String message = "Your invite code to " + householdName + " is: " + houseCode;
 
-        //Executing sendmail to send email
-        sm.execute();
+        // Parse the String of emails
+        String emailsList[] = emails.split(", ");
+
+        // If no emails are entered, no invites need to be sent.
+        if (noEmailsEntered(emailsList)) {
+            return;
+        }
+
+        // Check if emails are valid
+        if (isInvalidEmail(emailsList)) {
+            editHousemateEmail.setError(getString(R.string.error_invalid_email_list));
+            focusView = editHousemateEmail;
+            focusView.requestFocus();
+
+            cancel = true;
+        }
+
+        if (!cancel) {
+            // Create SendMail object and send invites
+            for (String email : emailsList) {
+                SendMail sm = new SendMail(this, email, subject, message);
+                sm.execute();
+            }
+        }
     }
 
+    // Returns true if any email in a list of emails does not end with @ucsd.edu
+    private boolean isInvalidEmail(String[] emailsList) {
+        for (String email : emailsList) {
+            if (!email.endsWith("@ucsd.edu")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Returns true if no emails were entered
+    private boolean noEmailsEntered(String[] emailsList) {
+        if (emailsList[0].equals("")) {
+            return true;
+        }
+
+        return false;
+    }
 }
