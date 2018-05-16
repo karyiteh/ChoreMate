@@ -212,12 +212,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             /* TODO 2: WILL NAVIGATE TO NOHOUSEHOLDACTIVITY BY DEFAULT. Implementation for
                TODO 2: logged in checking/household exist checking later */
             // If login is successful, this moves the user to the correct screen.
-            //Intent intent = new Intent(this, MainActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             /*Intent intent = new Intent(this, NoHouseholdActivity.class);
             startActivity(intent);*/
-            Intent intent = new Intent(this, CreateTaskActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(this, CreateTaskActivity.class);
+            //startActivity(intent);
         }
 
     }

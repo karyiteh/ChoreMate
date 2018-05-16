@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 
@@ -63,9 +62,7 @@ public class HouseholdFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // Get UI elements from the view.
-        if(getView() != null) {
-            mHousemateList = (RecyclerView) getView().findViewById(R.id.housemate_list);
-        }
+        mHousemateList = (RecyclerView) getView().findViewById(R.id.housemate_list);
 
         // TODO: Method to retrieve user list from database.
 
@@ -175,6 +172,7 @@ public class HouseholdFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Are you sure you want to Delete this Household?");
 
+
         // Set up the buttons
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -192,5 +190,4 @@ public class HouseholdFragment extends Fragment {
 
         builder.show();
     }
-
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/displayHousemateProfile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    tools:context=".RemoveHousemateActivity">
+
+    <!-- For the toolbar on the top. -->
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/appbar_remove_housemate"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#B8B8FF"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Remove Housemate"
+        app:titleTextColor="@android:color/background_light">
+
+    </android.support.v7.widget.Toolbar>
+
+    <!-- For the list -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/housemates"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>

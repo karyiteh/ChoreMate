@@ -1,73 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/displaytask"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <!-- For the toolbar on the top. -->
-    <TextView
-        android:id="@+id/text_title_create_task"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/displaytask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Task"
-        android:fontFamily="cursive"
-        android:textSize="30sp"
-        android:height="50dp"
-        android:layout_marginTop="20dp"
-        android:textColor="#4d4dce"
-        android:gravity="center"/>
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/task_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:height="30dp"
-        android:ems="10"
-        android:hint="Task Name"
-        android:inputType="textPersonName" />
+        <!-- For the toolbar on the top. -->
+        <TextView
+            android:id="@+id/text_title_create_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:height="50dp"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:text="@string/create_task"
+            android:textColor="#4d4dce"
+            android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/task_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Task Description"
-        android:inputType="textMultiLine" />
+        <EditText
+            android:id="@+id/task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:height="30dp"
+            android:ems="10"
+            android:hint="@string/task_name"
+            android:inputType="textPersonName" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/assign_task"
-        android:text="Assign Task"
-        android:textSize="18sp"
-        android:layout_margin="5dp"/>
+        <EditText
+            android:id="@+id/task_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/task_description"
+            android:inputType="textMultiLine" />
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/pick_housemates"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp" />
-
-    <Button
-        android:id="@+id/recurrence_options"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:gravity="start|center_vertical"
-        android:layout_marginStart="5dp"
-        android:text="recurrence options"
-        android:textColor="@color/colorPrimary" />
-
-    <Button
-        android:id="@+id/btn_create_task"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="Create Task"
-        android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/assign_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/assign_task"
+            android:textSize="18sp" />
 
 
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pick_housemates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp" />
+
+        <Button
+            android:id="@+id/recurrence_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:background="@color/white"
+            android:gravity="start|center_vertical"
+            android:text="@string/recurrence_options"
+            android:textColor="@color/colorPrimary" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <Button
+            android:id="@+id/btn_create_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/create_task"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+</ScrollView>

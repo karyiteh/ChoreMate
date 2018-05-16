@@ -1,11 +1,11 @@
 package com.example.teh_k.ChoreMate;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -138,7 +138,6 @@ public class HousemateProfileActivity extends AppCompatActivity {
                 String message = "Remove request sent to " + currentHousemate.getFirst_name();
                 Toast confirmation = Toast.makeText(HousemateProfileActivity.this, message, Toast.LENGTH_LONG);
                 confirmation.show();
-
             }
         });
 
