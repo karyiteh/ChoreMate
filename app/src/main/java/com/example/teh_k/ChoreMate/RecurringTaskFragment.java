@@ -4,22 +4,29 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
+import android.widget.Spinner;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ReccuringTaskFragment.OnFragmentInteractionListener} interface
+ * {@link RecurringTaskFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ReccuringTaskFragment extends Fragment {
+public class RecurringTaskFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ReccuringTaskFragment() {
+    // UI elements
+    private NumberPicker numberOfDays;
+    private Spinner unitOfTime;
+
+    public RecurringTaskFragment() {
         // Required empty public constructor
     }
 
@@ -36,6 +43,11 @@ public class ReccuringTaskFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+
+        // Get UI elements from the view
+        numberOfDays = (NumberPicker) getView().findViewById(R.id.number_of_day);
+        unitOfTime = (Spinner) getView().findViewById(R.id.unit_of_time);
+
     }
 
     @Override

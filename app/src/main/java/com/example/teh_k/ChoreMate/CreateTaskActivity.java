@@ -1,9 +1,12 @@
 package com.example.teh_k.ChoreMate;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -53,12 +56,13 @@ public class CreateTaskActivity extends AppCompatActivity {
         editTaskDescription = (EditText) findViewById(R.id.task_description);
 
         createTask = (Button) findViewById(R.id.btn_create_task);
+        buttonRecurrence = (Button) findViewById(R.id.recurrence_options);
 
         // Add click listener for recurrence button
         buttonRecurrence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: HANDLE CLICK FOR RECURRENCE BUTTON
+                loadFragment(new RecurringTaskFragment());
             }
         });
 
@@ -71,8 +75,24 @@ public class CreateTaskActivity extends AppCompatActivity {
                 task.setTask_detail(editTaskDescription.getText().toString().trim());
 
                 // TODO: Add List of users to Task object
+                ArrayList<Boolean> selectedPositions = new ArrayList<>();
+                for (int i = 0; i < housemateList.size(); i++) {
+                    //if (recyclerView.findViewHolderForAdapterPosition(i).itemView)
+                }
             }
         });
+    }
+
+    /**
+     * Loads the fragment to the screen.
+     * @param fragment  The fragment to be loaded to the screen.
+     * @return  true if load is successful, false otherwise.
+     */
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, fragment)
+                .commit();
     }
 
     // TODO: For testing purposes. Remove later after database implementation

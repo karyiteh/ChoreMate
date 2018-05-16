@@ -98,4 +98,5 @@ public class AssignTaskAdapter extends RecyclerView.Adapter<AssignTaskAdapter.Vi
     public int getItemCount() {
         return housemates.size();
     }
+
 }
