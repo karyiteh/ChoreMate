@@ -12,9 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,14 +74,22 @@ public class CreateTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Add Task object to database
+                task = new Task();
                 task.setTask_name(editTaskName.getText().toString().trim());
                 task.setTask_detail(editTaskDescription.getText().toString().trim());
 
-                // TODO: Add List of users to Task object
-                ArrayList<Boolean> selectedPositions = new ArrayList<>();
+                // Get the currently selected housemates by checking CheckBox state of each housemate
+                // and add housemate to array if true
+                ArrayList<User> selectedHousemates = new ArrayList<>();
+                CheckBox checkBox;
                 for (int i = 0; i < housemateList.size(); i++) {
-                    //if (recyclerView.findViewHolderForAdapterPosition(i).itemView)
+                    checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
+                    if (checkBox.isChecked()) {
+                        selectedHousemates.add(housemateList.get(i));
+                    }
                 }
+
+                task.setUser_list(selectedHousemates);
             }
         });
     }

@@ -74,7 +74,7 @@ public class Task implements Parcelable {
     public List<User> getUser_list() {
         return user_list;
     }
-    public void setUser_list(List<User> user_list) {
+    public void setUser_list(ArrayList<User> user_list) {
         this.user_list = user_list;
     }
 
