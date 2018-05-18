@@ -30,9 +30,7 @@ public class Task implements Parcelable {
 
     // Date that the task is to occur
     // NOTE: MONTH STARTS FROM 0. 0 - January, 1 - February, etc.
-    private int dayOfMonth;
-    private int month;
-    private int year;
+    private Calendar deadline;
 
     // whether or not the task recurs
     // 0 for non recurring, 1 for recurring
@@ -47,99 +45,39 @@ public class Task implements Parcelable {
     }
 
     //getter and setter for task name and details
-    public String getTask_name() {
-        return task_name;
-    }
+    public String getTask_name() { return task_name; }
+    public void setTask_name(String task_name) { this.task_name = task_name; }
 
-    public void setTask_name(String task_name) {
-        this.task_name = task_name;
-    }
-
-    public String getTask_detail() {
-        return task_detail;
-    }
-
-    public void setTask_detail(String task_detail) {
-        this.task_detail = task_detail;
-    }
+    public String getTask_detail() { return task_detail; }
+    public void setTask_detail(String task_detail) { this.task_detail = task_detail; }
 
     //getter and setter for trigger
-    public boolean isTrigger() {
-        return trigger;
-    }
-
-    public void setTrigger(boolean trigger) {
-        this.trigger = trigger;
-    }
+    public boolean isTrigger() { return trigger; }
+    public void setTrigger(boolean trigger) { this.trigger = trigger; }
 
     //getter and setter for status
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+    public boolean isStatus() { return status; }
+    public void setStatus(boolean status) { this.status = status; }
 
     //getter and setter for the list of user
-    public List<User> getUser_list() {
-        return user_list;
-    }
+    public List<User> getUser_list() { return user_list; }
+    public void setUser_list(ArrayList<User> user_list) { this.user_list = user_list; }
 
-    public void setUser_list(ArrayList<User> user_list) {
-        this.user_list = user_list;
-    }
-
-    //getters and setters for the date the task occurs
-    public int getDayOfMonth() {
-        return dayOfMonth;
-    }
-
-    public void setDayOfMonth(int dayOfMonth) {
-        this.dayOfMonth = dayOfMonth;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
+    //getters and setters for the task deadline
+    public Calendar getDeadline() { return deadline; }
+    public void setDeadline(int year, int month, int date) { deadline.set(year, month, date); }
 
     //getter and setter for whether the task recurs
-    public boolean isRecur() {
-        return recur;
-    }
-
-    public void setRecur(boolean recur) {
-        this.recur = recur;
-    }
+    public boolean isRecur() { return recur; }
+    public void setRecur(boolean recur) { this.recur = recur; }
 
     //getter and setter for amount of time
-    public int getAmountOfTime() {
-        return amountOfTime;
-    }
-
-    public void setAmountOfTime(int amountOfTime) {
-        this.amountOfTime = amountOfTime;
-    }
+    public int getAmountOfTime() { return amountOfTime; }
+    public void setAmountOfTime(int amountOfTime) { this.amountOfTime = amountOfTime; }
 
     //getter and setter for unit of time
-    public String getUnitOfTime() {
-        return unitOfTime;
-    }
-
-    public void setUnitOfTime(String unitOfTime) {
-        this.unitOfTime = unitOfTime;
+    public String getUnitOfTime() { return unitOfTime; }
+    public void setUnitOfTime(String unitOfTime) { this.unitOfTime = unitOfTime;
     }
 
     // Code generated from www.parcelabler.com
@@ -155,9 +93,7 @@ public class Task implements Parcelable {
         } else {
             user_list = null;
         }
-        dayOfMonth = in.readInt();
-        month = in.readInt();
-        year = in.readInt();
+        deadline = (Calendar) in.readValue(Calendar.class.getClassLoader());
         recur = in.readByte() != 0x00;
         amountOfTime = in.readInt();
         unitOfTime = in.readString();
@@ -180,9 +116,7 @@ public class Task implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(user_list);
         }
-        dest.writeInt(dayOfMonth);
-        dest.writeInt(month);
-        dest.writeInt(year);
+        dest.writeValue(deadline);
         dest.writeByte((byte) (recur ? 0x01 : 0x00));
         dest.writeInt(amountOfTime);
         dest.writeString(unitOfTime);

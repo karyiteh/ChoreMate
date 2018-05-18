@@ -171,9 +171,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }
 
         // Set the task deadline
-        task.setDayOfMonth(dueDate.getDayOfMonth());
-        task.setMonth(dueDate.getMonth());
-        task.setYear(dueDate.getYear());
+        task.setDeadline(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
 
         // TODO: Add Task object to database
     }
