@@ -173,7 +173,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }
 
         // Set the task deadline
-        calendar = new GregorianCalendar()
+        calendar = new GregorianCalendar();
         calendar.set(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
         task.setTime(calendar);
 
