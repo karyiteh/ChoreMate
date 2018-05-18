@@ -34,6 +34,9 @@ public class Task implements Parcelable {
     // whether or not the task recurs
     // 0 for non recurring, 1 for recurring
     private boolean recur;
+
+    private int amountOfTime;
+    private String unitOfTime;
     //TODO: how should we handle when the task recurs, for daily, weekly, monthly, yearly
 
     public Task(){
@@ -94,12 +97,16 @@ public class Task implements Parcelable {
         this.recur = recur;
     }
 
-    // Code generated from www.parcelable.com
-    // Following section of code used for implementing Parcelable.
+    //getter and setter for amount of time
+    public int getAmountOfTime() { return amountOfTime; }
+    public void setAmountOfTime(int amountOfTime) { this.amountOfTime = amountOfTime; }
 
-    /**
-     * Constructor method for when passing object through activities.
-     */
+    //getter and setter for unit of time
+    public String getUnitOfTime() { return unitOfTime; }
+    public void setUnitOfTime(String unitOfTime) { this.unitOfTime = unitOfTime; }
+
+    // Code generated from www.parcelabler.com
+    // Following section of code used for implementing Parcelable.
     protected Task(Parcel in) {
         task_name = in.readString();
         task_detail = in.readString();
@@ -113,6 +120,8 @@ public class Task implements Parcelable {
         }
         time = (Calendar) in.readValue(Calendar.class.getClassLoader());
         recur = in.readByte() != 0x00;
+        amountOfTime = in.readInt();
+        unitOfTime = in.readString();
     }
 
     @Override
@@ -120,9 +129,6 @@ public class Task implements Parcelable {
         return 0;
     }
 
-    /**
-     * Flattens the task object to a Parcelable.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(task_name);
@@ -137,12 +143,10 @@ public class Task implements Parcelable {
         }
         dest.writeValue(time);
         dest.writeByte((byte) (recur ? 0x01 : 0x00));
+        dest.writeInt(amountOfTime);
+        dest.writeString(unitOfTime);
     }
 
-    /**
-     * Interface that must be implemented and provided as a public CREATOR field that generates
-     * instances of your Parcelable class from a Parcel.
-     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
         @Override
@@ -155,6 +159,5 @@ public class Task implements Parcelable {
             return new Task[size];
         }
     };
-
 
 }

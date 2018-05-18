@@ -22,7 +22,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateTaskActivity extends AppCompatActivity {
+public class CreateTaskActivity extends AppCompatActivity implements RecurringTaskFragment.OnFragmentInteractionListener {
     // Declare Text Fields
     private EditText editTaskName;
     private EditText editTaskDescription;
@@ -35,7 +35,13 @@ public class CreateTaskActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AssignTaskAdapter assignTaskAdapter;
 
+    private int amountOfTime;
+    private String unitOfTime;
+    private RecurringTaskFragment recurFrag;
+
     public Task task;
+
+    boolean fragmentShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +71,13 @@ public class CreateTaskActivity extends AppCompatActivity {
         buttonRecurrence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadFragment(new RecurringTaskFragment());
+                if (recurFrag == null) {
+                    recurFrag = new RecurringTaskFragment();
+                    loadFragment(recurFrag);
+                }
+                else {
+                    toggleFragment(recurFrag);
+                }
             }
         });
 
@@ -73,23 +85,8 @@ public class CreateTaskActivity extends AppCompatActivity {
         createTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Add Task object to database
                 task = new Task();
-                task.setTask_name(editTaskName.getText().toString().trim());
-                task.setTask_detail(editTaskDescription.getText().toString().trim());
-
-                // Get the currently selected housemates by checking CheckBox state of each housemate
-                // and add housemate to array if true
-                ArrayList<User> selectedHousemates = new ArrayList<>();
-                CheckBox checkBox;
-                for (int i = 0; i < housemateList.size(); i++) {
-                    checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
-                    if (checkBox.isChecked()) {
-                        selectedHousemates.add(housemateList.get(i));
-                    }
-                }
-
-                task.setUser_list(selectedHousemates);
+                createTask(task);
             }
         });
     }
@@ -100,10 +97,64 @@ public class CreateTaskActivity extends AppCompatActivity {
      * @return  true if load is successful, false otherwise.
      */
     private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .commit();
+        fragmentShown = true;
+    }
+
+    /**
+     * Toggles the visibility of the recurrence options fragment
+     * @param fragment The fragment to be toggled.
+     * @return void
+     */
+    private void toggleFragment(Fragment fragment) {
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (fragmentShown) {
+            //ft.replace(R.id.fragment_container, fragment);
+            ft.hide(fragment);
+            fragmentShown = false;
+        }
+        else {
+            ft.show(fragment);
+            fragmentShown = true;
+        }
+        ft.commit();
+    }
+
+    /**
+     * Creates the task and saves it to the database.
+     * @param task Task object to save in database
+     * @return true if create task is successful, false otherwise.
+     */
+    private void createTask(Task task) {
+        task.setTask_name(editTaskName.getText().toString().trim());
+        task.setTask_detail(editTaskDescription.getText().toString().trim());
+
+        // Get the currently selected housemates by checking CheckBox state of each housemate
+        // and add housemate to array if true
+        ArrayList<User> selectedHousemates = new ArrayList<>();
+        CheckBox checkBox;
+        for (int i = 0; i < housemateList.size(); i++) {
+            checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
+            if (checkBox.isChecked()) {
+                selectedHousemates.add(housemateList.get(i));
+            }
+        }
+
+        task.setUser_list(selectedHousemates);
+
+        // Set amount and unit of time from recurring options fragment
+        getRecurringOptions();
+        task.setAmountOfTime(amountOfTime);
+        task.setUnitOfTime(unitOfTime);
+
+        // TODO: Add Task object to database
+    }
+
+    public void getRecurringOptions() {
+        amountOfTime = recurFrag.getAmountOfTime();
+        unitOfTime = recurFrag.getSpinnerOption();
     }
 
     // TODO: For testing purposes. Remove later after database implementation

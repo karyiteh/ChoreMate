@@ -3,11 +3,14 @@ package com.example.teh_k.ChoreMate;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 
@@ -23,8 +26,10 @@ public class RecurringTaskFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     // UI elements
-    private NumberPicker numberOfDays;
+    private NumberPicker amountOfTime;
     private Spinner unitOfTime;
+
+    private String spinnerOption;
 
     public RecurringTaskFragment() {
         // Required empty public constructor
@@ -38,16 +43,44 @@ public class RecurringTaskFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_reccuring_task, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    /**
+     * Does final initializing of the items on the fragment.
+     * Sets up listeners for items in the fragment.
+     */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        // Get UI elements from the view
-        numberOfDays = (NumberPicker) getView().findViewById(R.id.number_of_day);
+        // Gets UI elements from the view.
+        amountOfTime = (NumberPicker) getView().findViewById(R.id.number_of_day);
         unitOfTime = (Spinner) getView().findViewById(R.id.unit_of_time);
 
+        // Set minimum and maximum values for the number picker
+        amountOfTime.setMinValue(1);
+        amountOfTime.setMaxValue(365);
+
+        // Set up listener for NumberPicker object
+        amountOfTime.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
+                //Display the newly selected number from picker
+                amountOfTime.setValue(picker.getValue());
+            }
+        });
+
+        // Set up listener for spinner object.
+        unitOfTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Get the item selected.
+                spinnerOption = (String)parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing.
+            }
+        });
     }
 
     @Override
@@ -79,6 +112,14 @@ public class RecurringTaskFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void getRecurringOptions();
+    }
+
+    public int getAmountOfTime() {
+        return amountOfTime.getValue();
+    }
+
+    public String getSpinnerOption() {
+        return spinnerOption;
     }
 }
