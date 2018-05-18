@@ -9,10 +9,14 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_emailExt">Email must be a valid @ucsd.edu email</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_invalid_password_alphanumeric">Password must contain only alphanumeric characters</string>
-    <string name="error_invalid_password_length">Password must be at least 6 characters long</string>
+    <string name="error_invalid_password_alphanumeric">Password must contain only
+        alphanumeric characters</string>
+    <string name="error_invalid_password_length">Password must be at least
+        6 characters long</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_email_list">Please make sure emails are valid and are
+        entered in the proper format"</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -48,7 +52,13 @@
     <string name="delete_household">Delete Household</string>
     <string name="invite_housemate">Invite Housemate</string>
     <string name="remove_housemate">Remove Housemate</string>
-    <string name="repeat">Repeat every...</string>
+    <string name="repeat">Repeat every…</string>
+    <string name="create_task">Create Task</string>
+    <string name="task_name">Task Name</string>
+    <string name="task_description">Task Description</string>
+    <string name="assign_task">Assign Task</string>
+    <string name="recurrence_options">recurrence options</string>
+    <string name="due_date">Due Date</string>
     <string-array name="recurrence_array">
         <item>day(s)</item>
         <item>week(s)</item>
@@ -56,7 +66,5 @@
         <item>year(s)</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

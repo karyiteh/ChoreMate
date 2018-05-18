@@ -14,15 +14,7 @@ import android.view.View.OnClickListener;
 import java.util.Random;
 
 
-// TODO: IMPORTANT NOTE: CAN ONLY ENTER ONE EMAIL RIGHT NOW
-
 public class CreateHouseholdActivity extends AppCompatActivity {
-
-    // Error messages.
-    public static final String EMPTY_FIELD = "This field is required!";
-    public static final String INVALID_EMAIL = "Please make sure emails are valid and are" +
-                                               " entered with the proper format.";
-
     // Declare Text Fields
     private EditText editHouseholdName;
     private EditText editHousematesList;
@@ -87,7 +79,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
 
         // Checks if the Household name is not empty
         if(TextUtils.isEmpty(householdName)) {
-            editHouseholdName.setError(EMPTY_FIELD);
+            editHouseholdName.setError(getString(R.string.error_field_required));
             focusView = editHouseholdName;
             focusView.requestFocus();
             cancel = true;
@@ -126,7 +118,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
 
         // Check if emails are valid
         if (isInvalidEmail(emailsList)) {
-            editHousematesList.setError(INVALID_EMAIL);
+            editHousematesList.setError(getString(R.string.error_invalid_email_list));
             focusView = editHousematesList;
             focusView.requestFocus();
 

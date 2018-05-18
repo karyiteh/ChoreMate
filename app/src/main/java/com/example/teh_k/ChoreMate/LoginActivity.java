@@ -214,7 +214,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // If login is successful, this moves the user to the correct screen.
             //Intent intent = new Intent(this, MainActivity.class);
             //startActivity(intent);
-            Intent intent = new Intent(this, NoHouseholdActivity.class);
+            /*Intent intent = new Intent(this, NoHouseholdActivity.class);
+            startActivity(intent);*/
+            Intent intent = new Intent(this, CreateTaskActivity.class);
             startActivity(intent);
         }
 
