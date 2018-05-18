@@ -30,7 +30,7 @@ public class Task implements Parcelable {
 
     // Date that the task is to occur
     // NOTE: MONTH STARTS FROM 0. 0 - January, 1 - February, etc.
-    private Calendar deadline;
+    private Calendar time;
 
     // whether or not the task recurs
     // 0 for non recurring, 1 for recurring
@@ -64,8 +64,8 @@ public class Task implements Parcelable {
     public void setUser_list(ArrayList<User> user_list) { this.user_list = user_list; }
 
     //getters and setters for the task deadline
-    public Calendar getDeadline() { return deadline; }
-    public void setDeadline(int year, int month, int date) { deadline.set(year, month, date); }
+    public Calendar getTime() { return time; }
+    public void setTime(Calendar time) { this.time = time; }
 
     //getter and setter for whether the task recurs
     public boolean isRecur() { return recur; }
@@ -93,7 +93,7 @@ public class Task implements Parcelable {
         } else {
             user_list = null;
         }
-        deadline = (Calendar) in.readValue(Calendar.class.getClassLoader());
+        time = (Calendar) in.readValue(Calendar.class.getClassLoader());
         recur = in.readByte() != 0x00;
         amountOfTime = in.readInt();
         unitOfTime = in.readString();
@@ -116,7 +116,7 @@ public class Task implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(user_list);
         }
-        dest.writeValue(deadline);
+        dest.writeValue(time);
         dest.writeByte((byte) (recur ? 0x01 : 0x00));
         dest.writeInt(amountOfTime);
         dest.writeString(unitOfTime);
