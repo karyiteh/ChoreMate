@@ -58,6 +58,7 @@
     <string name="task_description">Task Description</string>
     <string name="assign_task">Assign Task</string>
     <string name="recurrence_options">recurrence options</string>
+    <string name="due_date">Due Date</string>
     <string-array name="recurrence_array">
         <item>day(s)</item>
         <item>week(s)</item>
