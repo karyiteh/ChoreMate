@@ -63,7 +63,6 @@ public class RecurringTaskFragment extends Fragment {
         amountOfTime.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-                //Display the newly selected number from picker
                 amountOfTime.setValue(picker.getValue());
             }
         });

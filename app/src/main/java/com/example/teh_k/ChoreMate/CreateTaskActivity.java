@@ -3,8 +3,10 @@ package com.example.teh_k.ChoreMate;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private ArrayList<User> housemateList = new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignTaskAdapter assignTaskAdapter;
+    private DatePicker dueDate;
 
     private int amountOfTime;
     private String unitOfTime;
@@ -41,8 +45,10 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
     public Task task;
 
-    boolean fragmentShown;
+    private boolean fragmentShown;
+    private boolean isRecurring;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +72,19 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         createTask = (Button) findViewById(R.id.btn_create_task);
         buttonRecurrence = (Button) findViewById(R.id.recurrence_options);
+
+        dueDate = (DatePicker) findViewById(R.id.task_due_date);
+
+        // Intialize the due date to be current date
+        dueDate.getAutofillValue();
+
+        // Set up listener for NumberPicker object
+        dueDate.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth){
+                dueDate = datePicker;
+            }
+        });
 
         // Add click listener for recurrence button
         buttonRecurrence.setOnClickListener(new View.OnClickListener() {
@@ -145,9 +164,16 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         task.setUser_list(selectedHousemates);
 
         // Set amount and unit of time from recurring options fragment
-        getRecurringOptions();
-        task.setAmountOfTime(amountOfTime);
-        task.setUnitOfTime(unitOfTime);
+        if (recurFrag != null && recurFrag.getAmountOfTime() != 0 && recurFrag.getSpinnerOption() != null) {
+            getRecurringOptions();
+            task.setAmountOfTime(amountOfTime);
+            task.setUnitOfTime(unitOfTime);
+        }
+
+        // Set the task deadline
+        task.setDayOfMonth(dueDate.getDayOfMonth());
+        task.setMonth(dueDate.getMonth());
+        task.setYear(dueDate.getYear());
 
         // TODO: Add Task object to database
     }
