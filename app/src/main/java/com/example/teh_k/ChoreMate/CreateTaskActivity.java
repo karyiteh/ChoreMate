@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class CreateTaskActivity extends AppCompatActivity implements RecurringTaskFragment.OnFragmentInteractionListener {
     // Declare Text Fields
@@ -45,7 +45,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private RecurringTaskFragment recurFrag;
 
     public Task task;
-    private Calendar calendar;
+    private GregorianCalendar calendar;
 
     private boolean fragmentShown;
     private boolean isRecurring;
@@ -173,6 +173,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }
 
         // Set the task deadline
+        calendar = new GregorianCalendar()
         calendar.set(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
         task.setTime(calendar);
 
