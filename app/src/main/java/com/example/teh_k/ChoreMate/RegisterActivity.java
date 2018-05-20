@@ -1,16 +1,29 @@
 package com.example.teh_k.ChoreMate;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * The register screen that allows user to register an account with the app.
  */
 public class RegisterActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     // UI elements.
     private EditText editFirstName;
@@ -40,6 +53,10 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
         // Binds the UI elements to the references in code.
         editFirstName = findViewById(R.id.edit_first_name);
@@ -73,8 +90,8 @@ public class RegisterActivity extends AppCompatActivity {
         editPasswordConfirm.setError(null);
 
         // Store values at time of submit attempt.
-        String firstName = editFirstName.getText().toString();
-        String lastName = editLastName.getText().toString();
+        final String firstName = editFirstName.getText().toString();
+        final String lastName = editLastName.getText().toString();
         String email = editEmail.getText().toString();
         String password = editPassword.getText().toString();
         String confirmPassword = editPasswordConfirm.getText().toString();
@@ -150,6 +167,26 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else {
             // TODO: Kick off background task to register the user to the database.
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d("RegisterAvtivity", "createUserWithEmail:success");
+                        Toast.makeText(RegisterActivity.this, "Registered",
+                                Toast.LENGTH_SHORT).show();
+                        String user_id = mAuth.getCurrentUser().getUid();
+                        DatabaseReference curr_user_db = mDatabase.child(user_id);
+                        curr_user_db.child("firstname").setValue(firstName);
+                        curr_user_db.child("lastname").setValue(lastName);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("RegisterAvtivity", "createUserWithEmail:failure", task.getException());
+                        Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 

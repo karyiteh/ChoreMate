@@ -1,5 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -13,8 +14,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     // XML elements on the screen.
     private Toolbar appbar;
@@ -24,6 +32,14 @@ public class MainActivity extends AppCompatActivity implements
     public static final String TASK = "com.example.teh_k.ChoreMate.TASK";
     public static final String HOUSEMATE = "com.example.teh_k.ChoreMate.HOUSEMATE";
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // add authStateListener
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
     /**
      * Creates the main screen. Called when main page is loaded.
      * @param savedInstanceState    The last instance state that the activity is in.
@@ -32,6 +48,19 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null){
+                    // Brings the user to the login screen.
+                    Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                }
+            }
+        };
 
         // Creates the appbar.
         appbar = findViewById(R.id.appbar);

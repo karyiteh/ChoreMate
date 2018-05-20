@@ -27,6 +27,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -78,14 +82,35 @@ public class UserProfileFragment extends Fragment {
     private int userChoice;
     private String imageFilePath = "";
 
+    // db
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     public UserProfileFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        // add authStateListener
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null){
+                }
+            }
+        };
 
         // Telling Android that this fragment has an option menu.
         setHasOptionsMenu(true);
@@ -290,6 +315,7 @@ public class UserProfileFragment extends Fragment {
      */
     private void logout () {
         // TODO: Implement user log out here.
+        mAuth.signOut();
     }
 
     /**
