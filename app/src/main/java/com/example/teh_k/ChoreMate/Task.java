@@ -28,78 +28,60 @@ public class Task implements Parcelable {
     //list of users that the task will be accomplished by
     private List<User> user_list;
 
-    // time that the task is to occur
+    // Date that the task is to occur
+    // NOTE: MONTH STARTS FROM 0. 0 - January, 1 - February, etc.
     private Calendar time;
 
     // whether or not the task recurs
     // 0 for non recurring, 1 for recurring
     private boolean recur;
+
+    private int amountOfTime;
+    private String unitOfTime;
     //TODO: how should we handle when the task recurs, for daily, weekly, monthly, yearly
 
-    public Task(){
+    public Task() {
         // Default empty constructor.
     }
 
     //getter and setter for task name and details
-    public String getTask_name() {
-        return task_name;
-    }
-    public void setTask_name(String task_name) {
-        this.task_name = task_name;
-    }
-    public String getTask_detail() {
-        return task_detail;
-    }
-    public void setTask_detail(String task_detail) {
-        this.task_detail = task_detail;
-    }
+    public String getTask_name() { return task_name; }
+    public void setTask_name(String task_name) { this.task_name = task_name; }
+
+    public String getTask_detail() { return task_detail; }
+    public void setTask_detail(String task_detail) { this.task_detail = task_detail; }
 
     //getter and setter for trigger
-    public boolean isTrigger() {
-        return trigger;
-    }
-    public void setTrigger(boolean trigger) {
-        this.trigger = trigger;
-    }
+    public boolean isTrigger() { return trigger; }
+    public void setTrigger(boolean trigger) { this.trigger = trigger; }
 
     //getter and setter for status
-    public boolean isStatus() {
-        return status;
-    }
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+    public boolean isStatus() { return status; }
+    public void setStatus(boolean status) { this.status = status; }
 
     //getter and setter for the list of user
-    public List<User> getUser_list() {
-        return user_list;
-    }
-    public void setUser_list(List<User> user_list) {
-        this.user_list = user_list;
-    }
+    public List<User> getUser_list() { return user_list; }
+    public void setUser_list(ArrayList<User> user_list) { this.user_list = user_list; }
 
-    //getter and setter for the time the task occurs
-    public Calendar getTime() {
-        return time;
-    }
-    public void setTime(Calendar time) {
-        this.time = time;
-    }
+    //getters and setters for the task deadline
+    public Calendar getTime() { return time; }
+    public void setTime(Calendar time) { this.time = time; }
 
     //getter and setter for whether the task recurs
-    public boolean isRecur() {
-        return recur;
-    }
-    public void setRecur(boolean recur) {
-        this.recur = recur;
+    public boolean isRecur() { return recur; }
+    public void setRecur(boolean recur) { this.recur = recur; }
+
+    //getter and setter for amount of time
+    public int getAmountOfTime() { return amountOfTime; }
+    public void setAmountOfTime(int amountOfTime) { this.amountOfTime = amountOfTime; }
+
+    //getter and setter for unit of time
+    public String getUnitOfTime() { return unitOfTime; }
+    public void setUnitOfTime(String unitOfTime) { this.unitOfTime = unitOfTime;
     }
 
-    // Code generated from www.parcelable.com
+    // Code generated from www.parcelabler.com
     // Following section of code used for implementing Parcelable.
-
-    /**
-     * Constructor method for when passing object through activities.
-     */
     protected Task(Parcel in) {
         task_name = in.readString();
         task_detail = in.readString();
@@ -113,6 +95,8 @@ public class Task implements Parcelable {
         }
         time = (Calendar) in.readValue(Calendar.class.getClassLoader());
         recur = in.readByte() != 0x00;
+        amountOfTime = in.readInt();
+        unitOfTime = in.readString();
     }
 
     @Override
@@ -120,9 +104,6 @@ public class Task implements Parcelable {
         return 0;
     }
 
-    /**
-     * Flattens the task object to a Parcelable.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(task_name);
@@ -137,12 +118,10 @@ public class Task implements Parcelable {
         }
         dest.writeValue(time);
         dest.writeByte((byte) (recur ? 0x01 : 0x00));
+        dest.writeInt(amountOfTime);
+        dest.writeString(unitOfTime);
     }
 
-    /**
-     * Interface that must be implemented and provided as a public CREATOR field that generates
-     * instances of your Parcelable class from a Parcel.
-     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
         @Override
@@ -155,6 +134,4 @@ public class Task implements Parcelable {
             return new Task[size];
         }
     };
-
-
 }

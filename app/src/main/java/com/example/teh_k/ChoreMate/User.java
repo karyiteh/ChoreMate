@@ -28,6 +28,13 @@ public class User implements Parcelable{
         // Default empty constructor.
     }
 
+    // TODO: Constructor used for testing. Remove later
+    public User(String first_name, String last_name, Uri avatar) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.avatar = avatar;
+    }
+
     // getters and setters for users' first and last names
     public String getFirst_name() {
         return first_name;
