@@ -20,11 +20,5 @@
         app:showAsAction="never"
         />
 
-    <item
-        android:id="@+id/action_remove_housemate"
-        android:title="@string/remove_housemate"
-        app:showAsAction="never"
-        />
-
 
 </menu>

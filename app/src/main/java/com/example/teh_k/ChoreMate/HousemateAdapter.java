@@ -2,34 +2,36 @@ package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * TaskAdapter is a class that links the data from the dataset into the UI.
+ * HousemateAdapter is a class that links the data from the dataset into the UI.
  * Basically creates the items in the list show on the screen.
  */
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
+public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.ViewHolder> {
 
-    ArrayList<Task> tasks;
+    ArrayList<User> housemates;
+    boolean assignTask;
 
     /**
      * Provides reference to the views for each data item.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        // The UI elements of each row entry.
+        // Each item in this case is just a text view.
         public LinearLayout row;
-        private TextView taskTitle;
+        public TextView housemateName;
         private CircleImageView avatar;
 
         /**
@@ -38,11 +40,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
          */
         public ViewHolder(View itemView) {
             super(itemView);
-
-            // Linking the UI elements.
-            row = (LinearLayout) itemView.findViewById(R.id.view_task_row);
-            taskTitle = (TextView) itemView.findViewById(R.id.text_task_title);
-            avatar = (CircleImageView) itemView.findViewById(R.id.img_avatar);
+            row = (LinearLayout) itemView.findViewById(R.id.row_housemate);
+            housemateName = (TextView) itemView.findViewById(R.id.text_housemate_name);
+            avatar = itemView.findViewById(R.id.img_avatar);
 
             // IMPORTANT: Set the onclick listener.
             row.setOnClickListener(this);
@@ -56,28 +56,28 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         public void onClick(View v) {
 
             // Starts a new activity that shows the item in detail.
-            Intent taskIntent = new Intent(v.getContext(), ViewTaskActivity.class);
+            Intent intent = new Intent(v.getContext(), HousemateProfileActivity.class);
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();
-            Task task = tasks.get(position);
+            User housemate = housemates.get(position);
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
-            taskIntent.putExtra(MainActivity.TASK, task);
+            intent.putExtra(MainActivity.HOUSEMATE, housemate);
 
             // Start the next activity.
-            (v.getContext()).startActivity(taskIntent);
+            (v.getContext()).startActivity(intent);
 
         }
     }
 
     /**
      * Constructor to feed the task list data.
-     * @param myDataset The dataset that contains the tasks.
+     * @param myDataset The dataset that contains the housemates.
      */
-    public TaskAdapter(ArrayList<Task> myDataset) {
-        tasks= myDataset;
+    public HousemateAdapter(ArrayList<User> myDataset) {
+        housemates = myDataset;
     }
 
     /**
@@ -90,14 +90,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      */
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HousemateAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         // Creates a new view.
         // Need to create another xml file just for the item in the lists.
         // Then link it to here through inflate!
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_view_task, parent, false);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_housemate, parent, false);
+        return new HousemateAdapter.ViewHolder(view);
     }
 
     /**
@@ -107,15 +106,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      * @param position  The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull TaskAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HousemateAdapter.ViewHolder holder, int position) {
 
-        // Get element from dataset at this position
-        Task currentTask = tasks.get(position);
-        List<User> currentAssignedUsers =  currentTask.getUser_list();
-
-        // Replace the contents of the view with that element
-        holder.taskTitle.setText(currentTask.getTask_name());
-        holder.avatar.setImageURI(currentAssignedUsers.get(0).getAvatar());
+        // - get element from your dataset at this position
+        // - replace the contents of the view with that element
+        holder.housemateName.setText(housemates.get(position).getFirst_name());
+        holder.avatar.setImageURI(housemates.get(position).getAvatar());
     }
 
     /**
@@ -124,8 +120,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      */
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return housemates.size();
     }
-
-
 }

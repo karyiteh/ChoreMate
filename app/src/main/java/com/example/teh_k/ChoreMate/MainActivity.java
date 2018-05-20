@@ -1,37 +1,33 @@
 package com.example.teh_k.ChoreMate;
 
-import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        BottomNavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
-    // buttons
-    private Button btnLogout;
-
     // XML elements on the screen.
     private Toolbar appbar;
-    private RecyclerView tasklist;
-    private RecyclerView.Adapter tasklistAdapter;
-    private RecyclerView.LayoutManager tasklistLayout;
+    private BottomNavigationView navbar;
 
     // Intent key.
-    public static final String TASK_TITLE = "com.example.teh_k.ChoreMate.TITLE";
+    public static final String TASK = "com.example.teh_k.ChoreMate.TASK";
+    public static final String HOUSEMATE = "com.example.teh_k.ChoreMate.HOUSEMATE";
 
     /**
      * Creates the main screen. Called when main page is loaded.
@@ -42,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnLogout = findViewById(R.id.logout);
-
         // Set up user database reference.
         mAuth = FirebaseAuth.getInstance();
 
@@ -53,54 +47,67 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser() == null){
+                    // logout then redirect to login
+                    /*
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
+                    */
                 }
             }
         };
-
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(loginIntent);
-            }
-        });
-
         // Creates the appbar.
         appbar = findViewById(R.id.appbar);
         setSupportActionBar(appbar);
 
-        // Creates the task list.
-        tasklist = findViewById(R.id.tasks);
-        tasklistLayout = new LinearLayoutManager(this);
-        tasklist.setLayoutManager(tasklistLayout);
+        // Loads the default fragment.
+        loadFragment(new TaskFragment());
 
-        // Test input dataset.
-        String[] inputDataset = new String[3];
-        inputDataset[0] = "Take out trash";
-        inputDataset[1] = "Wash dishes";
-        inputDataset[2] = "Vacuum the living room";
-
-        // Creates the adapter for the task list.
-        tasklistAdapter = new TaskAdapter(inputDataset);
-        tasklist.setAdapter(tasklistAdapter);
+        // Create the bottom nav bar.
+        navbar = findViewById(R.id.bottom_profile);
+        navbar.setOnNavigationItemSelectedListener(this);
 
     }
 
-    /**
-     * Creates the options menu on the app bar.
-     * @param menu  The menu item to be passed in.
-     * @return  true if options menu is created successfully.
-     */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_appbar, menu);
-        return true;
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // The fragment to be loaded.
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.action_tasks:
+                // Creates task fragment.
+                fragment = new TaskFragment();
+                break;
+            case R.id.action_transactions:
+                // TODO: Create transactions fragment.
+                break;
+            case R.id.action_household:
+                // Creates the household fragment.
+                fragment = new HouseholdFragment();
+                break;
+            case R.id.action_profile:
+                // Creates the user profile fragment.
+                fragment = new UserProfileFragment();
+                break;
+        }
+
+        return loadFragment(fragment);
+    }
+
+    /**
+     * Loads the fragment to the screen.
+     * @param fragment  The fragment to be loaded to the screen.
+     * @return  true if load is successful, false otherwise.
+     */
+    private boolean loadFragment(Fragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 }

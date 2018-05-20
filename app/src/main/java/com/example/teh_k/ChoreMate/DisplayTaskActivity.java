@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 /**
  * Activity screen that displays the individual task.
+ * Deprecated! Please work on ViewTaskActivity instead.
+ * This will still be here as code reference for things to be done.
+ * TODO: Delete this class when done with coding for tasks.
  */
 public class DisplayTaskActivity extends AppCompatActivity {
 
@@ -37,7 +40,7 @@ public class DisplayTaskActivity extends AppCompatActivity {
 
         // Getting the intent that started this activity, and extract what task it was.
         Intent intent = getIntent();
-        String title = intent.getStringExtra(MainActivity.TASK_TITLE);
+        String title = intent.getStringExtra(MainActivity.TASK);
 
         // Set the text view to the task title.
         taskTitle.setText(title);

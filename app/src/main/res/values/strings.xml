@@ -48,6 +48,15 @@
     <string name="delete_household">Delete Household</string>
     <string name="invite_housemate">Invite Housemate</string>
     <string name="remove_housemate">Remove Housemate</string>
+    <string name="repeat">Repeat every...</string>
+    <string-array name="recurrence_array">
+        <item>day(s)</item>
+        <item>week(s)</item>
+        <item>month(s)</item>
+        <item>year(s)</item>
+    </string-array>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
