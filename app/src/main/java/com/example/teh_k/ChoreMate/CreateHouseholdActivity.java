@@ -19,9 +19,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     private EditText editHouseholdName;
     private EditText editHousematesList;
 
-    // The app bar for the page.
-    private Toolbar appbar;
-
     private Button buttonCreate;
 
     // Declare instance variables
@@ -33,10 +30,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_household);
-
-        // Creates the appbar.
-        appbar = findViewById(R.id.appbar_create_household);
-        setSupportActionBar(appbar);
 
         // Initialize the views
         editHouseholdName = (EditText) findViewById(R.id.edit_household_name);
