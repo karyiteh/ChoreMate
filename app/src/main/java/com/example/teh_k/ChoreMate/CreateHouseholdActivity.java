@@ -19,9 +19,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     private EditText editHouseholdName;
     private EditText editHousematesList;
 
-    // The app bar for the page.
-    private Toolbar appbar;
-
     private Button buttonCreate;
 
     // Declare instance variables
