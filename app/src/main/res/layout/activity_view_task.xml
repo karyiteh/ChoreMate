@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ViewTaskActivity">
+    tools:context=".ViewTaskActivity"
+    android:background="@drawable/bg">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/appbar_view_task"
@@ -23,8 +24,8 @@
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg">
+        android:layout_height="wrap_content"
+      >
 
         <LinearLayout
             android:id="@+id/layout"
@@ -65,43 +66,53 @@
                 android:text="TextView"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
 
-            <Button
-                android:id="@+id/button_remind_task"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Remind"
-                android:background="#4d4dce"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="10dp" />
-
-            <Button
-                android:id="@+id/button_finish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Finish"
-                android:background="#4d4dce"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="10dp" />
-
-            <Button
-                android:id="@+id/button_skip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Skip"
-                android:background="#4d4dce"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="10dp" />
-
-            <Button
-                android:id="@+id/button_delete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Delete"
-                android:background="#4d4dce"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="10dp" />
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_finish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#4d4dce"
+            android:text="Finish"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/button_remind_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#4d4dce"
+            android:text="Remind"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/button_skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#4d4dce"
+            android:text="Skip"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/button_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#4d4dce"
+            android:text="Delete"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
 
 
 </LinearLayout>
