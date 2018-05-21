@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg"
-    tools:context=".CreateHouseholdActivity"
-   >
+    tools:context=".CreatePaymentActivity"
+    >
 
 
     <LinearLayout
@@ -20,41 +20,64 @@
         android:layout_marginLeft="10dp" >
 
         <TextView
-            android:id="@+id/text_title_create_household"
+            android:id="@+id/text_title_create_payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Create Household"
-            android:textSize="30sp"
             android:fontFamily="cursive"
+            android:gravity="center"
+            android:text="Create Payment"
             android:textColor="#4d4dce"
-            android:gravity="center"/>
+            android:textSize="30sp" />
 
         <EditText
-            android:id="@+id/edit_household_name"
+            android:id="@+id/edit_payment_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
             android:layout_marginTop="20dp"
             android:height="30dp"
-            android:hint="Household Name"/>
-
-        <TextView
-            android:id="@+id/text_invite_roommates"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="15dp"
-            android:text="Roommates:" />
-
-        <EditText
-            android:id="@+id/edit_roommates_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="mate1@email.com, mate2@email.com, mate3@email.com"
-            android:inputType="textMultiLine" />
+            android:hint="Payment Name"
+            android:inputType="textPersonName" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_split"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="Split"
+                android:textSize="20dp" />
+
+            <CheckBox
+                android:id="@+id/check_split"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="0.25"
+                android:text="" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview_housemates"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </ScrollView>
 
 
     </LinearLayout>
@@ -69,12 +92,12 @@
         android:layout_marginLeft="10dp" >
 
         <Button
-            android:id="@+id/btn_create_household"
+            android:id="@+id/btn_create_payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="#4d4dce"
-            android:text="Create Household"
+            android:text="Create Payment"
             android:textColor="#FFFFFF" />
 
     </LinearLayout>
