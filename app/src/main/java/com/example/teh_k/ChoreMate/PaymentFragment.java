@@ -27,7 +27,7 @@ public class PaymentFragment extends Fragment {
     private RecyclerView.LayoutManager paymentListManager;
 
     // Actual data of the payment list
-    private ArrayList<User> housematePayment;
+    private ArrayList<HousemateBalance> housematePayment;
 
     public PaymentFragment() {
         // Required empty constructor.
@@ -112,8 +112,8 @@ public class PaymentFragment extends Fragment {
      * Gets the housemates and their respective balances.
      * @return  The list of housemates together with their balances.
      */
-    private ArrayList<User> initializePayments() {
-        ArrayList<User> housemateList = new ArrayList<User>();
+    private ArrayList<HousemateBalance> initializePayments() {
+        ArrayList<HousemateBalance> housemateList = new ArrayList<HousemateBalance>();
         return housemateList;
     }
 
