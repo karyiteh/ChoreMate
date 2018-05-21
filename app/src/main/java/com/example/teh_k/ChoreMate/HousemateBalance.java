@@ -4,8 +4,12 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * Object class for storing current balances between user and housemates.
+ * Used in User objects.
  */
 public class HousemateBalance implements Parcelable{
 
@@ -18,6 +22,26 @@ public class HousemateBalance implements Parcelable{
 
     // The balance between the user and the housemate.
     private double balance;
+
+    /**
+     * Default empty constructor.
+     */
+    public HousemateBalance() {
+    }
+
+    /**
+     * Constructor for housemate balance.
+     * @param firstName Housemate's first name.
+     * @param lastName  Housemate's last name.
+     * @param avatar    Housemate's avatar.
+     * @param balance   Housemate's balance.
+     */
+    public HousemateBalance(String firstName, String lastName, Uri avatar, double balance) {
+        housemateFirstName = firstName;
+        housemateLastName = lastName;
+        housemateAvatar = avatar;
+        this.balance = balance;
+    }
 
     // Getter and setter methods.
     public String getHousemateFirstName() {
@@ -50,6 +74,28 @@ public class HousemateBalance implements Parcelable{
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    /**
+     * Gets the balance in the currency format.
+     * @return  The string that is the balance in the currency format.
+     */
+    public String getBalanceString() {
+        // Formatter to format the string.
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+
+        // Format the string to currency format.
+        String balanceString = format.format(Math.abs(balance));
+
+        // Determine whether to put plus or minus in front of the string.
+        if(balance >= 0) {
+            balanceString = "+ " + balanceString;
+        }
+        else {
+            balanceString = "- " + balanceString;
+        }
+
+        return balanceString;
     }
 
     // Following code generated from www.parcelabler.com

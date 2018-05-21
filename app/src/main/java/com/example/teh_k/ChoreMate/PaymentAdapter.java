@@ -9,14 +9,19 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * The list adapter for viewing current balances with housemates.
+ */
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHolder> {
 
-    ArrayList<HousemateBalance> housemateBalances;
+    private ArrayList<HousemateBalance> housemateBalances;
 
     /**
      * Provides reference to the views for each data item.
@@ -108,10 +113,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
         // - replace the contents of the view with that element
         holder.housemateName.setText(housemateBalances.get(position).getHousemateFirstName());
         holder.avatar.setImageURI(housemateBalances.get(position).getHousemateAvatar());
-
-        double balance = housemateBalances.get(position).getBalance();
-        String balanceText = "$" + String.format("%2f", balance);
-        holder.paymentBalance.setText(balanceText);
+        holder.paymentBalance.setText(housemateBalances.get(position).getBalanceString());
     }
 
     /**

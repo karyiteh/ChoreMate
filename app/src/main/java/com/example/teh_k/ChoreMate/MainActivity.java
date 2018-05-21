@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+/**
+ * The main screen of the app.
+ */
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -56,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new TaskFragment();
                 break;
             case R.id.action_transactions:
-                // TODO: Create transactions fragment.
+                // Creates payment fragment.
+                fragment = new PaymentFragment();
                 break;
             case R.id.action_household:
                 // Creates the household fragment.
