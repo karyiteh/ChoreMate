@@ -1,6 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,10 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -91,7 +90,7 @@ public class TaskFragment extends Fragment {
      */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_tasks, menu);
+        inflater.inflate(R.menu.menu_tasks_payment, menu);
     }
 
     /**
@@ -103,7 +102,7 @@ public class TaskFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
         switch(item.getItemId()) {
-            case R.id.action_createTask:
+            case R.id.action_create:
                 // Method to create task.
                 createNewTask();
                 return true;
@@ -150,6 +149,8 @@ public class TaskFragment extends Fragment {
      * Starts intent to create new task.
      */
     private void createNewTask() {
-        // TODO: Method to create the new task.
+        // Intent to create the new task.
+        Intent intent = new Intent(getContext(), CreateTaskActivity.class);
+        startActivity(intent);
     }
 }
