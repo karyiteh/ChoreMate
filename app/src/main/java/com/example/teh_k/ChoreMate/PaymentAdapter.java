@@ -52,7 +52,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
         public void onClick(View v) {
 
             // Starts a new activity that shows the item in detail.
-            Intent intent = new Intent(v.getContext(), HousemateProfileActivity.class);
+            Intent intent = new Intent(v.getContext(), HousemateTransactionHistoryActivity.class);
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();

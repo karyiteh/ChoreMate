@@ -29,6 +29,10 @@ public class PaymentFragment extends Fragment {
     // Actual data of the payment list
     private ArrayList<User> housematePayment;
 
+    public PaymentFragment() {
+        // Required empty constructor.
+    }
+
     /**
      * Creates the fragment instance to be loaded.
      */
@@ -114,9 +118,9 @@ public class PaymentFragment extends Fragment {
     }
 
     /**
-     * Starts intent to create new task.
+     * Starts intent to create new payment.
      */
     private void createNewPayment() {
-        // TODO: Method to create the new task.
+        // TODO: Method to create the new payment.
     }
 }
