@@ -34,10 +34,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_household);
 
-        // Creates the appbar.
-        appbar = findViewById(R.id.appbar_create_household);
-        setSupportActionBar(appbar);
-
         // Initialize the views
         editHouseholdName = (EditText) findViewById(R.id.edit_household_name);
         editHousematesList = (EditText) findViewById(R.id.edit_roommates_list);
