@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 
 /**
  * Object class for the user of the app.
@@ -23,6 +25,9 @@ public class User implements Parcelable{
 
     // household that the user belongs to
     private Household household;
+
+    // The current balances of the user and their housemates.
+    private ArrayList<HousemateBalance> current_balances;
 
     public User() {
         // Default empty constructor.
@@ -82,7 +87,13 @@ public class User implements Parcelable{
         this.household = household;
     }
 
-    // Code generated from www.parcelable.com
+    // Getters and setters for the current balances.
+    public ArrayList<HousemateBalance> getCurrent_balances() { return current_balances;}
+    public void setCurrent_balances(ArrayList<HousemateBalance> housemateBalances) {
+        current_balances = housemateBalances;
+    }
+
+    // Code generated from www.parcelabler.com
     // Following section of code used for implementing Parcelable.
 
     /**
@@ -95,7 +106,14 @@ public class User implements Parcelable{
         password = in.readString();
         avatar = (Uri) in.readValue(Uri.class.getClassLoader());
         household = (Household) in.readValue(Household.class.getClassLoader());
+        if (in.readByte() == 0x01) {
+            current_balances = new ArrayList<HousemateBalance>();
+            in.readList(current_balances, HousemateBalance.class.getClassLoader());
+        } else {
+            current_balances = null;
+        }
     }
+
 
     @Override
     public int describeContents() {
@@ -113,7 +131,14 @@ public class User implements Parcelable{
         dest.writeString(password);
         dest.writeValue(avatar);
         dest.writeValue(household);
+        if (current_balances == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(current_balances);
+        }
     }
+
 
     /**
      * Interface that must be implemented and provided as a public CREATOR field that generates
@@ -131,5 +156,6 @@ public class User implements Parcelable{
             return new User[size];
         }
     };
+
 
 }
