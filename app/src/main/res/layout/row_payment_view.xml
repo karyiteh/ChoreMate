@@ -19,7 +19,7 @@
         android:src="@drawable/icon_profile" />
 
     <TextView
-        android:id="@+id/text_task_title"
+        android:id="@+id/text_housemate_name"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"

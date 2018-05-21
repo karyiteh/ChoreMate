@@ -4,8 +4,8 @@
 
     <!--Menu options-->
     <item
-        android:id="@+id/action_createTask"
-        android:title="Create Task"
+        android:id="@+id/action_create"
+        android:title="Create"
         android:icon="@drawable/ic_add"
         app:showAsAction="ifRoom"
         />
