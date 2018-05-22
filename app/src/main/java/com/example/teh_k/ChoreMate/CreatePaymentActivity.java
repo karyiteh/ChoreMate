@@ -21,7 +21,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
     private CheckBox checkBoxSplit;
     private Button createPayment;
 
-    // Intialize field variables
+    // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
     private ArrayList<HousemateBalance> balanceList=  new ArrayList<>();
     private RecyclerView recyclerView;
@@ -69,6 +69,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
     private void createPayment(Payment payment) {
         View focusView;
         HousemateBalance balance;
+        HousemateBalance currBalance;
         String housemateFirstName;
         String housemateLastName;
         Uri housemateAvatar;
@@ -76,6 +77,8 @@ public class CreatePaymentActivity extends AppCompatActivity {
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
         double paymentToEach;
+
+        boolean updatedCurrentBalance;
 
         // Empty field check for payment name
         if (paymentName.equals("")) {
@@ -118,18 +121,39 @@ public class CreatePaymentActivity extends AppCompatActivity {
             paymentToEach = (double) Math.round(paymentToEach * 100) / 100;
         }
 
-        // Create Balances for each selected housemate
+        // Update Balances for each selected housemate
         for (int i = 0; i < selectedHousemates.size(); i++) {
+            updatedCurrentBalance = false;
+
             // Get details of housemate
             housemateFirstName = selectedHousemates.get(i).getFirst_name();
             housemateLastName = selectedHousemates.get(i).getLast_name();
             housemateAvatar = selectedHousemates.get(i).getAvatar();
+            balanceList = selectedHousemates.get(i).getCurrent_balances();
 
-            balance = new HousemateBalance(housemateFirstName, housemateLastName, housemateAvatar, paymentToEach);
-            balanceList.add(balance);
+            // Parse through balanceList and check for existing balance between user and housemate
+            for (int j = 0; j < balanceList.size(); j++) {
+                currBalance = balanceList.get(j);
+
+                if (currBalance.getHousemateFirstName().equals(housemateFirstName) &&
+                    currBalance.getHousemateLastName().equals(housemateLastName)) {
+                    currBalance.setBalance(currBalance.getBalance() + paymentToEach);
+
+                    updatedCurrentBalance = true;
+                    break;
+                }
+            }
+
+            // If there is no existing balance, create one.
+            if (!updatedCurrentBalance) {
+                currBalance = new HousemateBalance(housemateFirstName, housemateLastName, housemateAvatar, paymentToEach);
+                balanceList.add(currBalance);
+
+                selectedHousemates.get(i).setCurrent_balances(balanceList);
+            }
         }
 
-        // TODO: ADD BALANCE (balanceList) TO USER OBJECT(?)
+        // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?)
     }
 
     // TODO: For testing purposes. Remove later after database implementation
