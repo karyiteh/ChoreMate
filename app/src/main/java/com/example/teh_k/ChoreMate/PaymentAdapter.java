@@ -9,14 +9,19 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * The list adapter for viewing current balances with housemates.
+ */
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHolder> {
 
-    ArrayList<User> housemates;
+    private ArrayList<HousemateBalance> housemateBalances;
 
     /**
      * Provides reference to the views for each data item.
@@ -52,15 +57,15 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
         public void onClick(View v) {
 
             // Starts a new activity that shows the item in detail.
-            Intent intent = new Intent(v.getContext(), HousemateProfileActivity.class);
+            Intent intent = new Intent(v.getContext(), HousemateTransactionHistoryActivity.class);
 
             // Gets the task that is tapped on.
             int position = getAdapterPosition();
-            User housemate = housemates.get(position);
+            HousemateBalance housemateBalance = housemateBalances.get(position);
             //Toast.makeText(v.getContext(), task, Toast.LENGTH_LONG).show();
 
             // Passes the task that is tapped on to the next Activity.
-            intent.putExtra(MainActivity.HOUSEMATE, housemate);
+            intent.putExtra(MainActivity.HOUSEMATE, housemateBalance);
 
             // Start the next activity.
             (v.getContext()).startActivity(intent);
@@ -72,8 +77,8 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
      * Constructor to feed the task list data.
      * @param myDataset The dataset that contains the housemates.
      */
-    public PaymentAdapter(ArrayList<User> myDataset) {
-        housemates = myDataset;
+    public PaymentAdapter(ArrayList<HousemateBalance> myDataset) {
+        housemateBalances = myDataset;
     }
 
     /**
@@ -106,8 +111,9 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.housemateName.setText(housemates.get(position).getFirst_name());
-        holder.avatar.setImageURI(housemates.get(position).getAvatar());
+        holder.housemateName.setText(housemateBalances.get(position).getHousemateFirstName());
+        holder.avatar.setImageURI(housemateBalances.get(position).getHousemateAvatar());
+        holder.paymentBalance.setText(housemateBalances.get(position).getBalanceString());
     }
 
     /**
@@ -116,6 +122,6 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
      */
     @Override
     public int getItemCount() {
-        return housemates.size();
+        return housemateBalances.size();
     }
 }
