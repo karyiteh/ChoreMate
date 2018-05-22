@@ -56,17 +56,15 @@ public class CreatePaymentActivity extends AppCompatActivity {
         createPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                payment = new Payment();
-                createPayment(payment);
+                createPayment();
             }
         });
     }
 
     /**
      * Creates the payment and saves it to the database.
-     * @param payment Payment object to save in database
      */
-    private void createPayment(Payment payment) {
+    private void createPayment() {
         View focusView;
         HousemateBalance balance;
         HousemateBalance currBalance;
@@ -100,9 +98,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // Convert payment amount to a double
         paymentToEach = Double.parseDouble(paymentToEachStr);
-
-        // Set the payment name
-        payment.setPayment_name(paymentName);
 
         /* Get the currently selected housemates by checking CheckBox state of each housemate
            and add housemate to array if true */
@@ -151,6 +146,16 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
                 selectedHousemates.get(i).setCurrent_balances(balanceList);
             }
+
+            // Create payment object for each payment
+            payment = new Payment();
+            payment.setPayment_name(paymentName);
+            payment.setAmount(paymentToEach);
+            // TODO: payment.setPayer(DATABASE)
+            payment.setReceiver(selectedHousemates.get(i));
+            // TODO Add Payment object to database
+
+            //  TODO: Update current balances of each selected housemate in the Database
         }
 
         // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?)
