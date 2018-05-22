@@ -71,7 +71,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         dueDate = (DatePicker) findViewById(R.id.task_due_date);
 
-        // Intialize the due date to be current date
+        // Initialize the due date to be current date
         dueDate.getAutofillValue();
 
         // Set up listener for NumberPicker object
