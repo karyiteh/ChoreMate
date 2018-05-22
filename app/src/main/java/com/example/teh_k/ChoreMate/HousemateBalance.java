@@ -143,6 +143,4 @@ public class HousemateBalance implements Parcelable{
             return new HousemateBalance[size];
         }
     };
-
-
 }
