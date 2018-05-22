@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,11 +17,13 @@ import java.util.ArrayList;
 public class CreatePaymentActivity extends AppCompatActivity {
     // Initialize UI elements
     private EditText editPaymentName;
+    private EditText editPaymentAmount;
     private CheckBox checkBoxSplit;
     private Button createPayment;
 
     // Intialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
+    private ArrayList<HousemateBalance> balanceList=  new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignHousemateAdapter assignHousemateAdapter;
 
@@ -45,6 +48,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // Initialize the views
         editPaymentName = (EditText) findViewById(R.id.edit_payment_name);
+        editPaymentAmount = (EditText) findViewById(R.id.edit_payment_amount);
         checkBoxSplit = (CheckBox) findViewById(R.id.check_split);
         createPayment = (Button) findViewById(R.id.btn_create_payment);
 
@@ -63,8 +67,42 @@ public class CreatePaymentActivity extends AppCompatActivity {
      * @param payment Payment object to save in database
      */
     private void createPayment(Payment payment) {
-        // Get the currently selected housemates by checking CheckBox state of each housemate
-        // and add housemate to array if true
+        View focusView;
+        HousemateBalance balance;
+        String housemateFirstName;
+        String housemateLastName;
+        Uri housemateAvatar;
+
+        String paymentName = editPaymentName.getText().toString().trim();
+        String paymentToEachStr = editPaymentAmount.getText().toString().trim();
+        double paymentToEach;
+
+        // Empty field check for payment name
+        if (paymentName.equals("")) {
+            editPaymentName.setError(getString(R.string.error_field_required));
+            focusView = editPaymentName;
+            focusView.requestFocus();
+
+            return;
+        }
+
+        // Empty field check for payment amount
+        if (paymentToEachStr.equals("")) {
+            editPaymentAmount.setError(getString(R.string.error_field_required));
+            focusView = editPaymentAmount;
+            focusView.requestFocus();
+
+            return;
+        }
+
+        // Convert payment amount to a double
+        paymentToEach = Double.parseDouble(paymentToEachStr);
+
+        // Set the payment name
+        payment.setPayment_name(paymentName);
+
+        /* Get the currently selected housemates by checking CheckBox state of each housemate
+           and add housemate to array if true */
         ArrayList<User> selectedHousemates = new ArrayList<>();
         CheckBox checkBox;
         for (int i = 0; i < housemateList.size(); i++) {
@@ -74,7 +112,24 @@ public class CreatePaymentActivity extends AppCompatActivity {
             }
         }
 
-        payment.setPayment_name(editPaymentName.getText().toString().trim());
+        // Calculate total payments. If checkbox is split, split the payment amount
+        if (checkBoxSplit.isChecked()) {
+            paymentToEach = paymentToEach / selectedHousemates.size();
+            paymentToEach = (double) Math.round(paymentToEach * 100) / 100;
+        }
+
+        // Create Balances for each selected housemate
+        for (int i = 0; i < selectedHousemates.size(); i++) {
+            // Get details of housemate
+            housemateFirstName = selectedHousemates.get(i).getFirst_name();
+            housemateLastName = selectedHousemates.get(i).getLast_name();
+            housemateAvatar = selectedHousemates.get(i).getAvatar();
+
+            balance = new HousemateBalance(housemateFirstName, housemateLastName, housemateAvatar, paymentToEach);
+            balanceList.add(balance);
+        }
+
+        // TODO: ADD BALANCE (balanceList) TO USER OBJECT(?)
     }
 
     // TODO: For testing purposes. Remove later after database implementation
