@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 /**
  * An Activity that allows user to create/join a household
  */
@@ -63,6 +65,9 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 String code = inviteCode.getText().toString();
 
                 if (checkCode(code)) {
+                    // Updates current_balance field of every User in the Household to include new User
+                    updateUserBalances();
+
                     // TODO: Take user to correct household task page
                     Intent toTask = new Intent(v.getContext(), MainActivity.class);
                     startActivity(toTask);
@@ -106,4 +111,39 @@ public class NoHouseholdActivity extends AppCompatActivity {
         return (code.equals(dummyCode));
     }
 
+    /**
+     * Updates the current_balances field of every User in the current Household to include
+     * the new User.
+     * @return void
+     */
+    private void updateUserBalances() {
+        HousemateBalance balance;
+        ArrayList<User> housemateList = new ArrayList<>();
+        ArrayList<HousemateBalance> userHousemateBalance = new ArrayList<>();
+        ArrayList<HousemateBalance> housemateBalance;
+        User housemate;
+
+        // TODO: Get housemateList from database here
+
+        // Update current_balances field of current user and existing users
+        for (int i = 0; i < housemateList.size(); i++) {
+            // Add new User to the current_balances field of each User in housemateList
+            housemate = housemateList.get(i);
+
+            // TODO: GET USER INFO FROM DATABASE
+            //balance = new HousemateBalance(firstName, lastName, avatar, 0);
+            balance = new HousemateBalance(); // TODO: REMOVE THIS LINE AFTER DB IMPLEMENTATION
+            housemateBalance = housemate.getCurrent_balances();
+            housemateBalance.add(balance);
+
+            housemate.setCurrent_balances(housemateBalance);
+
+            // Add existing Users to the current_balances field of current User
+            balance = new HousemateBalance(housemate.getFirst_name(), housemate.getLast_name(),
+                                           housemate.getAvatar(), 0);
+            userHousemateBalance.add(balance);
+        }
+
+        // TODO: CURRENT USER.setCurrent_balances(userHousemateBalance); DATABASE NEEDED
+    }
 }

@@ -46,6 +46,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // TODO: Test purposes. Remove after database implementation
         loadSampleHousemates();
+        // TODO: Loading current housemates from DB into housemateList goes here
 
         // Initialize the views
         editPaymentName = (EditText) findViewById(R.id.edit_payment_name);
@@ -77,17 +78,13 @@ public class CreatePaymentActivity extends AppCompatActivity {
      */
     private void createPayment(boolean isCharge) {
         View focusView;
-        HousemateBalance balance;
         HousemateBalance currBalance;
         String housemateFirstName;
         String housemateLastName;
-        Uri housemateAvatar;
 
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
         double paymentToEach;
-
-        boolean updatedCurrentBalance;
 
         // Empty field check for payment name
         if (paymentName.equals("")) {
@@ -111,7 +108,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         paymentToEach = Double.parseDouble(paymentToEachStr);
 
         // If payment is a charge, then make the amount to be negative.
-        if(isCharge) {
+        if (isCharge) {
             paymentToEach = - paymentToEach;
         }
 
@@ -134,12 +131,10 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // Update Balances for each selected housemate
         for (int i = 0; i < selectedHousemates.size(); i++) {
-            updatedCurrentBalance = false;
 
             // Get details of housemate
             housemateFirstName = selectedHousemates.get(i).getFirst_name();
             housemateLastName = selectedHousemates.get(i).getLast_name();
-            housemateAvatar = selectedHousemates.get(i).getAvatar();
             balanceList = selectedHousemates.get(i).getCurrent_balances();
 
             // Parse through balanceList and check for existing balance between user and housemate
@@ -149,18 +144,8 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 if (currBalance.getHousemateFirstName().equals(housemateFirstName) &&
                     currBalance.getHousemateLastName().equals(housemateLastName)) {
                     currBalance.setBalance(currBalance.getBalance() + paymentToEach);
-
-                    updatedCurrentBalance = true;
                     break;
                 }
-            }
-
-            // If there is no existing balance, create one.
-            if (!updatedCurrentBalance) {
-                currBalance = new HousemateBalance(housemateFirstName, housemateLastName, housemateAvatar, paymentToEach);
-                balanceList.add(currBalance);
-
-                selectedHousemates.get(i).setCurrent_balances(balanceList);
             }
 
             // Create payment object for each payment
@@ -182,7 +167,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
             //  TODO: Update current balances of each selected housemate in the Database
         }
 
-        // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?)
+        // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?) DATABASE NEEDED
     }
 
 
