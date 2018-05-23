@@ -20,6 +20,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
     private EditText editPaymentAmount;
     private CheckBox checkBoxSplit;
     private Button createPayment;
+    private Button createCharge;
 
     // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
@@ -51,20 +52,30 @@ public class CreatePaymentActivity extends AppCompatActivity {
         editPaymentAmount = (EditText) findViewById(R.id.edit_payment_amount);
         checkBoxSplit = (CheckBox) findViewById(R.id.check_split);
         createPayment = (Button) findViewById(R.id.btn_create_payment);
+        createCharge = (Button) findViewById(R.id.btn_create_charge);
 
         // Add click listener for create payment button
         createPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createPayment();
+                createPayment(false);
+            }
+        });
+
+        // Add click listener for create charge button
+        createCharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createPayment(true);
             }
         });
     }
 
     /**
      * Creates the payment and saves it to the database.
+     * @param isCharge  Whether the payment is a charge.
      */
-    private void createPayment() {
+    private void createPayment(boolean isCharge) {
         View focusView;
         HousemateBalance balance;
         HousemateBalance currBalance;
@@ -98,6 +109,11 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // Convert payment amount to a double
         paymentToEach = Double.parseDouble(paymentToEachStr);
+
+        // If payment is not a charge, then make the amount to be negative.
+        if(!isCharge) {
+            paymentToEach = - paymentToEach;
+        }
 
         /* Get the currently selected housemates by checking CheckBox state of each housemate
            and add housemate to array if true */
@@ -151,8 +167,16 @@ public class CreatePaymentActivity extends AppCompatActivity {
             payment = new Payment();
             payment.setPayment_name(paymentName);
             payment.setAmount(paymentToEach);
-            // TODO: payment.setPayer(DATABASE)
-            payment.setReceiver(selectedHousemates.get(i));
+
+            // Set the payer and the receiver accordingly to whether it is a charge.
+            if(isCharge) {
+                payment.setPayer(selectedHousemates.get(i));
+                // TODO: payment.setReceiver(DATABASE);
+            }
+            else {
+                // TODO: payment.setPayer(DATABASE)
+                payment.setReceiver(selectedHousemates.get(i));
+            }
             // TODO Add Payment object to database
 
             //  TODO: Update current balances of each selected housemate in the Database
@@ -160,6 +184,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?)
     }
+
 
     // TODO: For testing purposes. Remove later after database implementation
     private void loadSampleHousemates() {
