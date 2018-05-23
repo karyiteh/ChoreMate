@@ -70,7 +70,7 @@ public class Payment implements Parcelable {
         this.status = status;
     }
 
-    // Code generated from www.parcelable.com
+    // Code generated from www.parcelabler.com
     // Following section of code used for implementing Parcelable.
 
     /**
