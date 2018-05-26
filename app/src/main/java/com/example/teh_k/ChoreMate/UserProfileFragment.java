@@ -26,10 +26,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,8 +89,13 @@ public class UserProfileFragment extends Fragment {
     private int userChoice;
     private String imageFilePath = "";
 
-    // db
+    /**
+     * Database references.
+     */
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     public UserProfileFragment() {
@@ -103,7 +115,10 @@ public class UserProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Set up user database reference.
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mStorage = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -462,7 +477,7 @@ public class UserProfileFragment extends Fragment {
         mAvatar.setImageURI(image);
 
         // TODO: Upload the image to the database.
-
+        saveImage(image);
     }
 
     /**
@@ -478,6 +493,30 @@ public class UserProfileFragment extends Fragment {
         mAvatar.setImageURI(image);
 
         // TODO: Upload the image into the database.
+        saveImage(image);
+    }
+
+    private void saveImage(Uri uri) {
+        StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());
+
+        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                String user_id = mCurrentUser.getUid();
+
+                DatabaseReference curr_user_db = mDatabase.child(user_id);
+                curr_user_db.child("avatarUri").setValue(downloadUrl.toString());
+
+                Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Error.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }

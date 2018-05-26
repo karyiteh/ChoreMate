@@ -53,7 +53,10 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".ViewTaskActivity"/>
+        <activity android:name=".ViewTaskActivity" />
+        <activity android:name=".PaymentFragment" />
+        <activity android:name=".CreatePaymentActivity" />
+        <activity android:name=".HousemateTransactionHistoryActivity"></activity>
     </application>
 
 </manifest>

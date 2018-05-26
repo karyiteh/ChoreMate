@@ -1,29 +1,23 @@
 package com.example.teh_k.ChoreMate;
 
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.GregorianCalendar;
 
 public class CreateTaskActivity extends AppCompatActivity implements RecurringTaskFragment.OnFragmentInteractionListener {
@@ -37,7 +31,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
     private RecyclerView recyclerView;
-    private AssignTaskAdapter assignTaskAdapter;
+    private AssignHousemateAdapter assignHousemateAdapter;
     private DatePicker dueDate;
 
     private int amountOfTime;
@@ -59,11 +53,11 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // Set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.pick_housemates);
 
-        assignTaskAdapter = new AssignTaskAdapter(housemateList);
+        assignHousemateAdapter = new AssignHousemateAdapter(housemateList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(assignTaskAdapter);
+        recyclerView.setAdapter(assignHousemateAdapter);
 
         // TODO: Test purposes. Remove after database implementation
         loadSampleHousemates();
@@ -77,7 +71,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         dueDate = (DatePicker) findViewById(R.id.task_due_date);
 
-        // Intialize the due date to be current date
+        // Initialize the due date to be current date
         dueDate.getAutofillValue();
 
         // Set up listener for NumberPicker object
@@ -115,7 +109,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     /**
      * Loads the fragment to the screen.
      * @param fragment  The fragment to be loaded to the screen.
-     * @return  true if load is successful, false otherwise.
      */
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
@@ -127,7 +120,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     /**
      * Toggles the visibility of the recurrence options fragment
      * @param fragment The fragment to be toggled.
-     * @return void
      */
     private void toggleFragment(Fragment fragment) {
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -146,7 +138,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     /**
      * Creates the task and saves it to the database.
      * @param task Task object to save in database
-     * @return true if create task is successful, false otherwise.
      */
     private void createTask(Task task) {
         task.setTask_name(editTaskName.getText().toString().trim());

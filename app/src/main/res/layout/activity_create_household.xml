@@ -9,18 +9,6 @@
     android:background="@drawable/bg"
     tools:context=".CreateHouseholdActivity"
    >
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/appbar_create_household"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#B8B8FF"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Create Household"
-        app:titleTextColor="@android:color/background_light">
-
-    </android.support.v7.widget.Toolbar>
 
 
     <LinearLayout
@@ -30,6 +18,17 @@
         android:orientation="vertical"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp" >
+
+        <TextView
+            android:id="@+id/text_title_create_household"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Create Household"
+            android:textSize="30sp"
+            android:fontFamily="cursive"
+            android:textColor="#4d4dce"
+            android:gravity="center"/>
 
         <EditText
             android:id="@+id/edit_household_name"

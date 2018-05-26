@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * The main screen of the app.
+ */
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -85,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new TaskFragment();
                 break;
             case R.id.action_transactions:
-                // TODO: Create transactions fragment.
+                // Creates payment fragment.
+                fragment = new PaymentFragment();
                 break;
             case R.id.action_household:
                 // Creates the household fragment.

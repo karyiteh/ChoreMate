@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Object class for the household that contains the users.
@@ -139,4 +141,15 @@ public class Household implements Parcelable{
         }
     };
 
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("HouseholdName", house_name);
+        result.put("HouseholdCode", house_code);
+        result.put("MemberUidList", user_list);
+        result.put("TaskList", task_list);
+        result.put("PaymentList", payment_list);
+
+        return result;
+    }
 }

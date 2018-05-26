@@ -1,6 +1,5 @@
 package com.example.teh_k.ChoreMate;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AssignTaskAdapter extends RecyclerView.Adapter<AssignTaskAdapter.ViewHolder> {
+public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemateAdapter.ViewHolder> {
 
     private ArrayList<User> housemates;
 
@@ -28,7 +27,7 @@ public class AssignTaskAdapter extends RecyclerView.Adapter<AssignTaskAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            row = (LinearLayout) itemView.findViewById(R.id.row_assign_task);
+            row = (LinearLayout) itemView.findViewById(R.id.row_assign_housemate);
             name = (TextView) itemView.findViewById(R.id.txt_housemate_name);
             avatar = itemView.findViewById(R.id.img_avatar);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkBox);
@@ -52,7 +51,7 @@ public class AssignTaskAdapter extends RecyclerView.Adapter<AssignTaskAdapter.Vi
      * Constructor to feed the housemate list data.
      * @param myDataset The dataset that contains the housemates.
      */
-    public AssignTaskAdapter(ArrayList<User> myDataset) {
+    public AssignHousemateAdapter(ArrayList<User> myDataset) {
         housemates = myDataset;
     }
 
@@ -66,13 +65,13 @@ public class AssignTaskAdapter extends RecyclerView.Adapter<AssignTaskAdapter.Vi
      */
     @NonNull
     @Override
-    public AssignTaskAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AssignHousemateAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         // Creates a new view.
         // Need to create another xml file just for the item in the lists.
         // Then link it to here through inflate!
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_assign_task, parent, false);
-        return new AssignTaskAdapter.ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_assign_housemate, parent, false);
+        return new AssignHousemateAdapter.ViewHolder(view);
     }
 
     /**
@@ -82,7 +81,7 @@ public class AssignTaskAdapter extends RecyclerView.Adapter<AssignTaskAdapter.Vi
      * @param position  The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull AssignTaskAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AssignHousemateAdapter.ViewHolder holder, int position) {
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element

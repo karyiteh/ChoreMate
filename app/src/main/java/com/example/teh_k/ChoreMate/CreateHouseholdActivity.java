@@ -11,6 +11,10 @@ import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Random;
 
 
@@ -19,9 +23,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     private EditText editHouseholdName;
     private EditText editHousematesList;
 
-    // The app bar for the page.
-    private Toolbar appbar;
-
     private Button buttonCreate;
 
     // Declare instance variables
@@ -29,14 +30,18 @@ public class CreateHouseholdActivity extends AppCompatActivity {
 
     private boolean cancel = false;
 
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_household);
 
-        // Creates the appbar.
-        appbar = findViewById(R.id.appbar_create_household);
-        setSupportActionBar(appbar);
+        // Set up user database reference.
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Initialize the views
         editHouseholdName = (EditText) findViewById(R.id.edit_household_name);
@@ -95,6 +100,9 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         // Create new Household object and update fields
         house.setHouse_code(house_code);
         house.setHouse_name(householdName);
+
+        DatabaseReference mHousehold = mDatabase.push();
+        mHousehold.updateChildren(house.toMap());
     }
 
     private void attemptInvite() {
