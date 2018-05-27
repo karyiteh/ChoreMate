@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -33,6 +36,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     /**
      * Database references.
      */
+    private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
     @Override
@@ -41,6 +45,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_household);
 
         // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Initialize the views
@@ -101,8 +106,14 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         house.setHouse_code(house_code);
         house.setHouse_name(householdName);
 
-        DatabaseReference mHousehold = mDatabase.push();
-        mHousehold.updateChildren(house.toMap());
+        String user_id = mAuth.getCurrentUser().getUid();
+        String key = mDatabase.child("Households").push().getKey();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/Households/"+key, house.toMap());
+        childUpdates.put("/Users/" + user_id + "/household", key);
+
+        mDatabase.updateChildren(house.toMap());
     }
 
     private void attemptInvite() {

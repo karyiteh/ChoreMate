@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -34,6 +46,14 @@ public class HouseholdFragment extends Fragment {
 
     private String newGroupName = "";
 
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     public HouseholdFragment() {
         // Required empty public constructor
     }
@@ -41,6 +61,19 @@ public class HouseholdFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                }
+            }
+        };
 
         // Telling Android that this fragment has an option menu.
         setHasOptionsMenu(true);
@@ -66,25 +99,49 @@ public class HouseholdFragment extends Fragment {
 
         // TODO: Method to retrieve user list from database.
 
-        // Dummy dataset.
-        ArrayList<User> housemates = new ArrayList<User>();
-        User randomUser = new User();
-        randomUser.setFirst_name("John");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        randomUser.setAvatar(imageUri);
-        housemates.add(randomUser);
+        final String user_id = mCurrentUser.getUid();
+        DatabaseReference mUser = mDatabase.child("Users").child(user_id);
+        mUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                String householdKey = user.getHousehold();
 
-        // Creates the adapter.
-        housemateListAdapter = new HousemateAdapter(housemates);
+                DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
+                Query userQuery = mHousehold.orderByChild("lastname");
+                userQuery.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<User> housemates = new ArrayList<User>();
 
-        // Attaches the adapter to the view.
-        mHousemateList.setAdapter(housemateListAdapter);
+                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
 
-        // Sets layout manager.
-        housemateListManager = new LinearLayoutManager(getContext());
-        mHousemateList.setLayoutManager(housemateListManager);
+                            User user = userSnapshot.getValue(User.class);
+                            housemates.add(user);
+                            // Creates the adapter.
+                            housemateListAdapter = new HousemateAdapter(housemates);
 
+                            // Attaches the adapter to the view.
+                            mHousemateList.setAdapter(housemateListAdapter);
+
+                            // Sets layout manager.
+                            housemateListManager = new LinearLayoutManager(getContext());
+                            mHousemateList.setLayoutManager(housemateListManager);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -178,6 +235,23 @@ public class HouseholdFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO: Delete the household in the database
+                final String user_id = mCurrentUser.getUid();
+                DatabaseReference mUser = mDatabase.child("Users").child(user_id);
+                mUser.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        String householdKey = user.getHousehold();
+
+                        DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
+                        mHousehold.removeValue();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 

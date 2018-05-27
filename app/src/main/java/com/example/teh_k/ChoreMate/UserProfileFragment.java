@@ -122,6 +122,7 @@ public class UserProfileFragment extends Fragment {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
                 if(firebaseAuth.getCurrentUser() == null){
                 }
             }
@@ -497,17 +498,20 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void saveImage(Uri uri) {
+        // Firebase storage stuff
         StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());
-
+        // On sucess upload image to storage.
         filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                String user_id = mCurrentUser.getUid();
 
+                String user_id = mCurrentUser.getUid();
                 DatabaseReference curr_user_db = mDatabase.child(user_id);
-                curr_user_db.child("avatarUri").setValue(downloadUrl.toString());
+
+                // Update user avatar uri
+                curr_user_db.child("avataruri").setValue(downloadUrl.toString());
 
                 Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
             }

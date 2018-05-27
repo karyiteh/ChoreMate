@@ -17,13 +17,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The register screen that allows user to register an account with the app.
  */
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private DatabaseReference mUser;
 
     // UI elements.
     private EditText editFirstName;
@@ -56,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Set up user database reference.
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mUser = FirebaseDatabase.getInstance().getReference().child("Users");
 
         // Binds the UI elements to the references in code.
         editFirstName = findViewById(R.id.edit_first_name);
@@ -92,9 +95,9 @@ public class RegisterActivity extends AppCompatActivity {
         // Store values at time of submit attempt.
         final String firstName = editFirstName.getText().toString();
         final String lastName = editLastName.getText().toString();
-        String email = editEmail.getText().toString();
-        String password = editPassword.getText().toString();
-        String confirmPassword = editPasswordConfirm.getText().toString();
+        final String email = editEmail.getText().toString();
+        final String password = editPassword.getText().toString();
+        final String confirmPassword = editPasswordConfirm.getText().toString();
 
         // Initializing the local variables.
         boolean cancel = false;
@@ -175,10 +178,20 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("RegisterAvtivity", "createUserWithEmail:success");
                         Toast.makeText(RegisterActivity.this, "Registered",
                                 Toast.LENGTH_SHORT).show();
+
                         String user_id = mAuth.getCurrentUser().getUid();
-                        DatabaseReference curr_user_db = mDatabase.child(user_id);
-                        curr_user_db.child("firstname").setValue(firstName);
-                        curr_user_db.child("lastname").setValue(lastName);
+                        DatabaseReference curr_user_db = mUser.child(user_id);
+
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/email", email);
+                        childUpdates.put("/firstname", firstName);
+                        childUpdates.put("/lastname", lastName);
+                        childUpdates.put("/password", password);
+                        childUpdates.put("/avataruri", null);
+                        childUpdates.put("/household", null);
+
+                        curr_user_db.updateChildren(childUpdates);
+
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("RegisterAvtivity", "createUserWithEmail:failure", task.getException());
