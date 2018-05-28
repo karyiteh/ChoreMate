@@ -125,9 +125,9 @@ public class HouseholdFragment extends Fragment {
         mHousehold.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                housemateKeys = new ArrayList<String>();
 
                 Household userHousehold = dataSnapshot.getValue(Household.class);
-                housemateKeys = new ArrayList<String>();
                 for(String user : userHousehold.getUser_list()) {
                     housemateKeys.add(user);
                 }
