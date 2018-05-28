@@ -183,6 +183,7 @@ public class RegisterActivity extends AppCompatActivity {
                         DatabaseReference curr_user_db = mUser.child(user_id);
 
                         Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/uid", user_id);
                         childUpdates.put("/email", email);
                         childUpdates.put("/firstname", firstName);
                         childUpdates.put("/lastname", lastName);

@@ -32,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -45,6 +46,10 @@ public class HouseholdFragment extends Fragment {
     private RecyclerView.LayoutManager housemateListManager;
 
     private String newGroupName = "";
+
+    private String householdKey;
+    private ArrayList<String> housemateKeys;
+    private ArrayList<User> housemates;
 
     /**
      * Database references.
@@ -104,37 +109,10 @@ public class HouseholdFragment extends Fragment {
         mUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 User user = dataSnapshot.getValue(User.class);
-                String householdKey = user.getHousehold();
+                householdKey = user.getHousehold();
 
-                DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-                Query userQuery = mHousehold.orderByChild("lastname");
-                userQuery.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<User> housemates = new ArrayList<User>();
-
-                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-
-                            User user = userSnapshot.getValue(User.class);
-                            housemates.add(user);
-                            // Creates the adapter.
-                            housemateListAdapter = new HousemateAdapter(housemates);
-
-                            // Attaches the adapter to the view.
-                            mHousemateList.setAdapter(housemateListAdapter);
-
-                            // Sets layout manager.
-                            housemateListManager = new LinearLayoutManager(getContext());
-                            mHousemateList.setLayoutManager(housemateListManager);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
             }
 
             @Override
@@ -142,6 +120,53 @@ public class HouseholdFragment extends Fragment {
                 Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
             }
         });
+
+        DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
+        mHousehold.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Household userHousehold = dataSnapshot.getValue(Household.class);
+                housemateKeys = new ArrayList<String>();
+                for(String user : userHousehold.getUser_list()) {
+                    housemateKeys.add(user);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        housemates = new ArrayList<User>();
+        for(String userKey : housemateKeys){
+            mUser.child(userKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    housemates.add(dataSnapshot.getValue(User.class));
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        // Creates the adapter.
+        housemateListAdapter = new HousemateAdapter(housemates);
+
+        // Attaches the adapter to the view.
+        mHousemateList.setAdapter(housemateListAdapter);
+
+        // Sets layout manager.
+        housemateListManager = new LinearLayoutManager(getContext());
+        mHousemateList.setLayoutManager(housemateListManager);
+
     }
 
     /**

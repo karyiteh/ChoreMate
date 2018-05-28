@@ -113,7 +113,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         childUpdates.put("/Households/"+key, house.toMap());
         childUpdates.put("/Users/" + user_id + "/household", key);
 
-        mDatabase.updateChildren(house.toMap());
+        mDatabase.updateChildren(childUpdates);
     }
 
     private void attemptInvite() {

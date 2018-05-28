@@ -15,6 +15,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -42,9 +51,22 @@ public class HousemateProfileActivity extends AppCompatActivity {
     private User currentHousemate;
     private ArrayList<Task> currentHousemateTask;
 
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
+
         setContentView(R.layout.activity_housemate_profile);
 
         // Creates the appbar.
@@ -66,7 +88,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
         mHousemateName.setText(currentHousemate.getFirst_name());
 
         // Getting the user task list from the database.
-        currentHousemateTask = getTasksFromDatabase();
+        getTasksFromDatabase();
 
         // Set up the adapter for the recycler view.
         taskListAdapter = new TaskAdapter(currentHousemateTask);
@@ -87,34 +109,28 @@ public class HousemateProfileActivity extends AppCompatActivity {
      * Gets the tasks for the current user.
      * @return  A list of tasks that is assigned to the current user.
      */
-    private ArrayList<Task> getTasksFromDatabase() {
-        // TODO: Replace code with code that gets tasks from database.
-        // Dummy task list.
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        Task task1 = new Task();
-        task1.setTask_name("Do the dishes");
-        task1.setTask_detail("Dishes needs to be washed as soon as they are used.");
-        task1.setTime(new GregorianCalendar(2018, 6, 10, 12,0));
-        User user1 = new User();
-        user1.setFirst_name("John");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        user1.setAvatar(imageUri);
-        ArrayList<User> userList = new ArrayList<>();
-        userList.add(user1);
-        task1.setUser_list(userList);
-        Task task2 = new Task();
-        task2.setTask_name("Take out the trash");
-        task2.setTask_detail("Trash to be taken out when it is full");
-        task2.setTime(new GregorianCalendar(2018, 6, 1, 13, 0));
-        task2.setUser_list(userList);
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.trimToSize();
+    private void getTasksFromDatabase() {
+        currentHousemateTask = new ArrayList<Task>();
 
-        // Return the task list obtained from the database.
-        return tasks;
+        // TODO: Gets housemate's tasks from database.
+        String user_id = currentHousemate.getUid();
+        Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("household").equalTo(user_id);
 
+        mQueryUserTask.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                    currentHousemateTask.add(taskSnapshot.getValue(Task.class));
+                    }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -133,6 +149,8 @@ public class HousemateProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO: Delete the housemate in the database
+                mDatabase.child("Users").child(currentHousemate.getUid()).removeValue();
+                mDatabase.child("Household").child("user_list").child(currentHousemate.getUid()).removeValue();
 
                 // Send the toast message as confirmation.
                 String message = "Remove request sent to " + currentHousemate.getFirst_name();

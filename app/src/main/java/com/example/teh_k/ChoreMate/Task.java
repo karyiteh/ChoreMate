@@ -13,6 +13,9 @@ import java.util.List;
  * Implements Parcelable to be able to be passed between activities.
  */
 public class Task implements Parcelable {
+    //database access id. for delete task;
+    private String key;
+
     //name of task name and details, set by the user
     private String task_name;
     private String task_detail;
@@ -26,7 +29,7 @@ public class Task implements Parcelable {
     private boolean status;
 
     //list of users that the task will be accomplished by
-    private List<User> user_list;
+    private List<String> user_list;
 
     // Date that the task is to occur
     // NOTE: MONTH STARTS FROM 0. 0 - January, 1 - February, etc.
@@ -45,6 +48,9 @@ public class Task implements Parcelable {
     }
 
     //getter and setter for task name and details
+    public String getKey() { return key; }
+    public void setKey(String task_name) { this.key = key; }
+
     public String getTask_name() { return task_name; }
     public void setTask_name(String task_name) { this.task_name = task_name; }
 
@@ -60,8 +66,8 @@ public class Task implements Parcelable {
     public void setStatus(boolean status) { this.status = status; }
 
     //getter and setter for the list of user
-    public List<User> getUser_list() { return user_list; }
-    public void setUser_list(ArrayList<User> user_list) { this.user_list = user_list; }
+    public List<String> getUser_list() { return user_list; }
+    public void setUser_list(ArrayList<String> user_list) { this.user_list = user_list; }
 
     //getters and setters for the task deadline
     public Calendar getTime() { return time; }
@@ -83,12 +89,13 @@ public class Task implements Parcelable {
     // Code generated from www.parcelabler.com
     // Following section of code used for implementing Parcelable.
     protected Task(Parcel in) {
+        key = in.readString();
         task_name = in.readString();
         task_detail = in.readString();
         trigger = in.readByte() != 0x00;
         status = in.readByte() != 0x00;
         if (in.readByte() == 0x01) {
-            user_list = new ArrayList<User>();
+            user_list = new ArrayList<String>();
             in.readList(user_list, User.class.getClassLoader());
         } else {
             user_list = null;
@@ -106,6 +113,7 @@ public class Task implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
         dest.writeString(task_name);
         dest.writeString(task_detail);
         dest.writeByte((byte) (trigger ? 0x01 : 0x00));

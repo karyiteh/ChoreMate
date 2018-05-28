@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +17,21 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CreateTaskActivity extends AppCompatActivity implements RecurringTaskFragment.OnFragmentInteractionListener {
     // Declare Text Fields
@@ -30,6 +43,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
     // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
+    private List<String> housemateKeys = new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignHousemateAdapter assignHousemateAdapter;
     private DatePicker dueDate;
@@ -44,11 +58,35 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private boolean fragmentShown;
     private boolean isRecurring;
 
+    private String householdKey;
+    private String user_id;
+
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                }
+            }
+        };
 
         // Set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.pick_housemates);
@@ -59,8 +97,55 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(assignHousemateAdapter);
 
-        // TODO: Test purposes. Remove after database implementation
-        loadSampleHousemates();
+        // TODO: populate housemates
+        user_id = mCurrentUser.getUid();
+        DatabaseReference mUser = mDatabase.child("Users").child(user_id);
+        mUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User user = dataSnapshot.getValue(User.class);
+                householdKey = user.getHousehold();
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
+        mHousehold.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Household userHousehold = dataSnapshot.getValue(Household.class);
+                housemateKeys = userHousehold.getUser_list();
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        for (String userKey: housemateKeys) {
+            if(userKey != user_id){
+                mDatabase.child("Users").child(userKey).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        housemateList.add(dataSnapshot.getValue(User.class));
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
 
         // Initialize the views
         editTaskName = (EditText) findViewById(R.id.task_name);
@@ -145,12 +230,12 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         // Get the currently selected housemates by checking CheckBox state of each housemate
         // and add housemate to array if true
-        ArrayList<User> selectedHousemates = new ArrayList<>();
+        ArrayList<String> selectedHousemates = new ArrayList<>();
         CheckBox checkBox;
         for (int i = 0; i < housemateList.size(); i++) {
             checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
             if (checkBox.isChecked()) {
-                selectedHousemates.add(housemateList.get(i));
+                selectedHousemates.add(housemateList.get(i).getUid());
             }
         }
 
@@ -169,25 +254,27 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         task.setTime(calendar);
 
         // TODO: Add Task object to database
+        DatabaseReference mTask = mDatabase.child("Tasks").push();
+        String key = mTask.getKey();
+
+        mTask.child("key").setValue(key);
+        mTask.child("task_name").setValue(task.getTask_name());
+        mTask.child("task_detail").setValue(task.getTask_detail());
+        mTask.child("trigger").setValue(task.isTrigger());
+        mTask.child("status").setValue(task.isStatus());
+
+        mTask.child("user_list").setValue(task.getUser_list());
+
+        mTask.child("time").setValue(task.getTime());
+        mTask.child("recur").setValue(task.isRecur());
+        mTask.child("amountOfTime").setValue(task.getAmountOfTime());
+        mTask.child("unitOfTime").setValue(task.getUnitOfTime());
+        mTask.child("uid").setValue(user_id);
+        mTask.child("household").setValue(householdKey);
     }
 
     public void getRecurringOptions() {
         amountOfTime = recurFrag.getAmountOfTime();
         unitOfTime = recurFrag.getSpinnerOption();
-    }
-
-    // TODO: For testing purposes. Remove later after database implementation
-    private void loadSampleHousemates() {
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-
-        User user1 = new User("John", "Emmons", imageUri);
-        housemateList.add(user1);
-
-        User user2 = new User("John", "Emmons", imageUri);
-        housemateList.add(user2);
-
-        User user3 = new User("John", "Emmons", imageUri);
-        housemateList.add(user3);
     }
 }

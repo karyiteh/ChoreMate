@@ -32,8 +32,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -106,14 +110,6 @@ public class UserProfileFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        // add authStateListener
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         // Set up user database reference.
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -128,9 +124,14 @@ public class UserProfileFragment extends Fragment {
             }
         };
 
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         // Telling Android that this fragment has an option menu.
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -171,7 +172,7 @@ public class UserProfileFragment extends Fragment {
         });
 
         // Set up the recycler view for the tasks.
-        userTasks = getTasksFromDatabase();
+        getTasksFromDatabase();
         taskListAdapter = new TaskAdapter(userTasks);
         mTaskList.setAdapter(taskListAdapter);
         taskListManager = new LinearLayoutManager(getContext());
@@ -235,34 +236,28 @@ public class UserProfileFragment extends Fragment {
      * Gets the tasks for the current user.
      * @return  A list of tasks that is assigned to the current user.
      */
-    private ArrayList<Task> getTasksFromDatabase() {
-        // TODO: Replace code with code that gets tasks from database.
-        // Dummy task list.
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        Task task1 = new Task();
-        task1.setTask_name("Do the dishes");
-        task1.setTask_detail("Dishes needs to be washed as soon as they are used.");
-        task1.setTime(new GregorianCalendar(2018, 6, 10, 12,0));
-        User user1 = new User();
-        user1.setFirst_name("John");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        user1.setAvatar(imageUri);
-        ArrayList<User> userList = new ArrayList<>();
-        userList.add(user1);
-        task1.setUser_list(userList);
-        Task task2 = new Task();
-        task2.setTask_name("Take out the trash");
-        task2.setTask_detail("Trash to be taken out when it is full");
-        task2.setTime(new GregorianCalendar(2018, 6, 1, 13, 0));
-        task2.setUser_list(userList);
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.trimToSize();
+    private void getTasksFromDatabase() {
+        userTasks = new ArrayList<Task>();
 
-        // Return the task list obtained from the database.
-        return tasks;
+        // TODO: Gets housemate's tasks from database.
+        String user_id = mCurrentUser.getUid();
+        Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("household").equalTo(user_id);
 
+        mQueryUserTask.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                    userTasks.add(taskSnapshot.getValue(Task.class));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**

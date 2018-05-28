@@ -12,6 +12,8 @@ import java.util.ArrayList;
  * Implements Parcelable to be able to be passed through activities.
  */
 public class User implements Parcelable{
+    private String uid;
+
     // Strings representing the user's first and last name
     private String firstname;
     private String lastname;
@@ -38,6 +40,13 @@ public class User implements Parcelable{
         this.firstname = first_name;
         this.lastname = last_name;
         this.avataruri = avatar;
+    }
+    // getters and setters for users' uid
+    public String getUid() {
+        return firstname;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     // getters and setters for users' first and last names

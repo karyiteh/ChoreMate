@@ -10,6 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.Calendar;
 
 
@@ -34,10 +42,25 @@ public class ViewTaskActivity extends AppCompatActivity {
     // The task to be displayed.
     private Task task;
 
+    // The user assigned to the task
+    private User user;
+
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
+
         setContentView(R.layout.activity_view_task);
 
         // Creates the appbar.
@@ -60,7 +83,21 @@ public class ViewTaskActivity extends AppCompatActivity {
 
         // Updates the text fields.
         appbar.setTitle(task.getTask_name());
-        textUser.setText(task.getUser_list().get(0).getFirst_name());
+
+        DatabaseReference mUser = mDatabase.child("Users").child(task.getUser_list().get(0));
+        mUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        textUser.setText(user.getFirst_name());
         // TODO: Do more processing to the date to be displayed nicely.
         Calendar dueDate = task.getTime();
         textDueDate.setText(dueDate.getTime().toString());
@@ -109,6 +146,7 @@ public class ViewTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO: Remove the task from the task list and database
+                mDatabase.child("Tasks").child(task.getKey()).removeValue();
 
                 Intent finish = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(finish);
@@ -137,6 +175,7 @@ public class ViewTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO: Remove the task from the task list and database
+                mDatabase.child("Task").child(task.getKey()).removeValue();
 
                 Intent delete = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(delete);

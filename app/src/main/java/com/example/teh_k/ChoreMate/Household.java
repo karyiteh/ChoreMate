@@ -19,9 +19,9 @@ public class Household implements Parcelable{
     private String house_code;
 
     // lists for users, tasks, and payments
-    private List<User> user_list;
-    private List<Task> task_list;
-    private List<Payment> payment_list;
+    private List<String> user_list;
+    private List<String> task_list;
+    private List<String> payment_list;
 
     public Household() {
         // Default empty constructor.
@@ -44,22 +44,22 @@ public class Household implements Parcelable{
     }
 
     // getters and setters for lists of users, tasks, and payments
-    public List<User> getUser_list() {
+    public List<String> getUser_list() {
         return user_list;
     }
-    public void setUser_list(List<User> user_list) {
+    public void setUser_list(List<String> user_list) {
         this.user_list = user_list;
     }
-    public List<Task> getTask_list() {
+    public List<String> getTask_list() {
         return task_list;
     }
-    public void setTask_list(List<Task> task_list) {
+    public void setTask_list(List<String> task_list) {
         this.task_list = task_list;
     }
-    public List<Payment> getPayment_list() {
+    public List<String> getPayment_list() {
         return payment_list;
     }
-    public void setPayment_list(List<Payment> payment_list) {
+    public void setPayment_list(List<String> payment_list) {
         this.payment_list = payment_list;
     }
 
@@ -73,19 +73,19 @@ public class Household implements Parcelable{
         house_name = in.readString();
         house_code = in.readString();
         if (in.readByte() == 0x01) {
-            user_list = new ArrayList<User>();
+            user_list = new ArrayList<String>();
             in.readList(user_list, User.class.getClassLoader());
         } else {
             user_list = null;
         }
         if (in.readByte() == 0x01) {
-            task_list = new ArrayList<Task>();
+            task_list = new ArrayList<String>();
             in.readList(task_list, Task.class.getClassLoader());
         } else {
             task_list = null;
         }
         if (in.readByte() == 0x01) {
-            payment_list = new ArrayList<Payment>();
+            payment_list = new ArrayList<String>();
             in.readList(payment_list, Payment.class.getClassLoader());
         } else {
             payment_list = null;
@@ -143,12 +143,11 @@ public class Household implements Parcelable{
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-
-        result.put("HouseholdName", house_name);
-        result.put("HouseholdCode", house_code);
-        result.put("MemberUidList", user_list);
-        result.put("TaskList", task_list);
-        result.put("PaymentList", payment_list);
+        result.put("house_name", house_name);
+        result.put("house_code", house_code);
+        result.put("user_list", user_list);
+        result.put("task_list", task_list);
+        result.put("payment_list", payment_list);
 
         return result;
     }

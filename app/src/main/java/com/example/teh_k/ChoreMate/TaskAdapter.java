@@ -1,13 +1,20 @@
 package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.LinearLayout;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +28,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     ArrayList<Task> tasks;
+
+
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private Uri avatarUri;
 
     /**
      * Provides reference to the views for each data item.
@@ -111,11 +125,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         // Get element from dataset at this position
         Task currentTask = tasks.get(position);
-        List<User> currentAssignedUsers =  currentTask.getUser_list();
+        List<String> currentAssignedUsers =  currentTask.getUser_list();
 
         // Replace the contents of the view with that element
         holder.taskTitle.setText(currentTask.getTask_name());
-        holder.avatar.setImageURI(currentAssignedUsers.get(0).getAvatar());
+        mDatabase.child("Users").child(currentAssignedUsers.get(0))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        avatarUri = dataSnapshot.getValue(User.class).getAvatar();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("TaskAdapterAvatar", "Uri retrieving error");
+                    }
+                });
+
+        holder.avatar.setImageURI(avatarUri);
     }
 
     /**
