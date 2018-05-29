@@ -262,11 +262,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Toast.makeText(LoginActivity.this, "Login Error", Toast.LENGTH_LONG).show();
+                                // Dismiss the loading screen and show error message.
+                                showProgress(false);
+                                Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
-                        Toast.makeText(LoginActivity.this, "Login Error", Toast.LENGTH_LONG).show();
+                        // Dismiss the loading screen and show error message.
+                        showProgress(false);
+                        Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
                     }
                 }
             });
