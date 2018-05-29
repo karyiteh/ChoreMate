@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -12,6 +14,8 @@ import java.util.ArrayList;
  * Implements Parcelable to be able to be passed through activities.
  */
 public class User implements Parcelable{
+    private String uid;
+
     // Strings representing the user's first and last name
     private String first_name;
     private String last_name;
@@ -21,10 +25,10 @@ public class User implements Parcelable{
     private String password;
 
     // The avatar of the user.
-    private Uri avatar;
+    private Uri avataruri;
 
     // household that the user belongs to
-    private Household household;
+    private String household;
 
     // The current balances of the user and their housemates.
     private ArrayList<HousemateBalance> current_balances;
@@ -37,7 +41,14 @@ public class User implements Parcelable{
     public User(String first_name, String last_name, Uri avatar) {
         this.first_name = first_name;
         this.last_name = last_name;
-        this.avatar = avatar;
+        this.avataruri = avatar;
+    }
+    // getters and setters for users' uid
+    public String getUid() {
+        return uid;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     // getters and setters for users' first and last names
@@ -72,18 +83,18 @@ public class User implements Parcelable{
 
     // Getters and setters for the avatar.
     public Uri getAvatar() {
-        return avatar;
+        return avataruri;
     }
 
     public void setAvatar(Uri avatar) {
-        this.avatar = avatar;
+        this.avataruri = avatar;
     }
 
     // getters and setters for the household
-    public Household getHousehold() {
+    public String getHousehold() {
         return household;
     }
-    public void setHousehold(Household household) {
+    public void setHousehold(String household) {
         this.household = household;
     }
 
@@ -104,8 +115,8 @@ public class User implements Parcelable{
         last_name = in.readString();
         email = in.readString();
         password = in.readString();
-        avatar = (Uri) in.readValue(Uri.class.getClassLoader());
-        household = (Household) in.readValue(Household.class.getClassLoader());
+        avataruri = (Uri) in.readValue(Uri.class.getClassLoader());
+        household = in.readString();
         if (in.readByte() == 0x01) {
             current_balances = new ArrayList<HousemateBalance>();
             in.readList(current_balances, HousemateBalance.class.getClassLoader());
@@ -129,7 +140,7 @@ public class User implements Parcelable{
         dest.writeString(last_name);
         dest.writeString(email);
         dest.writeString(password);
-        dest.writeValue(avatar);
+        dest.writeValue(avataruri);
         dest.writeValue(household);
         if (current_balances == null) {
             dest.writeByte((byte) (0x00));
@@ -157,5 +168,17 @@ public class User implements Parcelable{
         }
     };
 
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("email", email);
+        result.put("first_name", first_name);
+        result.put("last_name", last_name);
+        result.put("password", password);
+        result.put("avataruri", avataruri);
+        result.put("household", password);
+
+        return result;
+    }
 
 }
