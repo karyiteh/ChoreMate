@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -15,8 +17,8 @@ public class User implements Parcelable{
     private String uid;
 
     // Strings representing the user's first and last name
-    private String firstname;
-    private String lastname;
+    private String first_name;
+    private String last_name;
 
     // strings representing the user's email and password
     private String email;
@@ -37,13 +39,13 @@ public class User implements Parcelable{
 
     // TODO: Constructor used for testing. Remove later
     public User(String first_name, String last_name, Uri avatar) {
-        this.firstname = first_name;
-        this.lastname = last_name;
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.avataruri = avatar;
     }
     // getters and setters for users' uid
     public String getUid() {
-        return firstname;
+        return uid;
     }
     public void setUid(String uid) {
         this.uid = uid;
@@ -51,16 +53,16 @@ public class User implements Parcelable{
 
     // getters and setters for users' first and last names
     public String getFirst_name() {
-        return firstname;
+        return first_name;
     }
     public void setFirst_name(String first_name) {
-        this.firstname = first_name;
+        this.first_name = first_name;
     }
     public String getLast_name() {
-        return lastname;
+        return last_name;
     }
     public void setLast_name(String last_name) {
-        this.lastname = last_name;
+        this.last_name = last_name;
     }
 
     // getters and setters for email
@@ -109,8 +111,8 @@ public class User implements Parcelable{
      * Constructor method for when passing object through activities.
      */
     protected User(Parcel in) {
-        firstname = in.readString();
-        lastname = in.readString();
+        first_name = in.readString();
+        last_name = in.readString();
         email = in.readString();
         password = in.readString();
         avataruri = (Uri) in.readValue(Uri.class.getClassLoader());
@@ -134,8 +136,8 @@ public class User implements Parcelable{
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(firstname);
-        dest.writeString(lastname);
+        dest.writeString(first_name);
+        dest.writeString(last_name);
         dest.writeString(email);
         dest.writeString(password);
         dest.writeValue(avataruri);
@@ -166,5 +168,17 @@ public class User implements Parcelable{
         }
     };
 
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("email", email);
+        result.put("first_name", first_name);
+        result.put("last_name", last_name);
+        result.put("password", password);
+        result.put("avataruri", avataruri);
+        result.put("household", password);
+
+        return result;
+    }
 
 }

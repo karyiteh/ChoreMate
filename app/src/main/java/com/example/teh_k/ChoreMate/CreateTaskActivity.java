@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -19,14 +20,19 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -43,7 +49,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
     // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
-    private List<String> housemateKeys = new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignHousemateAdapter assignHousemateAdapter;
     private DatePicker dueDate;
@@ -60,6 +65,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
     private String householdKey;
     private String user_id;
+
 
     /**
      * Database references.
@@ -106,36 +112,18 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
                 User user = dataSnapshot.getValue(User.class);
                 householdKey = user.getHousehold();
+                Log.d("CreateTaskAvtivity", householdKey);
+                Query mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
 
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-        mHousehold.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Household userHousehold = dataSnapshot.getValue(Household.class);
-                housemateKeys = userHousehold.getUser_list();
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        for (String userKey: housemateKeys) {
-            if(userKey != user_id){
-                mDatabase.child("Users").child(userKey).addValueEventListener(new ValueEventListener() {
+                mQueryHousemateMatch.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        housemateList.add(dataSnapshot.getValue(User.class));
+                        for(DataSnapshot housemate: dataSnapshot.getChildren()){
+                            User user =  housemate.getValue(User.class);
+                            housemateList.add(user);
+                            Log.d("CreateTaskAvtivity", "roommate populated: " + user);
+                        }
 
                     }
 
@@ -145,7 +133,11 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                     }
                 });
             }
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
 
         // Initialize the views
         editTaskName = (EditText) findViewById(R.id.task_name);
@@ -240,6 +232,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }
 
         task.setUser_list(selectedHousemates);
+        task.setHousemateAvatar(housemateList.get(0).getAvatar());
 
         // Set amount and unit of time from recurring options fragment
         if (recurFrag != null && recurFrag.getAmountOfTime() != 0 && recurFrag.getSpinnerOption() != null) {
@@ -251,26 +244,36 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // Set the task deadline
         calendar = new GregorianCalendar();
         calendar.set(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
-        task.setTime(calendar);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+        String time = formatter.format(calendar.getTime());
+
+        task.setTime(time);
+        task.setUid(mCurrentUser.getUid());
+        task.setHousehold(householdKey);
+        task.setIndex(0);
 
         // TODO: Add Task object to database
         DatabaseReference mTask = mDatabase.child("Tasks").push();
+
         String key = mTask.getKey();
+        task.setKey(key);
 
-        mTask.child("key").setValue(key);
-        mTask.child("task_name").setValue(task.getTask_name());
-        mTask.child("task_detail").setValue(task.getTask_detail());
-        mTask.child("trigger").setValue(task.isTrigger());
-        mTask.child("status").setValue(task.isStatus());
+        mTask.setValue(task.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("CreateTaskAvtivity", "Create Task: success");
+                Toast.makeText(CreateTaskActivity.this, "Task Created",
+                        Toast.LENGTH_SHORT).show();
 
-        mTask.child("user_list").setValue(task.getUser_list());
-
-        mTask.child("time").setValue(task.getTime());
-        mTask.child("recur").setValue(task.isRecur());
-        mTask.child("amountOfTime").setValue(task.getAmountOfTime());
-        mTask.child("unitOfTime").setValue(task.getUnitOfTime());
-        mTask.child("uid").setValue(user_id);
-        mTask.child("household").setValue(householdKey);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("CreateTaskAvtivity", "Create Task:failure");
+                Toast.makeText(CreateTaskActivity.this, "Error",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void getRecurringOptions() {

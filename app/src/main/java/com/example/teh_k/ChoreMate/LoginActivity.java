@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -224,8 +225,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            //mAuthTask = new UserLoginTask(email, password);
-            //mAuthTask.execute((Void) null);
 
             // TODO: Not sure if this is supposed to be here.
             /* TODO 2: WILL NAVIGATE TO NOHOUSEHOLDACTIVITY BY DEFAULT. Implementation for
@@ -239,10 +238,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if(dataSnapshot.hasChild(user_id)){
-                                    // If login is successful, this moves the user to the correct screen.
-                                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(mainIntent);
-                                    Toast.makeText(LoginActivity.this, "Signed in as :" + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+
+                                    User currentUser = dataSnapshot.child(user_id).getValue(User.class);
+                                    if(currentUser.getHousehold().isEmpty()){
+
+                                        Log.d("LoginAvtivity", "New user detected");
+                                        Intent noHouseIntent = new Intent(LoginActivity.this, NoHouseholdActivity.class);
+                                        startActivity(noHouseIntent);
+                                        Toast.makeText(LoginActivity.this, "Time to join/create a household.", Toast.LENGTH_LONG).show();
+
+                                    } else {
+
+                                        // If login is successful, this moves the user to the correct screen.
+                                        Log.d("LoginAvtivity", "User signed in : go to main activity");
+                                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(mainIntent);
+                                        Toast.makeText(LoginActivity.this, "Signed in as :" + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+
+                                    }
+
                                 }
                             }
 
@@ -252,7 +266,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             }
                         });
                     } else {
-                        Toast.makeText(LoginActivity.this, "Register?", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Login Error", Toast.LENGTH_LONG).show();
                     }
                 }
             });

@@ -93,8 +93,8 @@ public class RegisterActivity extends AppCompatActivity {
         editPasswordConfirm.setError(null);
 
         // Store values at time of submit attempt.
-        final String firstName = editFirstName.getText().toString();
-        final String lastName = editLastName.getText().toString();
+        final String first_name = editFirstName.getText().toString();
+        final String last_name = editLastName.getText().toString();
         final String email = editEmail.getText().toString();
         final String password = editPassword.getText().toString();
         final String confirmPassword = editPasswordConfirm.getText().toString();
@@ -140,24 +140,24 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Checks for a valid last name.
-        if(TextUtils.isEmpty(lastName)) {
+        if(TextUtils.isEmpty(last_name)) {
             editLastName.setError(EMPTY_FIELD);
             focusView = editLastName;
             cancel = true;
         }
-        else if(!isNameValid(lastName)) {
+        else if(!isNameValid(last_name)) {
             editLastName.setError(INVALID_NAME);
             focusView = editLastName;
             cancel = true;
         }
 
         // Checks for a valid first name.
-        if(TextUtils.isEmpty(firstName)) {
+        if(TextUtils.isEmpty(first_name)) {
             editFirstName.setError(EMPTY_FIELD);
             focusView = editFirstName;
             cancel = true;
         }
-        else if(!isNameValid(firstName)) {
+        else if(!isNameValid(first_name)) {
             editFirstName.setError(INVALID_NAME);
             focusView = editFirstName;
             cancel = true;
@@ -185,11 +185,11 @@ public class RegisterActivity extends AppCompatActivity {
                         Map<String, Object> childUpdates = new HashMap<>();
                         childUpdates.put("/uid", user_id);
                         childUpdates.put("/email", email);
-                        childUpdates.put("/firstname", firstName);
-                        childUpdates.put("/lastname", lastName);
+                        childUpdates.put("/first_name", first_name);
+                        childUpdates.put("/last_name", last_name);
                         childUpdates.put("/password", password);
-                        childUpdates.put("/avataruri", null);
-                        childUpdates.put("/household", null);
+                        childUpdates.put("/avataruri", "");
+                        childUpdates.put("/household", "");
 
                         curr_user_db.updateChildren(childUpdates);
 

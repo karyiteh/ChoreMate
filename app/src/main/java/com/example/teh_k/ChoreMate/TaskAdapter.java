@@ -29,13 +29,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     ArrayList<Task> tasks;
 
-
-    /**
-     * Database references.
-     */
-    private DatabaseReference mDatabase;
-    private Uri avatarUri;
-
     /**
      * Provides reference to the views for each data item.
      */
@@ -125,24 +118,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         // Get element from dataset at this position
         Task currentTask = tasks.get(position);
-        List<String> currentAssignedUsers =  currentTask.getUser_list();
 
         // Replace the contents of the view with that element
         holder.taskTitle.setText(currentTask.getTask_name());
-        mDatabase.child("Users").child(currentAssignedUsers.get(0))
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        avatarUri = dataSnapshot.getValue(User.class).getAvatar();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d("TaskAdapterAvatar", "Uri retrieving error");
-                    }
-                });
-
-        holder.avatar.setImageURI(avatarUri);
+        holder.avatar.setImageURI(currentTask.getHousemateAvatar());
     }
 
     /**
@@ -153,6 +132,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public int getItemCount() {
         return tasks.size();
     }
-
-
 }

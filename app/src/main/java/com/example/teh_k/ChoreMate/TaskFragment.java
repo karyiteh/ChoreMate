@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +20,6 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +51,7 @@ public class TaskFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     // Task list.
-    private ArrayList<Task> taskList;
+    private ArrayList<Task> tasks;
 
     public TaskFragment() {
         // Required empty public constructor
@@ -110,10 +110,10 @@ public class TaskFragment extends Fragment {
         }
 
         // Get the task list from the database.
-        taskList = initializeTasks();
+        tasks = initializeTasks();
 
         // Creates the adapter.
-        taskListAdapter = new TaskAdapter(taskList);
+        taskListAdapter = new TaskAdapter(tasks);
         mTasklist.setAdapter(taskListAdapter);
 
         // Creates the layout manager.
@@ -153,8 +153,9 @@ public class TaskFragment extends Fragment {
      * @return  A list of tasks for the household.
      */
     private ArrayList<Task> initializeTasks() {
+        tasks = new ArrayList<Task>();
 
-        // populate task
+        // TODO: populate task (from database)
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
         mUser.addValueEventListener(new ValueEventListener() {
             @Override
@@ -168,7 +169,9 @@ public class TaskFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
-                            taskList.add(taskSnapshot.getValue(Task.class));
+                            Task task = taskSnapshot.getValue(Task.class);
+                            Log.d("TaskFregment", "Task populated: " + task.getTask_name());
+                            tasks.add(task);
                         }
                     }
 
@@ -185,7 +188,7 @@ public class TaskFragment extends Fragment {
         });
 
         // Return the task list obtained from the database.
-        return taskList;
+        return tasks;
     }
 
     /**
