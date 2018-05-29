@@ -74,19 +74,19 @@ public class Household implements Parcelable{
         house_code = in.readString();
         if (in.readByte() == 0x01) {
             user_list = new ArrayList<String>();
-            in.readList(user_list, User.class.getClassLoader());
+            in.readList(user_list, String.class.getClassLoader());
         } else {
             user_list = null;
         }
         if (in.readByte() == 0x01) {
             task_list = new ArrayList<String>();
-            in.readList(task_list, Task.class.getClassLoader());
+            in.readList(task_list, String.class.getClassLoader());
         } else {
             task_list = null;
         }
         if (in.readByte() == 0x01) {
             payment_list = new ArrayList<String>();
-            in.readList(payment_list, Payment.class.getClassLoader());
+            in.readList(payment_list, String.class.getClassLoader());
         } else {
             payment_list = null;
         }
@@ -140,6 +140,7 @@ public class Household implements Parcelable{
             return new Household[size];
         }
     };
+
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

@@ -168,6 +168,8 @@ public class CreatePaymentActivity extends AppCompatActivity {
         }
 
         // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?) DATABASE NEEDED
+
+        // TODO: Bring user back to MainActivity.class after successful task creation.
     }
 
 

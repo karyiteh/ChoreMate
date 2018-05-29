@@ -1,5 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -193,10 +194,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                         curr_user_db.updateChildren(childUpdates);
 
+                        // Redirects users back to the main sign in page.
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+
+
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("RegisterAvtivity", "createUserWithEmail:failure", task.getException());
-                        Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                        Toast.makeText(RegisterActivity.this, "User account already exists.",
                                 Toast.LENGTH_SHORT).show();
                     }
                 }

@@ -29,10 +29,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-        <activity
-            android:name=".DisplayTaskActivity"
-            android:exported="true"
-            android:parentActivityName=".MainActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".NoHouseholdActivity" />
         <activity android:name=".ForgotPasswordActivity" />
@@ -54,9 +50,8 @@
         </provider>
 
         <activity android:name=".ViewTaskActivity" />
-        <activity android:name=".PaymentFragment" />
         <activity android:name=".CreatePaymentActivity" />
-        <activity android:name=".HousemateTransactionHistoryActivity"></activity>
+        <activity android:name=".HousemateTransactionHistoryActivity"/>
     </application>
 
 </manifest>
