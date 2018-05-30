@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg"
-    tools:context=".HousemateTransactionHistoryActivity"
-    >
-
+    tools:context=".HousemateTransactionHistoryActivity">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/transaction_history"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolbar"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:title="Transaction History"
+        app:titleTextColor="@color/white">
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/layout_top"
@@ -18,23 +27,14 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp" >
 
-        <TextView
-            android:id="@+id/text_title_transaction_history"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:fontFamily="cursive"
-            android:gravity="center"
-            android:text="@string/transaction_history"
-            android:textColor="#4d4dce"
-            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/text_housemate_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="@string/assigned_housemate_name"
+            android:text="assigned_housemate_name"
+            android:textColor="@color/white"
             android:textSize="25sp" />
 
         <ScrollView
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="#4d4dce"
+            android:background="@drawable/button_main"
             android:gravity="bottom|center_vertical|center"
             android:orientation="horizontal">
 

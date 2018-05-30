@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/row_bg">
+    android:background="@drawable/button_main">
 
     <!--Text for the row!-->
     <TextView
@@ -18,6 +18,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/row"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textSize="30sp" />
 </LinearLayout>

@@ -20,7 +20,7 @@
             android:fontFamily="cursive"
             android:gravity="center"
             android:text="@string/create_task"
-            android:textColor="#4d4dce"
+            android:textColor="@color/create_header"
             android:textSize="30sp" />
 
         <EditText
@@ -52,10 +52,9 @@
             android:id="@+id/task_due_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/due_date"
-            android:datePickerMode="spinner"
             android:calendarViewShown="false"
-            />
+            android:datePickerMode="spinner"
+            android:hint="@string/due_date" />
 
         <TextView
             android:id="@+id/assign_task"
@@ -92,7 +91,7 @@
             android:id="@+id/btn_create_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@color/button_main"
             android:text="@string/create_task"
             android:textColor="@color/white" />
 
