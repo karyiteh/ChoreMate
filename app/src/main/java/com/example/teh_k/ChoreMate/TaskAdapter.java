@@ -121,7 +121,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         // Replace the contents of the view with that element
         holder.taskTitle.setText(currentTask.getTask_name());
-        holder.avatar.setImageURI(currentTask.getHousemateAvatar());
+        holder.avatar.setImageURI(Uri.parse(currentTask.getHousemateAvatar()));
+
     }
 
     /**

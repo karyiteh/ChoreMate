@@ -23,7 +23,7 @@ public class Task implements Parcelable {
     private String task_detail;
 
     // Avatar of the housemate.
-    private Uri housemateAvatar;
+    private String housemateAvatar;
 
     //whether the task is "triggered" by another user or occurs at set times
     // 0 for no trigger, 1 for trigger
@@ -58,7 +58,7 @@ public class Task implements Parcelable {
 
     //getter and setter for task name and details
     public String getKey() { return key; }
-    public void setKey(String task_name) { this.key = key; }
+    public void setKey(String key) { this.key = key; }
 
     public String getTask_name() { return task_name; }
     public void setTask_name(String task_name) { this.task_name = task_name; }
@@ -66,11 +66,11 @@ public class Task implements Parcelable {
     public String getTask_detail() { return task_detail; }
     public void setTask_detail(String task_detail) { this.task_detail = task_detail; }
 
-    public Uri getHousemateAvatar() {
+    public String getHousemateAvatar() {
         return housemateAvatar;
     }
-    public void setHousemateAvatar(Uri avatar) {
-        housemateAvatar = avatar;
+    public void setHousemateAvatar(String housemateAvatar) {
+        this.housemateAvatar = housemateAvatar;
     }
 
     //getter and setter for trigger
@@ -86,22 +86,6 @@ public class Task implements Parcelable {
     public void setUser_list(ArrayList<String> user_list) { this.user_list = user_list; }
 
     //getters and setters for the task deadline
-    /*
-    public Calendar getTime() {
-        Calendar calendarTime = Calendar.getInstance();
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            calendarTime.setTime(formatter.parse(this.time));
-        } catch(ParseException e) {
-            e.printStackTrace();
-        }
-        return calendarTime;
-    }
-        public void setTime(Calendar time) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        this.time = formatter.format(time.getTime());
-    }
-    */
     public String getTime() {
         return this.time;
     }
@@ -142,7 +126,7 @@ public class Task implements Parcelable {
         key = in.readString();
         task_name = in.readString();
         task_detail = in.readString();
-        housemateAvatar = (Uri) in.readValue(Uri.class.getClassLoader());
+        housemateAvatar = in.readString();
         trigger = in.readByte() != 0x00;
         status = in.readByte() != 0x00;
         if (in.readByte() == 0x01) {
@@ -165,15 +149,12 @@ public class Task implements Parcelable {
         return 0;
     }
 
-    /**
-     * Flattens the task object to a Parcelable.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeString(task_name);
         dest.writeString(task_detail);
-        dest.writeValue(housemateAvatar);
+        dest.writeString(housemateAvatar);
         dest.writeByte((byte) (trigger ? 0x01 : 0x00));
         dest.writeByte((byte) (status ? 0x01 : 0x00));
         if (user_list == null) {
@@ -191,10 +172,6 @@ public class Task implements Parcelable {
         dest.writeInt(index);
     }
 
-    /**
-     * Interface that must be implemented and provided as a public CREATOR field that generates
-     * instances of your Parcelable class from a Parcel.
-     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
         @Override
@@ -207,7 +184,6 @@ public class Task implements Parcelable {
             return new Task[size];
         }
     };
-
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

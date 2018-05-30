@@ -309,6 +309,42 @@ public class HouseholdFragment extends Fragment {
 
                         DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
                         mHousehold.removeValue();
+
+                        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("household").equalTo(householdKey);
+
+                        mQueryUserTasks.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                                    mDatabase.child("Tasks").child(taskSnapshot.getKey()).removeValue();
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        Query mQueryUsers = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+
+                        mQueryUsers.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                                    mDatabase.child("Users").child(userSnapshot.getKey()).setValue("");
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
 
                     @Override

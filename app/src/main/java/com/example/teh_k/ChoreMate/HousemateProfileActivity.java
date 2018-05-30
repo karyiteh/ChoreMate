@@ -84,7 +84,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
         currentHousemate = intent.getParcelableExtra(MainActivity.HOUSEMATE);
 
         // Update the fields.
-        avatar.setImageURI(currentHousemate.getAvatar());
+        avatar.setImageURI(Uri.parse(currentHousemate.getAvatar()));
         mHousemateName.setText(currentHousemate.getFirst_name());
 
         // Getting the user task list from the database.

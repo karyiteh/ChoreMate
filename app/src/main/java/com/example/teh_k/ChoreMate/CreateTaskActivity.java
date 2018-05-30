@@ -113,7 +113,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
                 User user = dataSnapshot.getValue(User.class);
                 householdKey = user.getHousehold();
-                Log.d("CreateTaskAvtivity", householdKey);
                 Query mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
 
                 mQueryHousemateMatch.addValueEventListener(new ValueEventListener() {
@@ -123,7 +122,8 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                         for(DataSnapshot housemate: dataSnapshot.getChildren()){
                             User user =  housemate.getValue(User.class);
                             housemateList.add(user);
-                            Log.d("CreateTaskAvtivity", "roommate populated: " + user);
+                            Log.d("CreateTaskAvtivity", "roommate populated: " + user.getLast_name());
+                            Log.d("CreateTaskAvtivity", "uri: " + user.getAvatar());
                         }
 
                     }
@@ -225,6 +225,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // and add housemate to array if true
         ArrayList<String> selectedHousemates = new ArrayList<>();
         CheckBox checkBox;
+        // Log.d("CreateTaskAvtivity", housemateList.get(0).getAvatar().toString());
         for (int i = 0; i < housemateList.size(); i++) {
             checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
             if (checkBox.isChecked()) {
@@ -233,7 +234,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }
 
         task.setUser_list(selectedHousemates);
-        task.setHousemateAvatar(housemateList.get(0).getAvatar());
+        task.setHousemateAvatar(housemateList.get(0).getAvatar().toString());
 
         // Set amount and unit of time from recurring options fragment
         if (recurFrag != null && recurFrag.getAmountOfTime() != 0 && recurFrag.getSpinnerOption() != null) {
@@ -255,7 +256,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         // TODO: Add Task object to database
         DatabaseReference mTask = mDatabase.child("Tasks").push();
-
         String key = mTask.getKey();
         task.setKey(key);
 

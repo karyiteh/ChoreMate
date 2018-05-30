@@ -1,6 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -111,7 +112,7 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.housemateName.setText(housemates.get(position).getFirst_name());
-        holder.avatar.setImageURI(housemates.get(position).getAvatar());
+        holder.avatar.setImageURI(Uri.parse(housemates.get(position).getAvatar()));
     }
 
     /**
