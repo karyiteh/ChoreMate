@@ -17,7 +17,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_alignParentTop="true"
-        android:text="@string/household"
         android:textSize="30sp"
         tools:showIn="@layout/fragment_household"/>
 

@@ -110,15 +110,7 @@ public class TaskFragment extends Fragment {
         }
 
         // Get the task list from the database.
-        tasks = initializeTasks();
-
-        // Creates the adapter.
-        taskListAdapter = new TaskAdapter(tasks);
-        mTasklist.setAdapter(taskListAdapter);
-
-        // Creates the layout manager.
-        taskListManager = new LinearLayoutManager(getContext());
-        mTasklist.setLayoutManager(taskListManager);
+        initializeTasks();
     }
 
     /**
@@ -150,9 +142,8 @@ public class TaskFragment extends Fragment {
     // PRIVATE METHODS!
     /**
      * Fetches the task list from the database.
-     * @return  A list of tasks for the household.
      */
-    private ArrayList<Task> initializeTasks() {
+    private void initializeTasks() {
         Log.d("TaskFragment", "Inside initializeTask");
         tasks = new ArrayList<Task>();
 
@@ -174,6 +165,14 @@ public class TaskFragment extends Fragment {
                             Log.d("TaskFragment", "Task populated: " + task.getTask_name());
                             tasks.add(task);
                         }
+
+                        // Creates the adapter.
+                        taskListAdapter = new TaskAdapter(tasks);
+                        mTasklist.setAdapter(taskListAdapter);
+
+                        // Creates the layout manager.
+                        taskListManager = new LinearLayoutManager(getContext());
+                        mTasklist.setLayoutManager(taskListManager);
                     }
 
                     @Override
@@ -188,8 +187,6 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        // Return the task list obtained from the database.
-        return tasks;
     }
 
     /**
