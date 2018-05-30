@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +69,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private UserLoginTask mAuthTask = null;
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference mUser;
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -67,6 +82,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mUser = FirebaseDatabase.getInstance().getReference().child("Users");
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -205,15 +225,56 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
 
             // TODO: Not sure if this is supposed to be here.
             /* TODO 2: WILL NAVIGATE TO NOHOUSEHOLDACTIVITY BY DEFAULT. Implementation for
                TODO 2: logged in checking/household exist checking later */
-            // If login is successful, this moves the user to the correct screen.
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        final String user_id = mAuth.getCurrentUser().getUid();
+                        mUser.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.hasChild(user_id)){
+
+                                    User currentUser = dataSnapshot.child(user_id).getValue(User.class);
+                                    if(currentUser.getHousehold().isEmpty()){
+
+                                        Log.d("LoginAvtivity", "New user detected");
+                                        Intent noHouseIntent = new Intent(LoginActivity.this, NoHouseholdActivity.class);
+                                        startActivity(noHouseIntent);
+                                        Toast.makeText(LoginActivity.this, "Time to join/create a household.", Toast.LENGTH_LONG).show();
+
+                                    } else {
+
+                                        // If login is successful, this moves the user to the correct screen.
+                                        Log.d("LoginAvtivity", "User signed in : go to main activity");
+                                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(mainIntent);
+                                        Toast.makeText(LoginActivity.this, "Signed in as :" + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                // Dismiss the loading screen and show error message.
+                                showProgress(false);
+                                Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        // Dismiss the loading screen and show error message.
+                        showProgress(false);
+                        Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
         }
 
     }
@@ -362,21 +423,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
 
             // TODO: register the new account here.
             return true;

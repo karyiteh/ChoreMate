@@ -19,6 +19,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,6 +94,14 @@ public class UserProfileFragment extends Fragment {
     private int userChoice;
     private String imageFilePath = "";
 
+    /**
+     * Database references.
+     */
+    private StorageReference mStorage;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -87,9 +111,22 @@ public class UserProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Set up user database reference.
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                }
+            }
+        };
+
         // Telling Android that this fragment has an option menu.
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -115,27 +152,42 @@ public class UserProfileFragment extends Fragment {
         }
 
         // Gets the user profile from the database.
-        currentUser = getUserFromDatabase();
-
-        // Updates the UI elements to the user profile obtained.
-        mAvatar.setImageURI(currentUser.getAvatar());
-        mUserName.setText(currentUser.getFirst_name());
-
-        // Set up listener for the avatar to change avatar.
-        mAvatar.setOnClickListener(new View.OnClickListener() {
+        //currentUser = getUserFromDatabase();
+        // funny async
+        // TODO: Implement obtaining user data from the database.
+        String user_id = mCurrentUser.getUid();
+        DatabaseReference mCurrUser = mDatabase.child("Users").child(user_id);
+        mCurrUser.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                changeAvatar();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentUser = dataSnapshot.getValue(User.class);
+                Log.d("UserProfileFregment", "Found user: " + currentUser.getAvatar());
+
+                // Updates the UI elements to the user profile obtained.
+                mAvatar.setImageURI(Uri.parse(currentUser.getAvatar()));
+                mUserName.setText(currentUser.getFirst_name());
+
+                // Set up listener for the avatar to change avatar.
+                mAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeAvatar();
+                    }
+                });
+
+                // Set up the recycler view for the tasks.
+                getTasksFromDatabase();
+                taskListAdapter = new TaskAdapter(userTasks);
+                mTaskList.setAdapter(taskListAdapter);
+                taskListManager = new LinearLayoutManager(getContext());
+                mTaskList.setLayoutManager(taskListManager);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
             }
         });
-
-        // Set up the recycler view for the tasks.
-        userTasks = getTasksFromDatabase();
-        taskListAdapter = new TaskAdapter(userTasks);
-        mTaskList.setAdapter(taskListAdapter);
-        taskListManager = new LinearLayoutManager(getContext());
-        mTaskList.setLayoutManager(taskListManager);
-
     }
 
 
@@ -181,47 +233,52 @@ public class UserProfileFragment extends Fragment {
      */
     private User getUserFromDatabase() {
         // TODO: Implement obtaining user data from the database.
-        // TODO: Replace dummyUser with actual user data from database.
-        User dummyUser = new User();
-        dummyUser.setFirst_name("TestingJohn");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        dummyUser.setAvatar(imageUri);
-        return dummyUser;
+        String user_id = mCurrentUser.getUid();
+        DatabaseReference mCurrUser = mDatabase.child("Users").child(user_id);
+        mCurrUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentUser = dataSnapshot.getValue(User.class);
+                Log.d("UserProfileFregment", "Found user: " + currentUser.getLast_name());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+        return currentUser;
     }
 
     /**
      * Gets the tasks for the current user.
      * @return  A list of tasks that is assigned to the current user.
      */
-    private ArrayList<Task> getTasksFromDatabase() {
-        // TODO: Replace code with code that gets tasks from database.
-        // Dummy task list.
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        Task task1 = new Task();
-        task1.setTask_name("Do the dishes");
-        task1.setTask_detail("Dishes needs to be washed as soon as they are used.");
-        task1.setTime(new GregorianCalendar(2018, 6, 10, 12,0));
-        User user1 = new User();
-        user1.setFirst_name("John");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        user1.setAvatar(imageUri);
-        ArrayList<User> userList = new ArrayList<>();
-        userList.add(user1);
-        task1.setUser_list(userList);
-        Task task2 = new Task();
-        task2.setTask_name("Take out the trash");
-        task2.setTask_detail("Trash to be taken out when it is full");
-        task2.setTime(new GregorianCalendar(2018, 6, 1, 13, 0));
-        task2.setUser_list(userList);
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.trimToSize();
+    private void getTasksFromDatabase() {
+        userTasks = new ArrayList<Task>();
 
-        // Return the task list obtained from the database.
-        return tasks;
+        // TODO: Gets housemate's tasks from database.
+        String user_id = mCurrentUser.getUid();
+        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("uid").equalTo(user_id);
 
+        mQueryUserTasks.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                    Task task = taskSnapshot.getValue(Task.class);
+                    Log.d("UserProfileFregment", "Found user task: " + task.getTask_name());
+                    userTasks.add(task);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -290,6 +347,7 @@ public class UserProfileFragment extends Fragment {
      */
     private void logout () {
         // TODO: Implement user log out here.
+        mAuth.signOut();
     }
 
     /**
@@ -431,11 +489,12 @@ public class UserProfileFragment extends Fragment {
             image = data.getData();
         }
 
-        // Updates the current user.
-        currentUser.setAvatar(image);
-        mAvatar.setImageURI(image);
-
         // TODO: Upload the image to the database.
+        saveImage(image);
+
+        // Updates the current user.
+        mAvatar.setImageURI(image);
+        currentUser.setAvatar(image.toString());
 
     }
 
@@ -445,13 +504,39 @@ public class UserProfileFragment extends Fragment {
      */
     private void onCameraResult(Intent data) {
         // Get the image URI.
-        Uri image = Uri.parse(imageFilePath);
-
-        // Updates the current user.
-        currentUser.setAvatar(image);
-        mAvatar.setImageURI(image);
+        Uri image = data.getData();
 
         // TODO: Upload the image into the database.
+        saveImage(image);
+
+        // Updates the current user.
+        mAvatar.setImageURI(image);
+        currentUser.setAvatar(image.toString());
+
+    }
+
+    private void saveImage(Uri uri) {
+        // Firebase storage stuff
+        StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());
+        // On sucess upload image to storage.
+        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
+
+                // Update user avatar uri
+                mCurrUser.child("avatar").setValue(downloadUrl.toString());
+                Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Error.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }

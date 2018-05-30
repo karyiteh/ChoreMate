@@ -4,16 +4,28 @@ package com.example.teh_k.ChoreMate;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -28,8 +40,18 @@ public class TaskFragment extends Fragment {
     private TaskAdapter taskListAdapter;
     private RecyclerView.LayoutManager taskListManager;
 
+    private String user_id;
+
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     // Task list.
-    private ArrayList<Task> taskList;
+    private ArrayList<Task> tasks;
 
     public TaskFragment() {
         // Required empty public constructor
@@ -42,6 +64,20 @@ public class TaskFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
+        user_id = mCurrentUser.getUid();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                }
+            }
+        };
 
         // Tells Android that it has its own options menu on the appbar.
         setHasOptionsMenu(true);
@@ -74,15 +110,7 @@ public class TaskFragment extends Fragment {
         }
 
         // Get the task list from the database.
-        taskList = initializeTasks();
-
-        // Creates the adapter.
-        taskListAdapter = new TaskAdapter(taskList);
-        mTasklist.setAdapter(taskListAdapter);
-
-        // Creates the layout manager.
-        taskListManager = new LinearLayoutManager(getContext());
-        mTasklist.setLayoutManager(taskListManager);
+        initializeTasks();
     }
 
     /**
@@ -114,35 +142,52 @@ public class TaskFragment extends Fragment {
     // PRIVATE METHODS!
     /**
      * Fetches the task list from the database.
-     * @return  A list of tasks for the household.
      */
-    private ArrayList<Task> initializeTasks() {
-        // TODO: Replace code with fetching tasks from database.
-        // Dummy task list.
-        ArrayList<Task> tasks = new ArrayList<Task>();
-        Task task1 = new Task();
-        task1.setTask_name("Do the dishes");
-        task1.setTask_detail("Dishes needs to be washed as soon as they are used.");
-        task1.setTime(new GregorianCalendar(2018, 6, 10, 12,0));
-        User user1 = new User();
-        user1.setFirst_name("John");
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        user1.setAvatar(imageUri);
-        ArrayList<User> userList = new ArrayList<>();
-        userList.add(user1);
-        task1.setUser_list(userList);
-        Task task2 = new Task();
-        task2.setTask_name("Take out the trash");
-        task2.setTask_detail("Trash to be taken out when it is full");
-        task2.setTime(new GregorianCalendar(2018, 6, 1, 13, 0));
-        task2.setUser_list(userList);
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.trimToSize();
+    private void initializeTasks() {
+        Log.d("TaskFragment", "Inside initializeTask");
+        tasks = new ArrayList<Task>();
 
-        // Return the task list obtained from the database.
-        return tasks;
+        // TODO: populate task (from database)
+        DatabaseReference mUser = mDatabase.child("Users").child(user_id);
+        mUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                String householdKey = user.getHousehold();
+
+                Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("household").equalTo(householdKey);
+
+                mQueryUserTask.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                            Task task = taskSnapshot.getValue(Task.class);
+                            Log.d("TaskFregment", "Task populated: " + task.getTask_name());
+                            Log.d("TaskFregment", "Task uri:" + task.getHousemateAvatar());
+                            tasks.add(task);
+                        }
+
+                        // Creates the adapter.
+                        taskListAdapter = new TaskAdapter(tasks);
+                        mTasklist.setAdapter(taskListAdapter);
+
+                        // Creates the layout manager.
+                        taskListManager = new LinearLayoutManager(getContext());
+                        mTasklist.setLayoutManager(taskListManager);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     /**

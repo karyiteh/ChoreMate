@@ -1,12 +1,22 @@
 package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class InviteHousemateActivity extends AppCompatActivity {
 
@@ -17,10 +27,31 @@ public class InviteHousemateActivity extends AppCompatActivity {
     // Appbar on the screen.
     private Toolbar appbar;
 
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_housemate);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                }
+            }
+        };
 
         // Creates the appbar.
         appbar = findViewById(R.id.appbar_invite_housemate);
@@ -41,45 +72,68 @@ public class InviteHousemateActivity extends AppCompatActivity {
     }
 
     private void attemptInvite() {
-        // Initialize local variables
-        View focusView;
-
-        String houseCode = "";
-        String householdName = "";
-
-        boolean cancel = false;
-
         // Getting content for email
-        String emails = editHousemateEmail.getText().toString().trim();
+        final String emails = editHousemateEmail.getText().toString().trim();
+
         // TODO: Replace [USER] with name of user
         // TODO: GET HOUSE NAME AND CODE FROM DATABASE (FROM HOUSEHOLD OBJECT)
-        String subject = "[USER] is inviting you to " + householdName + " on ChoreMate!";
-        String message = "Your invite code to " + householdName + " is: " + houseCode;
+        final String user_id = mCurrentUser.getUid();
+        DatabaseReference mUser = mDatabase.child("Users").child(user_id);
+        mUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                String householdKey = user.getHousehold();
 
-        // Parse the String of emails
-        String emailsList[] = emails.split(", ");
+                DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
+                mHousehold.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        View focusView;
+                        boolean cancel = false;
 
-        // If no emails are entered, no invites need to be sent.
-        if (noEmailsEntered(emailsList)) {
-            return;
-        }
+                        Household household = dataSnapshot.getValue(Household.class);
+                        String householdName = household.getHouse_name();
+                        String householdCode = household.getHouse_code();
 
-        // Check if emails are valid
-        if (isInvalidEmail(emailsList)) {
-            editHousemateEmail.setError(getString(R.string.error_invalid_email_list));
-            focusView = editHousemateEmail;
-            focusView.requestFocus();
+                        String subject = "[USER] is inviting you to " + householdName + " on ChoreMate!";
+                        String message = "Your invite code to " + householdName + " is: " + householdCode;
 
-            cancel = true;
-        }
+                        // Parse the String of emails
+                        String emailsList[] = emails.split(", ");
 
-        if (!cancel) {
-            // Create SendMail object and send invites
-            for (String email : emailsList) {
-                SendMail sm = new SendMail(this, email, subject, message);
-                sm.execute();
+                        // Check if emails are valid
+                        if (isInvalidEmail(emailsList)) {
+                            editHousemateEmail.setError(getString(R.string.error_invalid_email_list));
+                            focusView = editHousemateEmail;
+                            focusView.requestFocus();
+
+                            cancel = true;
+                        }
+
+                        if (!cancel) {
+                            // Create SendMail object and send invites
+                            for (String email : emailsList) {
+                                SendMail sm = new SendMail(InviteHousemateActivity.this, email, subject, message);
+                                sm.execute();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(InviteHousemateActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                Toast.makeText(InviteHousemateActivity.this, "Sent invite", Toast.LENGTH_LONG).show();
             }
-        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(InviteHousemateActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     // Returns true if any email in a list of emails does not end with @ucsd.edu

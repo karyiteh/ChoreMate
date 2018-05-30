@@ -1,16 +1,33 @@
 package com.example.teh_k.ChoreMate;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The register screen that allows user to register an account with the app.
  */
 public class RegisterActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mUser;
 
     // UI elements.
     private EditText editFirstName;
@@ -40,6 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mUser = FirebaseDatabase.getInstance().getReference().child("Users");
 
         // Binds the UI elements to the references in code.
         editFirstName = findViewById(R.id.edit_first_name);
@@ -73,11 +94,11 @@ public class RegisterActivity extends AppCompatActivity {
         editPasswordConfirm.setError(null);
 
         // Store values at time of submit attempt.
-        String firstName = editFirstName.getText().toString();
-        String lastName = editLastName.getText().toString();
-        String email = editEmail.getText().toString();
-        String password = editPassword.getText().toString();
-        String confirmPassword = editPasswordConfirm.getText().toString();
+        final String first_name = editFirstName.getText().toString();
+        final String last_name = editLastName.getText().toString();
+        final String email = editEmail.getText().toString();
+        final String password = editPassword.getText().toString();
+        final String confirmPassword = editPasswordConfirm.getText().toString();
 
         // Initializing the local variables.
         boolean cancel = false;
@@ -120,24 +141,24 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Checks for a valid last name.
-        if(TextUtils.isEmpty(lastName)) {
+        if(TextUtils.isEmpty(last_name)) {
             editLastName.setError(EMPTY_FIELD);
             focusView = editLastName;
             cancel = true;
         }
-        else if(!isNameValid(lastName)) {
+        else if(!isNameValid(last_name)) {
             editLastName.setError(INVALID_NAME);
             focusView = editLastName;
             cancel = true;
         }
 
         // Checks for a valid first name.
-        if(TextUtils.isEmpty(firstName)) {
+        if(TextUtils.isEmpty(first_name)) {
             editFirstName.setError(EMPTY_FIELD);
             focusView = editFirstName;
             cancel = true;
         }
-        else if(!isNameValid(firstName)) {
+        else if(!isNameValid(first_name)) {
             editFirstName.setError(INVALID_NAME);
             focusView = editFirstName;
             cancel = true;
@@ -150,6 +171,44 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else {
             // TODO: Kick off background task to register the user to the database.
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d("RegisterAvtivity", "createUserWithEmail:success");
+                        Toast.makeText(RegisterActivity.this, "Registered",
+                                Toast.LENGTH_SHORT).show();
+
+                        String user_id = mAuth.getCurrentUser().getUid();
+                        DatabaseReference curr_user_db = mUser.child(user_id);
+
+                        User newUser = new User();
+
+                        newUser.setUid(user_id);
+                        newUser.setEmail(email);
+                        newUser.setFirst_name(first_name);
+                        newUser.setLast_name(last_name);
+                        newUser.setPassword(password);
+                        newUser.setHousehold("");
+                        // this is default uri
+                        newUser.setAvatar("https://firebasestorage.googleapis.com/v0/b/choremate-e0c86.appspot.com/o/seijya.jpg?alt=media&token=bd590602-b3ad-4177-8c8a-1af1ba26f615");
+
+                        curr_user_db.setValue(newUser.toMap());
+
+                        // Redirects users back to the main sign in page.
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("RegisterAvtivity", "createUserWithEmail:failure", task.getException());
+                        Toast.makeText(RegisterActivity.this, "User account already exists.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 

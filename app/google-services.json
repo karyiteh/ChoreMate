@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "886669465485",
+    "firebase_url": "https://choremate-e0c86.firebaseio.com",
+    "project_id": "choremate-e0c86",
+    "storage_bucket": "choremate-e0c86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886669465485:android:3f8838b95994a74f",
+        "android_client_info": {
+          "package_name": "com.example.teh_k.ChoreMate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886669465485-5oh8c338gju7gmoghepe0d6p4qcakoni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.teh_k.ChoreMate",
+            "certificate_hash": "63a4205be4c8c1ad0c59ef71524e09c848dd2072"
+          }
+        },
+        {
+          "client_id": "886669465485-2kc2f751c87ecra4ikq137kvtkls9739.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOY7K2PDPnCsS8ilv19WAs4aGsZAskYNE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886669465485-2kc2f751c87ecra4ikq137kvtkls9739.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -169,6 +169,8 @@ public class CreatePaymentActivity extends AppCompatActivity {
         }
 
         // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?) DATABASE NEEDED
+
+        // TODO: Bring user back to MainActivity.class after successful task creation.
     }
 
 
@@ -177,13 +179,16 @@ public class CreatePaymentActivity extends AppCompatActivity {
         Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
                 R.drawable.john_emmons_headshot);
 
-        User user1 = new User("John", "Emmons", imageUri);
+        User user1 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
         housemateList.add(user1);
 
-        User user2 = new User("John", "Emmons", imageUri);
+        User user2 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
         housemateList.add(user2);
 
-        User user3 = new User("John", "Emmons", imageUri);
+        User user3 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
+                R.drawable.john_emmons_headshot);
         housemateList.add(user3);
     }
 }

@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -12,6 +14,8 @@ import java.util.ArrayList;
  * Implements Parcelable to be able to be passed through activities.
  */
 public class User implements Parcelable{
+    private String uid;
+
     // Strings representing the user's first and last name
     private String first_name;
     private String last_name;
@@ -21,10 +25,10 @@ public class User implements Parcelable{
     private String password;
 
     // The avatar of the user.
-    private Uri avatar;
+    private String avatar;
 
     // household that the user belongs to
-    private Household household;
+    private String household;
 
     // The current balances of the user and their housemates.
     private ArrayList<HousemateBalance> current_balances;
@@ -34,10 +38,17 @@ public class User implements Parcelable{
     }
 
     // TODO: Constructor used for testing. Remove later
-    public User(String first_name, String last_name, Uri avatar) {
+    public User(String first_name, String last_name, String avatar) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.avatar = avatar;
+    }
+    // getters and setters for users' uid
+    public String getUid() {
+        return uid;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     // getters and setters for users' first and last names
@@ -71,19 +82,19 @@ public class User implements Parcelable{
     }
 
     // Getters and setters for the avatar.
-    public Uri getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Uri avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
     // getters and setters for the household
-    public Household getHousehold() {
+    public String getHousehold() {
         return household;
     }
-    public void setHousehold(Household household) {
+    public void setHousehold(String household) {
         this.household = household;
     }
 
@@ -100,12 +111,13 @@ public class User implements Parcelable{
      * Constructor method for when passing object through activities.
      */
     protected User(Parcel in) {
+        uid = in.readString();
         first_name = in.readString();
         last_name = in.readString();
         email = in.readString();
         password = in.readString();
-        avatar = (Uri) in.readValue(Uri.class.getClassLoader());
-        household = (Household) in.readValue(Household.class.getClassLoader());
+        avatar = in.readString();
+        household = in.readString();
         if (in.readByte() == 0x01) {
             current_balances = new ArrayList<HousemateBalance>();
             in.readList(current_balances, HousemateBalance.class.getClassLoader());
@@ -114,23 +126,20 @@ public class User implements Parcelable{
         }
     }
 
-
     @Override
     public int describeContents() {
         return 0;
     }
 
-    /**
-     * Flattens the user object to a Parcelable.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uid);
         dest.writeString(first_name);
         dest.writeString(last_name);
         dest.writeString(email);
         dest.writeString(password);
-        dest.writeValue(avatar);
-        dest.writeValue(household);
+        dest.writeString(avatar);
+        dest.writeString(household);
         if (current_balances == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -139,11 +148,6 @@ public class User implements Parcelable{
         }
     }
 
-
-    /**
-     * Interface that must be implemented and provided as a public CREATOR field that generates
-     * instances of your Parcelable class from a Parcel.
-     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override
@@ -157,5 +161,18 @@ public class User implements Parcelable{
         }
     };
 
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("email", email);
+        result.put("first_name", first_name);
+        result.put("last_name", last_name);
+        result.put("password", password);
+        result.put("avatar", avatar);
+        result.put("household", household);
+
+        return result;
+    }
 
 }
