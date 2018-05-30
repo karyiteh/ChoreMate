@@ -3,8 +3,7 @@
     <!-- you can use any color you want I used here gray color-->
 
     <corners android:radius="0dp"/>
-    <solid android:color="@color/rows"/>
     <stroke
         android:width="1dp"
-        android:color="#FFFFFF" />
+        android:color="@color/white" />
 </shape>

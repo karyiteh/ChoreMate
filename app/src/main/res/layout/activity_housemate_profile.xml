@@ -14,7 +14,7 @@
         android:id="@+id/appbar_displayhousemateprofile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#B8B8FF"
+        android:background="@color/toolbar"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -54,6 +54,7 @@
         android:id="@+id/user_task_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="10dp">
 
@@ -63,8 +64,9 @@
         android:id="@+id/btn_remove_housemate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_marginTop="10dp"
-        android:background="#4d4dce"
+        android:background="@drawable/button_main"
         android:text="@string/remove_housemate"
         android:textColor="#FFFFFF" />
 

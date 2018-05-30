@@ -22,7 +22,7 @@
             android:fontFamily="cursive"
             android:gravity="center"
             android:text="Register!"
-            android:textColor="#4d4dce"
+            android:textColor="@color/create_header"
             android:textSize="30dp"
             android:textStyle="bold" />
 
@@ -74,9 +74,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/rounded_corner_button_color_white"
+            android:background="@drawable/button_main"
             android:text="@string/submit"
-            android:textColor="#4d4dce" />
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </LinearLayout>

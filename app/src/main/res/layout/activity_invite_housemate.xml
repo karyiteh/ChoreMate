@@ -13,7 +13,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/appbar_invite_housemate"
         android:layout_width="match_parent"
-        android:background="#B8B8FF"
+        android:background="@color/toolbar"
         app:title="Invite Housemate"
         app:titleTextColor="@color/white"
         android:layout_height="wrap_content"
@@ -56,9 +56,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="#4d4dce"
+            android:background="@drawable/button_main"
             android:text="Invite"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 </LinearLayout>
