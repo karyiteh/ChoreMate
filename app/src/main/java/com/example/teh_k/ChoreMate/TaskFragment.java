@@ -153,6 +153,7 @@ public class TaskFragment extends Fragment {
      * @return  A list of tasks for the household.
      */
     private ArrayList<Task> initializeTasks() {
+        Log.d("TaskFragment", "Inside initializeTask");
         tasks = new ArrayList<Task>();
 
         // TODO: populate task (from database)
@@ -170,7 +171,7 @@ public class TaskFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
                             Task task = taskSnapshot.getValue(Task.class);
-                            Log.d("TaskFregment", "Task populated: " + task.getTask_name());
+                            Log.d("TaskFragment", "Task populated: " + task.getTask_name());
                             tasks.add(task);
                         }
                     }
