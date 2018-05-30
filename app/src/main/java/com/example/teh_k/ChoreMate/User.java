@@ -111,6 +111,7 @@ public class User implements Parcelable{
      * Constructor method for when passing object through activities.
      */
     protected User(Parcel in) {
+        uid = in.readString();
         first_name = in.readString();
         last_name = in.readString();
         email = in.readString();
@@ -125,7 +126,6 @@ public class User implements Parcelable{
         }
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -136,12 +136,13 @@ public class User implements Parcelable{
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uid);
         dest.writeString(first_name);
         dest.writeString(last_name);
         dest.writeString(email);
         dest.writeString(password);
         dest.writeValue(avataruri);
-        dest.writeValue(household);
+        dest.writeString(household);
         if (current_balances == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -149,7 +150,6 @@ public class User implements Parcelable{
             dest.writeList(current_balances);
         }
     }
-
 
     /**
      * Interface that must be implemented and provided as a public CREATOR field that generates
@@ -167,6 +167,7 @@ public class User implements Parcelable{
             return new User[size];
         }
     };
+
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

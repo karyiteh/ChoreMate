@@ -109,7 +109,6 @@ public class Task implements Parcelable {
         this.time = time;
     }
 
-
     //getter and setter for whether the task recurs
     public boolean isRecur() { return recur; }
     public void setRecur(boolean recur) { this.recur = recur; }
@@ -136,15 +135,19 @@ public class Task implements Parcelable {
 
     // Code generated from www.parcelabler.com
     // Following section of code used for implementing Parcelable.
+    /**
+     * Constructor method for when passing object through activities.
+     */
     protected Task(Parcel in) {
         key = in.readString();
         task_name = in.readString();
         task_detail = in.readString();
+        housemateAvatar = (Uri) in.readValue(Uri.class.getClassLoader());
         trigger = in.readByte() != 0x00;
         status = in.readByte() != 0x00;
         if (in.readByte() == 0x01) {
             user_list = new ArrayList<String>();
-            in.readList(user_list, User.class.getClassLoader());
+            in.readList(user_list, String.class.getClassLoader());
         } else {
             user_list = null;
         }
@@ -162,11 +165,15 @@ public class Task implements Parcelable {
         return 0;
     }
 
+    /**
+     * Flattens the task object to a Parcelable.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeString(task_name);
         dest.writeString(task_detail);
+        dest.writeValue(housemateAvatar);
         dest.writeByte((byte) (trigger ? 0x01 : 0x00));
         dest.writeByte((byte) (status ? 0x01 : 0x00));
         if (user_list == null) {
@@ -175,15 +182,19 @@ public class Task implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(user_list);
         }
-        dest.writeValue(time);
+        dest.writeString(time);
         dest.writeByte((byte) (recur ? 0x01 : 0x00));
         dest.writeInt(amountOfTime);
         dest.writeString(unitOfTime);
-        dest.writeInt(index);
         dest.writeString(uid);
         dest.writeString(household);
+        dest.writeInt(index);
     }
 
+    /**
+     * Interface that must be implemented and provided as a public CREATOR field that generates
+     * instances of your Parcelable class from a Parcel.
+     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
         @Override
@@ -196,6 +207,7 @@ public class Task implements Parcelable {
             return new Task[size];
         }
     };
+
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

@@ -1,5 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -264,6 +265,10 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                 Log.d("CreateTaskAvtivity", "Create Task: success");
                 Toast.makeText(CreateTaskActivity.this, "Task Created",
                         Toast.LENGTH_SHORT).show();
+
+                // Redirect user back to the main activity.
+                Intent intent = new Intent(CreateTaskActivity.this, MainActivity.class);
+                startActivity(intent);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
