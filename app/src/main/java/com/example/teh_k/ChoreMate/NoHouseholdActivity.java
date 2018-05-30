@@ -1,6 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -186,7 +187,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
 
             // Add existing Users to the current_balances field of current User
             balance = new HousemateBalance(housemate.getFirst_name(), housemate.getLast_name(),
-                                           housemate.getAvatar(), 0);
+                                           Uri.parse(housemate.getAvatar()), 0);
             userHousemateBalance.add(balance);
         }
 

@@ -25,7 +25,7 @@ public class User implements Parcelable{
     private String password;
 
     // The avatar of the user.
-    private Uri avataruri;
+    private String avatar;
 
     // household that the user belongs to
     private String household;
@@ -38,10 +38,10 @@ public class User implements Parcelable{
     }
 
     // TODO: Constructor used for testing. Remove later
-    public User(String first_name, String last_name, Uri avatar) {
+    public User(String first_name, String last_name, String avatar) {
         this.first_name = first_name;
         this.last_name = last_name;
-        this.avataruri = avatar;
+        this.avatar = avatar;
     }
     // getters and setters for users' uid
     public String getUid() {
@@ -82,12 +82,12 @@ public class User implements Parcelable{
     }
 
     // Getters and setters for the avatar.
-    public Uri getAvatar() {
-        return avataruri;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAvatar(Uri avatar) {
-        this.avataruri = avatar;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     // getters and setters for the household
@@ -116,7 +116,7 @@ public class User implements Parcelable{
         last_name = in.readString();
         email = in.readString();
         password = in.readString();
-        avataruri = (Uri) in.readValue(Uri.class.getClassLoader());
+        avatar = in.readString();
         household = in.readString();
         if (in.readByte() == 0x01) {
             current_balances = new ArrayList<HousemateBalance>();
@@ -131,9 +131,6 @@ public class User implements Parcelable{
         return 0;
     }
 
-    /**
-     * Flattens the user object to a Parcelable.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uid);
@@ -141,7 +138,7 @@ public class User implements Parcelable{
         dest.writeString(last_name);
         dest.writeString(email);
         dest.writeString(password);
-        dest.writeValue(avataruri);
+        dest.writeString(avatar);
         dest.writeString(household);
         if (current_balances == null) {
             dest.writeByte((byte) (0x00));
@@ -151,10 +148,6 @@ public class User implements Parcelable{
         }
     }
 
-    /**
-     * Interface that must be implemented and provided as a public CREATOR field that generates
-     * instances of your Parcelable class from a Parcel.
-     */
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override
@@ -176,8 +169,8 @@ public class User implements Parcelable{
         result.put("first_name", first_name);
         result.put("last_name", last_name);
         result.put("password", password);
-        result.put("avataruri", avataruri);
-        result.put("household", password);
+        result.put("avatar", avatar);
+        result.put("household", household);
 
         return result;
     }
