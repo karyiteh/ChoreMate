@@ -491,6 +491,11 @@ public class UserProfileFragment extends Fragment {
 
         // TODO: Upload the image to the database.
         saveImage(image);
+
+        // Updates the current user.
+        mAvatar.setImageURI(image);
+        currentUser.setAvatar(image.toString());
+
     }
 
     /**
@@ -499,10 +504,15 @@ public class UserProfileFragment extends Fragment {
      */
     private void onCameraResult(Intent data) {
         // Get the image URI.
-        Uri image = Uri.parse(imageFilePath);
+        Uri image = data.getData();
 
         // TODO: Upload the image into the database.
         saveImage(image);
+
+        // Updates the current user.
+        mAvatar.setImageURI(image);
+        currentUser.setAvatar(image.toString());
+
     }
 
     private void saveImage(Uri uri) {
@@ -519,10 +529,6 @@ public class UserProfileFragment extends Fragment {
                 // Update user avatar uri
                 mCurrUser.child("avatar").setValue(downloadUrl.toString());
                 Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
-
-                // Updates the current user.
-                currentUser.setAvatar(downloadUrl.toString());
-                mAvatar.setImageURI(downloadUrl);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
