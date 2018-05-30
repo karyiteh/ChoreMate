@@ -76,10 +76,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:background="@color/white"
+            android:background="@drawable/button_main"
             android:gravity="start|center_vertical"
             android:text="@string/recurrence_options"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/white" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
@@ -91,8 +91,8 @@
             android:id="@+id/btn_create_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/button_main"
-            android:text="@string/create_task"
+            android:background="@drawable/button_main"
+            android:text="+ Create Task"
             android:textColor="@color/white" />
 
     </LinearLayout>

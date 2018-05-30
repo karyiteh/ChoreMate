@@ -17,4 +17,7 @@
     <color name="create_header">#ffffff</color>
     <color name="rows">#4d4dce</color>
     <color name="cool_blue">#A2D0DB</color>
+    <color name="rose">#FFA17F</color>
+    <color name="bloo"> #00223E</color>
+
 </resources>
