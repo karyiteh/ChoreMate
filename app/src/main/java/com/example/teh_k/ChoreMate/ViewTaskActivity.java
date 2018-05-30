@@ -147,7 +147,9 @@ public class ViewTaskActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 // TODO: Remove the task from the task list and database
+                Log.d("ViewTaskAvtivity", "Deleting task: " + task.getTask_name());
                 mDatabase.child("Tasks").child(task.getKey()).removeValue();
 
                 Intent finish = new Intent(getApplicationContext(), MainActivity.class);
@@ -176,8 +178,10 @@ public class ViewTaskActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 // TODO: Remove the task from the task list and database
-                mDatabase.child("Task").child(task.getKey()).removeValue();
+                Log.d("ViewTaskAvtivity", "Deleting task: " + task.getTask_name());
+                mDatabase.child("Tasks").child(task.getKey()).removeValue();
 
                 Intent delete = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(delete);

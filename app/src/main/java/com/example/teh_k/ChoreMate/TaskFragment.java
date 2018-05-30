@@ -162,7 +162,8 @@ public class TaskFragment extends Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
                             Task task = taskSnapshot.getValue(Task.class);
-                            Log.d("TaskFragment", "Task populated: " + task.getTask_name());
+                            Log.d("TaskFregment", "Task populated: " + task.getTask_name());
+                            Log.d("TaskFregment", "Task uri:" + task.getHousemateAvatar());
                             tasks.add(task);
                         }
 

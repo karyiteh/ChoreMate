@@ -161,10 +161,10 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentUser = dataSnapshot.getValue(User.class);
-                Log.d("UserProfileFregment", "Found user: " + currentUser.getLast_name());
+                Log.d("UserProfileFregment", "Found user: " + currentUser.getAvatar());
 
                 // Updates the UI elements to the user profile obtained.
-                mAvatar.setImageURI(currentUser.getAvatar());
+                mAvatar.setImageURI(Uri.parse(currentUser.getAvatar()));
                 mUserName.setText(currentUser.getFirst_name());
 
                 // Set up listener for the avatar to change avatar.
@@ -489,12 +489,13 @@ public class UserProfileFragment extends Fragment {
             image = data.getData();
         }
 
-        // Updates the current user.
-        currentUser.setAvatar(image);
-        mAvatar.setImageURI(image);
-
         // TODO: Upload the image to the database.
         saveImage(image);
+
+        // Updates the current user.
+        mAvatar.setImageURI(image);
+        currentUser.setAvatar(image.toString());
+
     }
 
     /**
@@ -503,14 +504,15 @@ public class UserProfileFragment extends Fragment {
      */
     private void onCameraResult(Intent data) {
         // Get the image URI.
-        Uri image = Uri.parse(imageFilePath);
-
-        // Updates the current user.
-        currentUser.setAvatar(image);
-        mAvatar.setImageURI(image);
+        Uri image = data.getData();
 
         // TODO: Upload the image into the database.
         saveImage(image);
+
+        // Updates the current user.
+        mAvatar.setImageURI(image);
+        currentUser.setAvatar(image.toString());
+
     }
 
     private void saveImage(Uri uri) {
@@ -522,14 +524,12 @@ public class UserProfileFragment extends Fragment {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                String user_id = mCurrentUser.getUid();
-                DatabaseReference curr_user_db = mDatabase.child(user_id);
+                DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
 
                 // Update user avatar uri
-                curr_user_db.child("avataruri").setValue(downloadUrl.toString());
-
+                mCurrUser.child("avatar").setValue(downloadUrl.toString());
                 Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

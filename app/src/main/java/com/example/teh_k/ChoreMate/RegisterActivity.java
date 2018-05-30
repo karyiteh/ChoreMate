@@ -183,16 +183,18 @@ public class RegisterActivity extends AppCompatActivity {
                         String user_id = mAuth.getCurrentUser().getUid();
                         DatabaseReference curr_user_db = mUser.child(user_id);
 
-                        Map<String, Object> childUpdates = new HashMap<>();
-                        childUpdates.put("/uid", user_id);
-                        childUpdates.put("/email", email);
-                        childUpdates.put("/first_name", first_name);
-                        childUpdates.put("/last_name", last_name);
-                        childUpdates.put("/password", password);
-                        childUpdates.put("/avataruri", "");
-                        childUpdates.put("/household", "");
+                        User newUser = new User();
 
-                        curr_user_db.updateChildren(childUpdates);
+                        newUser.setUid(user_id);
+                        newUser.setEmail(email);
+                        newUser.setFirst_name(first_name);
+                        newUser.setLast_name(last_name);
+                        newUser.setPassword(password);
+                        newUser.setHousehold("");
+                        // this is default uri
+                        newUser.setAvatar("https://firebasestorage.googleapis.com/v0/b/choremate-e0c86.appspot.com/o/seijya.jpg?alt=media&token=bd590602-b3ad-4177-8c8a-1af1ba26f615");
+
+                        curr_user_db.setValue(newUser.toMap());
 
                         // Redirects users back to the main sign in page.
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
