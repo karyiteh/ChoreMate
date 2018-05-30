@@ -85,6 +85,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
         double paymentToEach;
+        double currAmount;
 
         // Empty field check for payment name
         if (paymentName.equals("")) {
@@ -108,7 +109,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         paymentToEach = Double.parseDouble(paymentToEachStr);
 
         // If payment is a charge, then make the amount to be negative.
-        if (isCharge) {
+        if (!isCharge) {
             paymentToEach = - paymentToEach;
         }
 
@@ -143,7 +144,9 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
                 if (currBalance.getHousemateFirstName().equals(housemateFirstName) &&
                     currBalance.getHousemateLastName().equals(housemateLastName)) {
-                    currBalance.setBalance(currBalance.getBalance() + paymentToEach);
+                    currAmount = currBalance.getBalance() + paymentToEach;
+                    currBalance.setBalance(currAmount);
+
                     break;
                 }
             }
@@ -163,8 +166,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 payment.setReceiver(selectedHousemates.get(i));
             }
             // TODO Add Payment object to database
-
-            //  TODO: Update current balances of each selected housemate in the Database
         }
 
         // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?) DATABASE NEEDED
