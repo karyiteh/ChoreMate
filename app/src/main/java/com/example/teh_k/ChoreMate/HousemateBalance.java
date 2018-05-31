@@ -185,8 +185,8 @@ public class HousemateBalance implements Parcelable{
         result.put("key", key);
         result.put("uid", uid);
         result.put("housemate_uid", housemate_uid);
-        result.put("housemate_firstname", housemate_first_name);
-        result.put("housemate_lastname", housemate_last_name);
+        result.put("housemate_first_name", housemate_first_name);
+        result.put("housemate_last_name", housemate_last_name);
         result.put("housemate_avatar", housemate_avatar);
         result.put("balance", balance);
 

@@ -96,7 +96,7 @@ public class PaymentFragment extends Fragment {
 
         // Get the task list from the database.
         housematePayment = initializePayments();
-        // TODO: get task list form database.
+        // TODO: get payment list form database.
         Query mQueryHouseholdPayments = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
         mQueryHouseholdPayments.addValueEventListener(new ValueEventListener() {
             @Override
