@@ -164,7 +164,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     // Returns true if any email in a list of emails does not end with @ucsd.edu
     private boolean isInvalidEmail(String[] emailsList) {
         for (String email : emailsList) {
-            if (!email.endsWith("@ucsd.edu")) {
+            if (!email.contains("@")) {
                 return true;
             }
         }
