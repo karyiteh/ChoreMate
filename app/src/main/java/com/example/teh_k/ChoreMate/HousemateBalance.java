@@ -5,7 +5,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Object class for storing current balances between user and housemates.
@@ -13,12 +15,16 @@ import java.util.Locale;
  */
 public class HousemateBalance implements Parcelable{
 
+    private String key;
+    private String uid;
+
     // String representing the name of the housemate.
-    private String housemateFirstName;
-    private String housemateLastName;
+    private String housemate_uid;
+    private String housemate_first_name;
+    private String housemate_last_name;
 
     // Avatar of the housemate.
-    private Uri housemateAvatar;
+    private String housemate_avatar;
 
     // The balance between the user and the housemate.
     private double balance;
@@ -31,41 +37,65 @@ public class HousemateBalance implements Parcelable{
 
     /**
      * Constructor for housemate balance.
-     * @param firstName Housemate's first name.
-     * @param lastName  Housemate's last name.
-     * @param avatar    Housemate's avatar.
+     * @param housemate_first_name Housemate's first name.
+     * @param housemate_last_name  Housemate's last name.
+     * @param housemate_avatar   Housemate's avatar.
      * @param balance   Housemate's balance.
      */
-    public HousemateBalance(String firstName, String lastName, Uri avatar, double balance) {
-        housemateFirstName = firstName;
-        housemateLastName = lastName;
-        housemateAvatar = avatar;
+    public HousemateBalance(String housemate_first_name, String housemate_last_name, String housemate_avatar, double balance) {
+        this.housemate_first_name = housemate_first_name;
+        this.housemate_last_name = housemate_last_name;
+        this.housemate_avatar = housemate_avatar;
         this.balance = balance;
     }
 
     // Getter and setter methods.
-    public String getHousemateFirstName() {
-        return housemateFirstName;
+    public String getKey() {
+        return key;
     }
 
-    public void setHousemateFirstName(String firstName) {
-        housemateFirstName = firstName;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getHousemateLastName() {
-        return housemateLastName;
+    public String getUid() {
+        return uid;
     }
 
-    public void setHousemateLastName(String lastName) {
-        housemateLastName = lastName;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
-    public Uri getHousemateAvatar() {
-        return housemateAvatar;
+    public String getHousemate_uid() {
+        return housemate_uid;
     }
 
-    public void setHousemateAvatar(Uri avatar) {
-        housemateAvatar = avatar;
+    public void setHousemate_uid(String housemate_uid) {
+        this.housemate_uid = housemate_uid;
+    }
+
+    public String getHousemate_first_name() {
+        return housemate_first_name;
+    }
+
+    public void setHousemate_first_name(String housemate_first_name) {
+        this.housemate_first_name = housemate_first_name;
+    }
+
+    public String getHousemate_last_name() {
+        return housemate_last_name;
+    }
+
+    public void setHousemate_last_name(String housemate_last_name) {
+        this.housemate_last_name = housemate_last_name;
+    }
+
+    public String getHousemate_avatar() {
+        return housemate_avatar;
+    }
+
+    public void setHousemate_avatar(String housemate_avatar) {
+        this.housemate_avatar = housemate_avatar;
     }
 
     public double getBalance() {
@@ -105,9 +135,12 @@ public class HousemateBalance implements Parcelable{
      * Constructor method for when passing object through activities.
      */
     protected HousemateBalance(Parcel in) {
-        housemateFirstName = in.readString();
-        housemateLastName = in.readString();
-        housemateAvatar = (Uri) in.readValue(Uri.class.getClassLoader());
+        key = in.readString();
+        uid = in.readString();
+        housemate_uid = in.readString();
+        housemate_first_name = in.readString();
+        housemate_last_name = in.readString();
+        housemate_avatar = in.readString();
         balance = in.readDouble();
     }
 
@@ -121,9 +154,12 @@ public class HousemateBalance implements Parcelable{
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(housemateFirstName);
-        dest.writeString(housemateLastName);
-        dest.writeValue(housemateAvatar);
+        dest.writeString(key);
+        dest.writeString(uid);
+        dest.writeString(housemate_uid);
+        dest.writeString(housemate_first_name);
+        dest.writeString(housemate_last_name);
+        dest.writeString(housemate_avatar);
         dest.writeDouble(balance);
     }
 
@@ -143,4 +179,18 @@ public class HousemateBalance implements Parcelable{
             return new HousemateBalance[size];
         }
     };
+
+    public Map<String, Object> toMap() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("key", key);
+        result.put("uid", uid);
+        result.put("housemate_uid", housemate_uid);
+        result.put("housemate_firstname", housemate_first_name);
+        result.put("housemate_lastname", housemate_last_name);
+        result.put("housemate_avatar", housemate_avatar);
+        result.put("balance", balance);
+
+        return result;
+    }
 }

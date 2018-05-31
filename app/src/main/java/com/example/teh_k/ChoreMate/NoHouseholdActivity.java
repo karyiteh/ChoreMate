@@ -21,6 +21,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An Activity that allows user to create/join a household
@@ -37,6 +38,8 @@ public class NoHouseholdActivity extends AppCompatActivity {
 
     //TODO: Replace all instances of dummyCode when database is set up
     private boolean correctCode = false;
+    private ArrayList<User> housemateList;
+    private List<String> userHousemateBalance;
 
     /**
      * Database references.
@@ -44,6 +47,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private DatabaseReference mCurrUser;
 
     /**
      * Creates the main screen. Called when main page is loaded.
@@ -58,6 +62,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
 
         // Creates the appbar.
         appbar = findViewById(R.id.appbar_no_household);
@@ -89,12 +94,10 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 String code = inviteCode.getText().toString();
 
                 if (checkCode(code)) {
-                    // Updates current_balance field of every User in the Household to include new User
-                    updateUserBalances();
 
-                    // TODO: Take user to correct household task page
-                    Intent toTask = new Intent(v.getContext(), MainActivity.class);
-                    startActivity(toTask);
+                    // Redirects users back to the main sign in page.
+                    Intent mainIntent = new Intent(NoHouseholdActivity.this, LoginActivity.class);
+                    startActivity(mainIntent);
                 }
 
             }
@@ -144,9 +147,9 @@ public class NoHouseholdActivity extends AppCompatActivity {
                     Toast.makeText(NoHouseholdActivity.this, "Added household: " + addHousehold.getHouse_name() , Toast.LENGTH_LONG).show();
                     Log.d("NoHouseholdAvtivity", "added household: " + addHousehold.getHouse_name());
                     mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey());
-                    correctCode = true;
                 }
-
+                correctCode = true;
+                updateUserBalances();
             }
 
             @Override
@@ -154,7 +157,6 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
             }
         });
-
         return correctCode;
     }
 
@@ -164,33 +166,97 @@ public class NoHouseholdActivity extends AppCompatActivity {
      * @return void
      */
     private void updateUserBalances() {
-        HousemateBalance balance;
-        ArrayList<User> housemateList = new ArrayList<>();
-        ArrayList<HousemateBalance> userHousemateBalance = new ArrayList<>();
-        ArrayList<HousemateBalance> housemateBalance;
-        User housemate;
+        housemateList = new ArrayList<>();
+        userHousemateBalance = new ArrayList<>();
 
         // TODO: Get housemateList from database here
+        mCurrUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        // Update current_balances field of current user and existing users
-        for (int i = 0; i < housemateList.size(); i++) {
-            // Add new User to the current_balances field of each User in housemateList
-            housemate = housemateList.get(i);
+                User user = dataSnapshot.getValue(User.class);
+                Query mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(user.getHousehold());
 
-            // TODO: GET USER INFO FROM DATABASE
-            //balance = new HousemateBalance(firstName, lastName, avatar, 0);
-            balance = new HousemateBalance(); // TODO: REMOVE THIS LINE AFTER DB IMPLEMENTATION
-            housemateBalance = housemate.getCurrent_balances();
-            housemateBalance.add(balance);
+                mQueryHousemateMatch.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // get current user object.
+                        User currUser = new User();
+                        for(DataSnapshot housemate: dataSnapshot.getChildren()){
+                            User user =  housemate.getValue(User.class);
+                            if(user.getUid().equals(mCurrentUser.getUid())){
+                                currUser = user;
+                            }
+                        }
 
-            housemate.setCurrent_balances(housemateBalance);
+                        for(DataSnapshot housemate: dataSnapshot.getChildren()){
+                            User user =  housemate.getValue(User.class);
+                            Log.d("NoHouseholdAvtivity", "roommate detected: " + user.getLast_name());
 
-            // Add existing Users to the current_balances field of current User
-            balance = new HousemateBalance(housemate.getFirst_name(), housemate.getLast_name(),
-                                           Uri.parse(housemate.getAvatar()), 0);
-            userHousemateBalance.add(balance);
-        }
+                            // database references
+                            DatabaseReference mUserBalances = mDatabase.child("Users").child(user.getUid()).child("current_balances");
+                            DatabaseReference mBalances = mDatabase.child("Balances").push();
 
-        // TODO: CURRENT USER.setCurrent_balances(userHousemateBalance); DATABASE NEEDED
+                            if(!user.getUid().equals(mCurrentUser.getUid())){
+                                // create new balance for housemates
+                                // generated Balance key
+                                String key = mBalances.getKey();
+
+                                List<String> housemateBalance = user.getCurrent_balances();
+                                HousemateBalance balance = new HousemateBalance(currUser.getFirst_name(), currUser.getLast_name(),
+                                        currUser.getAvatar(), 0);
+                                balance.setHousemate_avatar(currUser.getAvatar());
+                                balance.setHousemate_uid(currUser.getUid());
+                                balance.setUid(user.getUid());
+                                balance.setKey(key);
+
+                                if(housemateBalance == null){
+                                    housemateBalance = new ArrayList<String>();
+                                    housemateBalance.add(key);
+
+                                } else {
+                                    housemateBalance.add(key);
+                                }
+
+                                // add balance to database
+                                mBalances.setValue(balance.toMap());
+                                // add current user to balance list
+                                mUserBalances.setValue(housemateBalance);
+
+                                // create new balance for current user
+                                DatabaseReference mCurrUserBalances = mDatabase.child("Balances").push();
+                                // generated Balance key
+                                String currUserBalancesKey = mCurrUserBalances.getKey();
+
+                                HousemateBalance currUserBalance = new HousemateBalance(user.getFirst_name(), user.getLast_name(),
+                                        user.getAvatar(), 0);
+                                balance.setHousemate_avatar(user.getAvatar());
+                                currUserBalance.setHousemate_uid(user.getUid());
+                                currUserBalance.setUid(mCurrentUser.getUid());
+                                currUserBalance.setKey(currUserBalancesKey);
+
+                                // add balance to database
+                                mCurrUserBalances.setValue(currUserBalance.toMap());
+                                // add key to current user's balance list
+                                userHousemateBalance.add(currUserBalancesKey);
+                            }
+                        }
+
+                        // add amount of #housemate balances key to current user balance list.
+                        mCurrUser.child("current_balances").setValue(userHousemateBalance);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
