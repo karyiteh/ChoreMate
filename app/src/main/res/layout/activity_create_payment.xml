@@ -19,7 +19,7 @@
         android:fontFamily="cursive"
         android:gravity="center"
         android:text="Create Payment"
-        android:textColor="#4d4dce"
+        android:textColor="@color/create_header"
         android:textSize="30sp" />
 
     <EditText
@@ -113,7 +113,7 @@
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="#4d4dce"
+            android:background="@drawable/button_main"
             android:text="Create Payment"
             android:textColor="#FFFFFF" />
 
@@ -125,7 +125,7 @@
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="#4d4dce"
+            android:background="@drawable/button_main"
             android:text="Create Charge"
             android:textColor="#FFFFFF" />
     </LinearLayout>

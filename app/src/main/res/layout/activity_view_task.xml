@@ -13,7 +13,7 @@
         android:id="@+id/appbar_view_task"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#B8B8FF"
+        android:background="@color/toolbar"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -47,13 +47,15 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="User assigned"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/text_due_date"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
+                    android:textColor="@color/white"
                     android:text="Due: YYYY/MM/DD 00:00" />
 
             </LinearLayout>
@@ -64,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="TextView"
+                android:textColor="@color/white"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
 
         </LinearLayout>
@@ -76,41 +79,51 @@
         android:gravity="bottom"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_finish"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#4d4dce"
-            android:text="Finish"
-            android:textColor="#FFFFFF" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_remind_task"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#4d4dce"
-            android:text="Remind"
-            android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/button_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_main"
+                android:text="delete"
+                android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/button_skip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#4d4dce"
-            android:text="Skip"
-            android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/button_finish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_main"
+                android:text="Finish"
+                android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/button_delete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#4d4dce"
-            android:text="Delete"
-            android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/button_remind_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_main"
+                android:text="Remind"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/button_skip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_main"
+                android:text="Skip"
+                android:textColor="@color/white" />
+        </LinearLayout>
 
     </LinearLayout>
 
