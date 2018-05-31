@@ -123,7 +123,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                             User user =  housemate.getValue(User.class);
                             housemateList.add(user);
                             Log.d("CreateTaskAvtivity", "roommate populated: " + user.getLast_name());
-                            Log.d("CreateTaskAvtivity", "uri: " + user.getAvatar());
                         }
 
                     }
@@ -223,18 +222,29 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         // Get the currently selected housemates by checking CheckBox state of each housemate
         // and add housemate to array if true
+        boolean isFirstUser = true;
+        User target = new User();
         ArrayList<String> selectedHousemates = new ArrayList<>();
         CheckBox checkBox;
-        // Log.d("CreateTaskAvtivity", housemateList.get(0).getAvatar().toString());
         for (int i = 0; i < housemateList.size(); i++) {
             checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
             if (checkBox.isChecked()) {
+                // TODO: this task first goes to the first one who appears on the checklist, really?
                 selectedHousemates.add(housemateList.get(i).getUid());
+                if(isFirstUser){
+                    target = housemateList.get(i);
+                    isFirstUser = false;
+                }
             }
         }
 
+        if(selectedHousemates.size() == 0){
+            // TODO: what if user selects no one;
+            // Set error and focus view
+            target = housemateList.get(0);
+        }
+
         task.setUser_list(selectedHousemates);
-        task.setHousemateAvatar(housemateList.get(0).getAvatar().toString());
 
         // Set amount and unit of time from recurring options fragment
         if (recurFrag != null && recurFrag.getAmountOfTime() != 0 && recurFrag.getSpinnerOption() != null) {
@@ -250,7 +260,8 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         String time = formatter.format(calendar.getTime());
 
         task.setTime(time);
-        task.setUid(mCurrentUser.getUid());
+        task.setUid(target.getUid());
+        task.setHousemateAvatar(target.getAvatar().toString());
         task.setHousehold(householdKey);
         task.setIndex(0);
 

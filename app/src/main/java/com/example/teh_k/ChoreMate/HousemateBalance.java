@@ -1,6 +1,5 @@
 package com.example.teh_k.ChoreMate;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 

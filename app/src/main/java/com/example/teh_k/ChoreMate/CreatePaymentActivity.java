@@ -256,10 +256,13 @@ public class CreatePaymentActivity extends AppCompatActivity {
             // Set the payer and the receiver accordingly to whether it is a charge.
             if(isCharge) {
                 payment.setPayer(selectedHousemates.get(i).getUid());
+                payment.setReceiver(mCurrentUser.getUid());
             }
             else {
+                payment.setPayer(mCurrentUser.getUid());
                 payment.setReceiver(selectedHousemates.get(i).getUid());
             }
+
             // TODO: Add Payment object to database
             DatabaseReference mPayment = mDatabase.child("Payments").push();
             mPayment.setValue(payment.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -279,8 +282,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 }
             });
         }
-
-
 
         // TODO: Bring user back to MainActivity.class after successful task creation.
         Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);

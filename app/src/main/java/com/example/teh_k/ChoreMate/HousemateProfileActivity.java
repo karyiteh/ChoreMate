@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -84,7 +85,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
         currentHousemate = intent.getParcelableExtra(MainActivity.HOUSEMATE);
 
         // Update the fields.
-        avatar.setImageURI(Uri.parse(currentHousemate.getAvatar()));
+        Picasso.get().load(Uri.parse(currentHousemate.getAvatar())).into(avatar);
         mHousemateName.setText(currentHousemate.getFirst_name());
 
         // Getting the user task list from the database.

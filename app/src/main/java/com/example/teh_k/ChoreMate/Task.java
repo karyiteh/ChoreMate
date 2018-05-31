@@ -1,6 +1,5 @@
 package com.example.teh_k.ChoreMate;
 // used to keep track of the time of tasks
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -10,11 +10,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -113,7 +111,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.housemateName.setText(housemateBalances.get(position).getHousemate_first_name());
-        holder.avatar.setImageURI(Uri.parse(housemateBalances.get(position).getHousemate_avatar()));
+        Picasso.get().load(Uri.parse(housemateBalances.get(position).getHousemate_avatar())).into(holder.avatar);
         holder.paymentBalance.setText(housemateBalances.get(position).getBalanceString());
     }
 

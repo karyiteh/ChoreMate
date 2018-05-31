@@ -1,7 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
