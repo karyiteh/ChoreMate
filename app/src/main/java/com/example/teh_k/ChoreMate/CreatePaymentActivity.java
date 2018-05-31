@@ -46,7 +46,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
     public Payment payment;
 
     private String householdKey;
-    private String user_id;
     private double paymentToEach;
     private String housemateUid;
 
@@ -77,7 +76,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         recyclerView.setAdapter(assignHousemateAdapter);
 
         // TODO: Test purposes. Remove after database implementation
-        loadSampleHousemates();
+        //loadSampleHousemates();
         // TODO: Loading current housemates from DB into housemateList goes here
 
         // TODO: populate housemates
@@ -145,8 +144,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
     private void createPayment(boolean isCharge) {
         View focusView;
         HousemateBalance currBalance;
-        String housemateFirstName;
-        String housemateLastName;
 
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
@@ -193,35 +190,56 @@ public class CreatePaymentActivity extends AppCompatActivity {
             paymentToEach = paymentToEach / selectedHousemates.size();
             paymentToEach = (double) Math.round(paymentToEach * 100) / 100;
         }
+        Log.d("CreatePaymentAvtivity", "paymentToEach: " + String.valueOf(paymentToEach));
 
         // Update Balances for each selected housemate
         for (int i = 0; i < selectedHousemates.size(); i++) {
 
-            // Get details of housemate
+            // Get uid from housemate
             housemateUid = selectedHousemates.get(i).getUid();
-            // balanceList = selectedHousemates.get(i).getCurrent_balances();
 
-            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(selectedHousemates.get(i).getUid());
-            mQueryUserBalances.addValueEventListener(new ValueEventListener() {
+            // TODO: UPDATE BALANCE FOR HOUSEMATE
+            Query mQueryHousemateBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(housemateUid);
+            mQueryHousemateBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
-                        HousemateBalance balance =  balanceSnapshot.getValue(HousemateBalance.class);
-                        String key = balanceSnapshot.getKey();
-                        balanceList.add(balance);
-                        // Parse through balanceList and check for existing balance between user and housemate
-                        for (int j = 0; j < balanceList.size(); j++) {
-                            HousemateBalance currBalance = balanceList.get(j);
 
-                            if (currBalance.getHousemate_uid().equals(housemateUid))
-                            {
-                                mDatabase.child("Balances").child(key).child("balance").setValue(currBalance.getBalance() + paymentToEach);
-                                break;
-                            }
+                        HousemateBalance myBalance =  balanceSnapshot.getValue(HousemateBalance.class);
+
+                        if (myBalance.getHousemate_uid().equals(mCurrentUser.getUid()))
+                        {
+                            String key = balanceSnapshot.getKey();
+                            mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() + paymentToEach);
+                            Log.d("CreatePaymentAvtivity", housemateUid + " ows me " + mCurrentUser.getUid() + " " + paymentToEach);
+                            break;
                         }
                     }
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            // TODO: UPDATE BALANCE FOR MY SELF
+            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
+            mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+                        HousemateBalance housemateBalance =  balanceSnapshot.getValue(HousemateBalance.class);
+                        if (housemateBalance.getHousemate_uid().equals(housemateUid))
+                        {
+                            String key = balanceSnapshot.getKey();
+                            mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() - paymentToEach);
+                            Log.d("CreatePaymentAvtivity", "me " + mCurrentUser.getUid() + " ows housemate " + housemateUid + " " + (-paymentToEach));
+                            break;
+                        }
+                    }
                 }
 
                 @Override
@@ -262,7 +280,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
             });
         }
 
-        // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?) DATABASE NEEDED
+
 
         // TODO: Bring user back to MainActivity.class after successful task creation.
         Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);
