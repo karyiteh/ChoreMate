@@ -240,7 +240,7 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isEmailValid(String email) {
 
         // Returns if the domain of the email is ucsd.
-        return email.endsWith("@ucsd.edu");
+        return email.contains("@");
     }
 
     /**

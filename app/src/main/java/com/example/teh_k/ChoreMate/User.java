@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -31,7 +32,7 @@ public class User implements Parcelable{
     private String household;
 
     // The current balances of the user and their housemates.
-    private ArrayList<HousemateBalance> current_balances;
+    private List<String> current_balances;
 
     public User() {
         // Default empty constructor.
@@ -99,9 +100,9 @@ public class User implements Parcelable{
     }
 
     // Getters and setters for the current balances.
-    public ArrayList<HousemateBalance> getCurrent_balances() { return current_balances;}
-    public void setCurrent_balances(ArrayList<HousemateBalance> housemateBalances) {
-        current_balances = housemateBalances;
+    public List<String> getCurrent_balances() { return current_balances;}
+    public void setCurrent_balances(List<String> current_balances) {
+        this.current_balances = current_balances;
     }
 
     // Code generated from www.parcelabler.com
@@ -119,8 +120,8 @@ public class User implements Parcelable{
         avatar = in.readString();
         household = in.readString();
         if (in.readByte() == 0x01) {
-            current_balances = new ArrayList<HousemateBalance>();
-            in.readList(current_balances, HousemateBalance.class.getClassLoader());
+            current_balances = new ArrayList<String>();
+            in.readList(current_balances, String.class.getClassLoader());
         } else {
             current_balances = null;
         }
@@ -171,6 +172,7 @@ public class User implements Parcelable{
         result.put("password", password);
         result.put("avatar", avatar);
         result.put("household", household);
+        result.put("current_balances", current_balances);
 
         return result;
     }

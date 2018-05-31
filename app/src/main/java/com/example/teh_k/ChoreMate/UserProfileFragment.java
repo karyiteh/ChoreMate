@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -164,7 +165,7 @@ public class UserProfileFragment extends Fragment {
                 Log.d("UserProfileFregment", "Found user: " + currentUser.getAvatar());
 
                 // Updates the UI elements to the user profile obtained.
-                mAvatar.setImageURI(Uri.parse(currentUser.getAvatar()));
+                Picasso.get().load(Uri.parse(currentUser.getAvatar())).into(mAvatar);
                 mUserName.setText(currentUser.getFirst_name());
 
                 // Set up listener for the avatar to change avatar.
@@ -493,7 +494,7 @@ public class UserProfileFragment extends Fragment {
         saveImage(image);
 
         // Updates the current user.
-        mAvatar.setImageURI(image);
+        Picasso.get().load(image).into(mAvatar);
         currentUser.setAvatar(image.toString());
 
     }
@@ -510,7 +511,7 @@ public class UserProfileFragment extends Fragment {
         saveImage(image);
 
         // Updates the current user.
-        mAvatar.setImageURI(image);
+        Picasso.get().load(image).into(mAvatar);
         currentUser.setAvatar(image.toString());
 
     }
