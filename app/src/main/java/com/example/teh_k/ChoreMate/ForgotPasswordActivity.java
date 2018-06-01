@@ -2,15 +2,19 @@ package com.example.teh_k.ChoreMate;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -19,10 +23,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private EditText mEditEmail;
     private Button btnSubmit;
 
+    /**
+     * Database references.
+     */
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
 
         // Creates the appbar.
         appbar = findViewById(R.id.appbar_forgot_password);
@@ -115,6 +127,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
      */
     private boolean sendResetPasswordEmail() {
         // TODO: Database implementation here.
+        final String email = mEditEmail.getText().toString().trim();
+
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+                            Log.d("ForgotPasswordAvtivity", "Email sent.");
+                        }
+
+                    }
+                });
         return true;
     }
 }
