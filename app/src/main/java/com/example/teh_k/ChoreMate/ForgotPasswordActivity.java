@@ -74,22 +74,28 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
         // else send the email to reset the password.
         else {
-            sendResetPasswordEmail();
+            boolean success = sendResetPasswordEmail();
 
-            // Creates a dialog that informs the user that an email is sent to their email.
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-            builder.setMessage("An email containing the link to reset your password is sent to "
-             + email);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // Redirect user to main activity.
-                    Intent mainIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(mainIntent);
-                }
-            });
+            if(success) {
+                // Creates a dialog that informs the user that an email is sent to their email.
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setMessage("An email containing the link to reset your password is sent to "
+                        + email);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Redirect user to main activity.
+                        Intent mainIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(mainIntent);
+                    }
+                });
 
-            builder.show();
+                builder.show();
+            }
+            // Else display error message.
+            else {
+                Toast.makeText(this, "Failed to send reset password email.", Toast.LENGTH_LONG).show();
+            }
 
         }
     }
@@ -105,8 +111,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     /**
      * Sends the reset password email.
+     * @return true if send reset password email is successful, false otherwise.
      */
-    private void sendResetPasswordEmail() {
+    private boolean sendResetPasswordEmail() {
         // TODO: Database implementation here.
+        return true;
     }
 }
