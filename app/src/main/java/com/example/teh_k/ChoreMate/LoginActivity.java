@@ -254,7 +254,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                         Log.d("LoginAvtivity", "User signed in : go to main activity");
                                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(mainIntent);
-                                        Toast.makeText(LoginActivity.this, "Signed in as :" + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LoginActivity.this, "Signed in as: " + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
 
                                     }
 
@@ -265,13 +265,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             public void onCancelled(DatabaseError databaseError) {
                                 // Dismiss the loading screen and show error message.
                                 showProgress(false);
-                                Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
                         // Dismiss the loading screen and show error message.
                         showProgress(false);
-                        Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
                     }
                 }
             });

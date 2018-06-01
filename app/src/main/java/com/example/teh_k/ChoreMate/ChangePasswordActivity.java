@@ -1,5 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     /**
      * Loads the user profile screen when the user profile tab is clicked on.
@@ -66,6 +68,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(ChangePasswordActivity.this, "Logged Out", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(ChangePasswordActivity.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                }
+            }
+        };
 
         getUserFromDatabase();
 
@@ -181,6 +194,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
                     if (task.isSuccessful()) {
                         Toast.makeText(ChangePasswordActivity.this, "User password updated.", Toast.LENGTH_LONG).show();
+
+                        // Redirect user to login page and log out
+                        mAuth.signOut();
                     }
 
                 }
