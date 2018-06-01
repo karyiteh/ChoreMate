@@ -95,8 +95,10 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
                         for(DataSnapshot housemate: dataSnapshot.getChildren()){
                             User user =  housemate.getValue(User.class);
-                            housemateList.add(user);
-                            Log.d("CreatePaymentAvtivity", "roommate populated: " + user.getLast_name());
+                            if(!user.getUid().equals(mCurrentUser.getUid())){
+                                housemateList.add(user);
+                                Log.d("CreatePaymentAvtivity", "roommate populated: " + user.getLast_name());
+                            }
                         }
 
                     }
@@ -143,7 +145,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
      */
     private void createPayment(boolean isCharge) {
         View focusView;
-        HousemateBalance currBalance;
 
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
@@ -212,7 +213,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
                         {
                             String key = balanceSnapshot.getKey();
                             mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() + paymentToEach);
-                            Log.d("CreatePaymentAvtivity", housemateUid + " ows me " + mCurrentUser.getUid() + " " + paymentToEach);
                             break;
                         }
                     }
@@ -225,18 +225,19 @@ public class CreatePaymentActivity extends AppCompatActivity {
             });
 
             // TODO: UPDATE BALANCE FOR MY SELF
-            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
+            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("housemate_uid").equalTo(housemateUid);
             mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
                         HousemateBalance housemateBalance =  balanceSnapshot.getValue(HousemateBalance.class);
-                        if (housemateBalance.getHousemate_uid().equals(housemateUid))
+
+                        if (housemateBalance.getUid().equals(mCurrentUser.getUid()))
                         {
                             String key = balanceSnapshot.getKey();
                             mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() - paymentToEach);
-                            Log.d("CreatePaymentAvtivity", "me " + mCurrentUser.getUid() + " ows housemate " + housemateUid + " " + (-paymentToEach));
                             break;
                         }
                     }
