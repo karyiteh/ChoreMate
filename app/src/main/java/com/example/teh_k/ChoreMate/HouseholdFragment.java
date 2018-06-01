@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,10 +47,7 @@ public class HouseholdFragment extends Fragment {
     private HousemateAdapter housemateListAdapter;
     private RecyclerView.LayoutManager housemateListManager;
 
-    private String newHouseholdName = "";
-
     private String householdKey;
-    private ArrayList<String> housemateKeys;
     private ArrayList<User> housemates;
 
     /**
@@ -104,69 +103,7 @@ public class HouseholdFragment extends Fragment {
         mHousemateList = (RecyclerView) getView().findViewById(R.id.housemate_list);
 
         // TODO: Method to retrieve user list from database.
-        String user_id = mCurrentUser.getUid();
-        DatabaseReference mUser = mDatabase.child("Users");
-        mUser.child(user_id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                User user = dataSnapshot.getValue(User.class);
-                householdKey = user.getHousehold();
-                Log.d("HouseholdFregment", "Applying household: " + householdKey );
-
-                // Setting the household name.
-                DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-                mHousehold.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Getting the household object from the database and setting it.
-                        Household household = dataSnapshot.getValue(Household.class);
-                        mHouseholdName.setText(household.getHouse_name());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error in getting household.", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                Query mQueryUserHousemates = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
-
-                housemates = new ArrayList<User>();
-                mQueryUserHousemates.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
-                            User user = userSnapshot.getValue(User.class);
-                            housemates.add(user);
-                            Log.d("HouseholdFragment", "Adding housemate: " + user.getLast_name() );
-                        }
-                        // Creates the adapter.
-                        housemateListAdapter = new HousemateAdapter(housemates);
-
-                        // Attaches the adapter to the view.
-                        mHousemateList.setAdapter(housemateListAdapter);
-
-                        // Sets layout manager.
-                        housemateListManager = new LinearLayoutManager(getContext());
-                        mHousemateList.setLayoutManager(housemateListManager);
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-            }
-        });
+        populateHouseholdDb();
     }
 
     /**
@@ -229,49 +166,9 @@ public class HouseholdFragment extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                newHouseholdName = input.getText().toString();
 
-                // Update the new household name to the database.
-                final String user_id = mCurrentUser.getUid();
-                DatabaseReference mUser = mDatabase.child("Users").child(user_id);
-                mUser.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get the user object and the household key.
-                        User user = dataSnapshot.getValue(User.class);
-                        String householdKey = user.getHousehold();
+                renameHouseholdDb(input.getText().toString());
 
-                        // Get the household reference.
-                        final DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-                        mHousehold.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                // Get the household object.
-                                Household household = dataSnapshot.getValue(Household.class);
-                                household.setHouse_name(newHouseholdName);
-
-                                // Update the database with the new household name.
-                                mHousehold.setValue(household);
-
-                                // Show confirm message.
-                                Toast.makeText(getActivity(), "Household name successfully changed.",
-                                        Toast.LENGTH_LONG).show();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Toast.makeText(getActivity(), "Error in renaming household.",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error in renaming household.",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         });
 
@@ -363,5 +260,113 @@ public class HouseholdFragment extends Fragment {
         });
 
         builder.show();
+    }
+
+    private void renameHouseholdDb(final String newHouseholdName){
+
+        // Update the new household name to the database.
+        final String user_id = mCurrentUser.getUid();
+        DatabaseReference mUser = mDatabase.child("Users").child(user_id);
+        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get the user object and the household key.
+                User user = dataSnapshot.getValue(User.class);
+                String householdKey = user.getHousehold();
+
+                // Get the household reference.
+                final DatabaseReference mHousehold = mDatabase.child("Households");
+                mHousehold.child(householdKey).child("house_name").setValue(newHouseholdName)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Show confirm message.
+                                Toast.makeText(getActivity(), "Household Renamed",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Show confirm message.
+                        Toast.makeText(getActivity(), "Error",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error in renaming household.",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void populateHouseholdDb(){
+        String user_id = mCurrentUser.getUid();
+        DatabaseReference mUser = mDatabase.child("Users");
+        mUser.child(user_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User user = dataSnapshot.getValue(User.class);
+
+                householdKey = user.getHousehold();
+                Log.d("HouseholdFregment", "Applying household: " + householdKey );
+
+                // Getting the household name from db.
+                DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
+                mHousehold.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Getting the household object from the database and setting it.
+                        Household household = dataSnapshot.getValue(Household.class);
+                        mHouseholdName.setText(household.getHouse_name());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                // Getting housemates from household.
+                Query mQueryUserHousemates = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+                mQueryUserHousemates.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        housemates = new ArrayList<User>();
+
+                        for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                            User user = userSnapshot.getValue(User.class);
+                            housemates.add(user);
+                            Log.d("HouseholdFragment", "Adding housemate: " + user.getLast_name() );
+                        }
+
+                        // Creates the adapter.
+                        housemateListAdapter = new HousemateAdapter(housemates);
+
+                        // Attaches the adapter to the view.
+                        mHousemateList.setAdapter(housemateListAdapter);
+
+                        // Sets layout manager.
+                        housemateListManager = new LinearLayoutManager(getContext());
+                        mHousemateList.setLayoutManager(housemateListManager);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
