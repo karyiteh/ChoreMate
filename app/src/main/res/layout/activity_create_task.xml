@@ -78,6 +78,7 @@
             android:layout_marginStart="5dp"
             android:background="@drawable/button_main"
             android:gravity="start|center_vertical"
+            android:paddingLeft="5dp"
             android:text="@string/recurrence_options"
             android:textColor="@color/white" />
 
