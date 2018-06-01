@@ -238,7 +238,7 @@ public class UserProfileFragment extends Fragment {
         userTasks = new ArrayList<Task>();
 
         // TODO: Gets housemate's tasks from database.
-        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("uid").equalTo(mCurrentUser.getUid());
+        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("indexUid").startAt(mCurrentUser.getUid()).endAt(mCurrentUser.getUid()+ "\uf8ff");
 
         mQueryUserTasks.addValueEventListener(new ValueEventListener() {
             @Override

@@ -256,8 +256,14 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         calendar.set(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
         String time = formatter.format(calendar.getTime());
-
         task.setTime(time);
+
+        SimpleDateFormat indexingFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String indexHousehold = householdKey + indexingFormatter.format(calendar.getTime());
+        String indexUid = target.getUid() + indexingFormatter.format(calendar.getTime());
+
+        task.setIndexUid(indexUid);
+        task.setIndexHousehold(indexHousehold);
         task.setUid(target.getUid());
         task.setHousemateAvatar(target.getAvatar().toString());
         task.setHousehold(householdKey);

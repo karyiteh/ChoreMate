@@ -354,6 +354,14 @@ public class ViewTaskActivity extends AppCompatActivity {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
         newTask.setTime(formatter.format(now));
 
+        // set db sorting index
+        DateTimeFormatter indexingFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String indexHousehold = newTask.getHousehold() + indexingFormatter.format(now);
+        String indexUid = newTask.getUid() + indexingFormatter.format(now);
+
+        newTask.setIndexUid(indexUid);
+        newTask.setIndexHousehold(indexHousehold);
+
         return newTask;
     }
 
