@@ -63,7 +63,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private GregorianCalendar calendar;
 
     private boolean fragmentShown;
-    private boolean isRecurring;
 
     private String householdKey;
     private String user_id;
@@ -75,7 +74,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -87,14 +85,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mCurrentUser = mAuth.getCurrentUser();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                // Redirect login screen
-                if(firebaseAuth.getCurrentUser() == null){
-                }
-            }
-        };
 
         // Set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.pick_housemates);
@@ -256,6 +246,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // Set amount and unit of time from recurring options fragment
         if (recurFrag != null && recurFrag.getAmountOfTime() != 0 && recurFrag.getSpinnerOption() != null) {
             getRecurringOptions();
+            task.setRecur(true);
             task.setAmountOfTime(amountOfTime);
             task.setUnitOfTime(unitOfTime);
         }
