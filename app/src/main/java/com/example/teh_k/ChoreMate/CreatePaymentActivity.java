@@ -182,6 +182,14 @@ public class CreatePaymentActivity extends AppCompatActivity {
             }
         }
 
+        if(selectedHousemates.size() == 0){
+            // Set error and focus view
+            focusView = recyclerView;
+            focusView.requestFocus();
+            Toast.makeText(CreatePaymentActivity.this, "Please select at least one housemate.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         // Calculate total payments. If checkbox is split, split the payment amount
         if (checkBoxSplit.isChecked()) {
             paymentToEach = paymentToEach / selectedHousemates.size();

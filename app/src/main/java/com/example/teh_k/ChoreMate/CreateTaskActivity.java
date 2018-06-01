@@ -221,6 +221,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
      * @param task Task object to save in database
      */
     private void createTask(Task task) {
+        View focusView;
         task.setTask_name(editTaskName.getText().toString().trim());
         task.setTask_detail(editTaskDescription.getText().toString().trim());
 
@@ -243,9 +244,11 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }
 
         if(selectedHousemates.size() == 0){
-            // TODO: what if user selects no one;
             // Set error and focus view
-            target = housemateList.get(0);
+            focusView = recyclerView;
+            focusView.requestFocus();
+            Toast.makeText(CreateTaskActivity.this, "Please select at least one housemate.", Toast.LENGTH_LONG).show();
+            return;
         }
 
         task.setUser_list(selectedHousemates);
