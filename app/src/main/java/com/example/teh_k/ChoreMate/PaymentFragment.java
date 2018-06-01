@@ -94,20 +94,20 @@ public class PaymentFragment extends Fragment {
             mPaymentList = getView().findViewById(R.id.housemate_balances);
         }
 
-        // Get the task list from the database.
-        housematePayment = initializePayments();
         // TODO: get payment list form database.
+        housematePayment = initializePayments();
+
         Query mQueryHouseholdPayments = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
         mQueryHouseholdPayments.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
                     HousemateBalance housemateBalance = balanceSnapshot.getValue(HousemateBalance.class);
-                    Log.d("PaymentFregment", "Housemate uid: " + housemateBalance.getUid());
-                    Log.d("PaymentFregment", "Housemate avatar: " + housemateBalance.getHousemate_avatar());
-                    Log.d("PaymentFregment", "Housemate firstname: " + housemateBalance.getHousemate_first_name());
+                    Log.d("PaymentFregment", "Housemate balances: " + housemateBalance.getHousemate_first_name());
                     housematePayment.add(housemateBalance);
+
                 }
 
                 // Creates the adapter.

@@ -1,7 +1,6 @@
 package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -27,7 +27,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CreatePaymentActivity extends AppCompatActivity {
     // Initialize UI elements
@@ -39,7 +38,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
     // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
-    private ArrayList<HousemateBalance> balanceList=  new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignHousemateAdapter assignHousemateAdapter;
 
@@ -75,10 +73,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(assignHousemateAdapter);
 
-        // TODO: Test purposes. Remove after database implementation
-        //loadSampleHousemates();
-        // TODO: Loading current housemates from DB into housemateList goes here
-
         // TODO: populate housemates
         DatabaseReference mUser = mDatabase.child("Users").child(mCurrentUser.getUid());
         mUser.addValueEventListener(new ValueEventListener() {
@@ -95,8 +89,10 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
                         for(DataSnapshot housemate: dataSnapshot.getChildren()){
                             User user =  housemate.getValue(User.class);
-                            housemateList.add(user);
-                            Log.d("CreatePaymentAvtivity", "roommate populated: " + user.getLast_name());
+                            if(!user.getUid().equals(mCurrentUser.getUid())){
+                                housemateList.add(user);
+                                Log.d("CreatePaymentAvtivity", "roommate populated: " + user.getLast_name());
+                            }
                         }
 
                     }
@@ -124,6 +120,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         createPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MyUtils.HideSoftKeyboard(CreatePaymentActivity.this);
                 createPayment(false);
             }
         });
@@ -132,6 +129,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         createCharge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MyUtils.HideSoftKeyboard(CreatePaymentActivity.this);
                 createPayment(true);
             }
         });
@@ -143,7 +141,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
      */
     private void createPayment(boolean isCharge) {
         View focusView;
-        HousemateBalance currBalance;
 
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
@@ -192,6 +189,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         }
         Log.d("CreatePaymentAvtivity", "paymentToEach: " + String.valueOf(paymentToEach));
 
+        // TODO: Loading current housemates from DB into housemateList goes here
         // Update Balances for each selected housemate
         for (int i = 0; i < selectedHousemates.size(); i++) {
 
@@ -212,7 +210,6 @@ public class CreatePaymentActivity extends AppCompatActivity {
                         {
                             String key = balanceSnapshot.getKey();
                             mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() + paymentToEach);
-                            Log.d("CreatePaymentAvtivity", housemateUid + " ows me " + mCurrentUser.getUid() + " " + paymentToEach);
                             break;
                         }
                     }
@@ -225,18 +222,19 @@ public class CreatePaymentActivity extends AppCompatActivity {
             });
 
             // TODO: UPDATE BALANCE FOR MY SELF
-            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
+            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("housemate_uid").equalTo(housemateUid);
             mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
                         HousemateBalance housemateBalance =  balanceSnapshot.getValue(HousemateBalance.class);
-                        if (housemateBalance.getHousemate_uid().equals(housemateUid))
+
+                        if (housemateBalance.getUid().equals(mCurrentUser.getUid()))
                         {
                             String key = balanceSnapshot.getKey();
                             mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() - paymentToEach);
-                            Log.d("CreatePaymentAvtivity", "me " + mCurrentUser.getUid() + " ows housemate " + housemateUid + " " + (-paymentToEach));
                             break;
                         }
                     }
@@ -286,24 +284,5 @@ public class CreatePaymentActivity extends AppCompatActivity {
         // TODO: Bring user back to MainActivity.class after successful task creation.
         Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);
         startActivity(mainIntent);
-    }
-
-
-    // TODO: For testing purposes. Remove later after database implementation
-    private void loadSampleHousemates() {
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-
-        User user1 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        housemateList.add(user1);
-
-        User user2 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        housemateList.add(user2);
-
-        User user3 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        housemateList.add(user3);
     }
 }

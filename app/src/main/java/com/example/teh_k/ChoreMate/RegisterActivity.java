@@ -75,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Tries to submit the form to the database.
+                MyUtils.HideSoftKeyboard(RegisterActivity.this);
                 attemptSubmit();
             }
         });
