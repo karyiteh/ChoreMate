@@ -91,12 +91,6 @@ public class HousemateProfileActivity extends AppCompatActivity {
         // Getting the user task list from the database.
         getTasksFromDatabase();
 
-        // Set up the adapter for the recycler view.
-        taskListAdapter = new TaskAdapter(currentHousemateTask);
-        mTaskList.setAdapter(taskListAdapter);
-        taskListManager = new LinearLayoutManager(this);
-        mTaskList.setLayoutManager(taskListManager);
-
         // Set up the listener for remove housemate button.
         mBtnRemoveHousemate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,8 +108,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
         currentHousemateTask = new ArrayList<Task>();
 
         // TODO: Gets housemate's tasks from database.
-        String user_id = currentHousemate.getUid();
-        Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("household").equalTo(user_id);
+        Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexUid").startAt(currentHousemate.getUid()).endAt(currentHousemate.getUid()+ "\uf8ff");
 
         mQueryUserTask.addValueEventListener(new ValueEventListener() {
             @Override
@@ -123,7 +116,14 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
                 for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
                     currentHousemateTask.add(taskSnapshot.getValue(Task.class));
-                    }
+
+                }
+
+                // Set up the adapter for the recycler view.
+                taskListAdapter = new TaskAdapter(currentHousemateTask);
+                mTaskList.setAdapter(taskListAdapter);
+                taskListManager = new LinearLayoutManager(HousemateProfileActivity.this);
+                mTaskList.setLayoutManager(taskListManager);
 
             }
 

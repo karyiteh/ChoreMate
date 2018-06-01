@@ -154,7 +154,7 @@ public class TaskFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
                 String householdKey = user.getHousehold();
 
-                Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("household").equalTo(householdKey);
+                Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexHousehold").startAt(householdKey).endAt(householdKey + "\uf8ff");
 
                 mQueryUserTask.addValueEventListener(new ValueEventListener() {
                     @Override
