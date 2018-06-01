@@ -1,12 +1,25 @@
 package com.example.teh_k.ChoreMate;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Class that controls the change password page.
@@ -34,6 +47,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private User currentUser;
 
     /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+
+    /**
      * Loads the user profile screen when the user profile tab is clicked on.
      * @param savedInstanceState    The last instance that the activity is in.
      */
@@ -41,6 +61,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
+
+        // Set up user database reference.
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+
+        getUserFromDatabase();
 
         // Creates the appbar.
         appbar = findViewById(R.id.appbar_change_password);
@@ -56,7 +83,29 @@ public class ChangePasswordActivity extends AppCompatActivity {
         mBtnChangePassword.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                MyUtils.HideSoftKeyboard(ChangePasswordActivity.this);
                 attemptChangePassword();
+            }
+        });
+    }
+
+    /**
+     * Gets the user information from the database.
+     * The user data of the current user logged in the app.
+     */
+    private void getUserFromDatabase() {
+        DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
+        mCurrUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                currentUser = dataSnapshot.getValue(User.class);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(ChangePasswordActivity.this, "Error", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -124,7 +173,18 @@ public class ChangePasswordActivity extends AppCompatActivity {
             focusView.requestFocus();
         }
         else {
+
             // TODO: Change the user's password in the database.
+            mCurrentUser.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ChangePasswordActivity.this, "User password updated.", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
         }
     }
 
@@ -160,12 +220,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
      */
     private boolean isCorrectPassword(String password) {
 
-        // The correct password from the database.
-        String correctPassword = "123456";
-
-        // TODO: Get the current user's credentials from the database.
-
-        return correctPassword.equals(password);
+        return currentUser.getPassword().equals(password);
 
     }
 }
