@@ -137,6 +137,16 @@ public class HouseholdFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Clears all the data and adapter that is in the app.
+        housemateListAdapter.clear();
+        housemates.clear();
+        householdKey = "";
+    }
+
     /**
      * Starts the invite housemate activity.
      */

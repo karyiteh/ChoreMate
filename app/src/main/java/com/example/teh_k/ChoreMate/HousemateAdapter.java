@@ -28,6 +28,13 @@ public class HousemateAdapter extends RecyclerView.Adapter<HousemateAdapter.View
     boolean assignTask;
 
     /**
+     * Clears the data that is attached to the adapter.
+     */
+    public void clear() {
+        housemates.clear();
+    }
+
+    /**
      * Provides reference to the views for each data item.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
