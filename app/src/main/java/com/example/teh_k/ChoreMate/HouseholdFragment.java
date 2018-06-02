@@ -195,60 +195,7 @@ public class HouseholdFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO: Delete the household in the database
-                final String user_id = mCurrentUser.getUid();
-                DatabaseReference mUser = mDatabase.child("Users").child(user_id);
-                mUser.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        String householdKey = user.getHousehold();
-
-                        DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-                        mHousehold.removeValue();
-
-                        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("household").equalTo(householdKey);
-
-                        mQueryUserTasks.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
-                                    mDatabase.child("Tasks").child(taskSnapshot.getKey()).removeValue();
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-                            }
-                        });
-
-                        Query mQueryUsers = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
-
-                        mQueryUsers.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
-                                    mDatabase.child("Users").child(userSnapshot.getKey()).setValue("");
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error in deleting household", Toast.LENGTH_LONG).show();
-                    }
-                });
+                deleteHouseholdDb();
             }
         });
 
@@ -316,7 +263,7 @@ public class HouseholdFragment extends Fragment {
 
                 // Getting the household name from db.
                 DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-                mHousehold.addValueEventListener(new ValueEventListener() {
+                mHousehold.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Getting the household object from the database and setting it.
@@ -361,6 +308,113 @@ public class HouseholdFragment extends Fragment {
                         Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
                     }
                 });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteHouseholdDb(){
+
+        // delete that household
+        DatabaseReference mCurrHousehold = mDatabase.child("Households").child(householdKey);
+        mCurrHousehold.removeValue();
+
+        // do in parallel.
+        deleteHouseholdUsersDb(householdKey);
+        deleteHouseholdTaskDb(householdKey);
+        deleteHouseholdPaymentsDb(householdKey);
+
+    }
+
+    private void deleteHouseholdUsersDb(String householdKey){
+
+        // set all the user from that household reference to ''.
+        Query mQueryUsers = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+
+        mQueryUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Users").child(userSnapshot.getKey()).child("household").setValue("");
+
+                    // clear balances between all the users.
+                    deleteHouseholdBalanceDb(userSnapshot.getKey());
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteHouseholdTaskDb(String householdKey){
+
+        // delete all the tasks from that household
+        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("household").equalTo(householdKey);
+
+        mQueryUserTasks.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Tasks").child(taskSnapshot.getKey()).removeValue();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private void deleteHouseholdPaymentsDb(String householdKey){
+
+        // delete all the tasks from that household
+        Query mQueryUserPayments = mDatabase.child("Payments").orderByChild("household").equalTo(householdKey);
+
+        mQueryUserPayments.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot paymentSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Payments").child(paymentSnapshot.getKey()).removeValue();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private void deleteHouseholdBalanceDb(String uid){
+
+        // delete all the tasks from that household
+        Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(uid);
+
+        mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Balances").child(balanceSnapshot.getKey()).removeValue();
+                }
+
             }
 
             @Override

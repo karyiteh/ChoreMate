@@ -256,6 +256,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
             // Create payment object for each payment
             payment = new Payment();
+            payment.setHousehold(householdKey);
             payment.setPayment_name(paymentName);
             payment.setAmount(paymentToEach);
 
