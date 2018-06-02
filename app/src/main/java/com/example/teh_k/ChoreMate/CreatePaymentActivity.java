@@ -167,7 +167,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         paymentToEach = Double.parseDouble(paymentToEachStr);
 
         // If payment is a charge, then make the amount to be negative.
-        if (isCharge) {
+        if (!isCharge) {
             paymentToEach = - paymentToEach;
         }
 
