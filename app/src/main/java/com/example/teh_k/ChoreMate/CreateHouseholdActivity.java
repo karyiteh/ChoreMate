@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Button;
 
@@ -60,6 +60,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
             public void onClick(View view) {
                 cancel = false;
 
+                MyUtils.HideSoftKeyboard(CreateHouseholdActivity.this);
                 attemptCreate();
 
                 // If House object wasn't created, break out of code
@@ -164,7 +165,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
     // Returns true if any email in a list of emails does not end with @ucsd.edu
     private boolean isInvalidEmail(String[] emailsList) {
         for (String email : emailsList) {
-            if (!email.endsWith("@ucsd.edu")) {
+            if (!email.contains("@")) {
                 return true;
             }
         }

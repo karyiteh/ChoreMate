@@ -107,6 +107,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                MyUtils.HideSoftKeyboard(LoginActivity.this);
                 attemptLogin();
             }
         });
@@ -119,6 +120,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Brings the user to the register screen.
                 Intent registerIntent = new Intent(view.getContext(), RegisterActivity.class);
                 startActivity(registerIntent);
+            }
+        });
+
+        // Set up listener for the forget password button
+        Button mForgotPasswordButton = findViewById(R.id.btn_forgot_password);
+        mForgotPasswordButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // Brings the user to the forgot password screen.
+                Intent forgotPasswordIntent = new Intent(v.getContext(), ForgotPasswordActivity.class);
+                startActivity(forgotPasswordIntent);
             }
         });
 
@@ -253,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                         Log.d("LoginAvtivity", "User signed in : go to main activity");
                                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(mainIntent);
-                                        Toast.makeText(LoginActivity.this, "Signed in as :" + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LoginActivity.this, "Signed in as: " + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
 
                                     }
 
@@ -264,13 +276,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             public void onCancelled(DatabaseError databaseError) {
                                 // Dismiss the loading screen and show error message.
                                 showProgress(false);
-                                Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
                         // Dismiss the loading screen and show error message.
                         showProgress(false);
-                        Toast.makeText(LoginActivity.this, "Account does not exist.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -282,7 +294,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.endsWith("@ucsd.edu");
+        return email.contains("@");
     }
 
     /**

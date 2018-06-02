@@ -1,6 +1,5 @@
 package com.example.teh_k.ChoreMate;
 // used to keep track of the time of tasks
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -50,7 +49,8 @@ public class Task implements Parcelable {
     private String household;
     private int index;
 
-    //TODO: how should we handle when the task recurs, for daily, weekly, monthly, yearly
+    private String indexHousehold;
+    private String indexUid;
 
     public Task() {
         // Default empty constructor.
@@ -103,19 +103,22 @@ public class Task implements Parcelable {
 
     //getter and setter for unit of time
     public String getUnitOfTime() { return unitOfTime; }
-    public void setUnitOfTime(String unitOfTime) { this.unitOfTime = unitOfTime;
-    }
+    public void setUnitOfTime(String unitOfTime) { this.unitOfTime = unitOfTime; }
     //getter and setter for uid
     public String getUid() { return uid; }
     public void setUid(String uid) { this.uid = uid; }
     //getter and setter for unit of time
     public String getHousehold() { return household; }
-    public void setHousehold(String household) { this.household = household;
-    }
+    public void setHousehold(String household) { this.household = household; }
     //getter and setter for unit of time
     public int getIndex() { return index; }
-    public void setIndex(int index) { this.index = index;
-    }
+    public void setIndex(int index) { this.index = index; }
+    //getter and setter for db sorting index
+    public String getIndexHousehold() { return indexHousehold; }
+    public void setIndexHousehold(String indexHousehold) { this.indexHousehold = indexHousehold; }
+
+    public String getIndexUid() { return indexUid; }
+    public void setIndexUid(String indexUid) { this.indexUid = indexUid; }
 
     // Code generated from www.parcelabler.com
     // Following section of code used for implementing Parcelable.
@@ -142,6 +145,8 @@ public class Task implements Parcelable {
         uid = in.readString();
         household = in.readString();
         index = in.readInt();
+        indexHousehold = in.readString();
+        indexUid = in.readString();
     }
 
     @Override
@@ -170,6 +175,8 @@ public class Task implements Parcelable {
         dest.writeString(uid);
         dest.writeString(household);
         dest.writeInt(index);
+        dest.writeString(indexHousehold);
+        dest.writeString(indexUid);
     }
 
     @SuppressWarnings("unused")
@@ -201,6 +208,8 @@ public class Task implements Parcelable {
         result.put("uid", uid);
         result.put("household",household);
         result.put("index", index);
+        result.put("indexHousehold", indexHousehold);
+        result.put("indexUid", indexUid);
 
         return result;
     }

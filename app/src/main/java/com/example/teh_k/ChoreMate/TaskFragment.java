@@ -2,7 +2,6 @@ package com.example.teh_k.ChoreMate;
 
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -155,7 +154,7 @@ public class TaskFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
                 String householdKey = user.getHousehold();
 
-                Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("household").equalTo(householdKey);
+                Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexHousehold").startAt(householdKey).endAt(householdKey + "\uf8ff");
 
                 mQueryUserTask.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -163,7 +162,6 @@ public class TaskFragment extends Fragment {
                         for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
                             Task task = taskSnapshot.getValue(Task.class);
                             Log.d("TaskFregment", "Task populated: " + task.getTask_name());
-                            Log.d("TaskFregment", "Task uri:" + task.getHousemateAvatar());
                             tasks.add(task);
                         }
 

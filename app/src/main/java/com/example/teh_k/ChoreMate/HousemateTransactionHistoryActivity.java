@@ -32,7 +32,7 @@ public class HousemateTransactionHistoryActivity extends AppCompatActivity {
 
         // Set the housemate name and balance.
         mHousemateBalanceText.setText(housemate.getBalanceString());
-        mHousemateNameText.setText(housemate.getHousemateFirstName());
+        mHousemateNameText.setText(housemate.getHousemate_first_name());
 
         // TODO: Implement the RecyclerView.
     }

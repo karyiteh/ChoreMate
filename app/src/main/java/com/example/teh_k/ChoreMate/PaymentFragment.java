@@ -1,17 +1,28 @@
 package com.example.teh_k.ChoreMate;
 
-import android.net.Uri;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -29,6 +40,14 @@ public class PaymentFragment extends Fragment {
     // Actual data of the payment list
     private ArrayList<HousemateBalance> housematePayment;
 
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+
+
     public PaymentFragment() {
         // Required empty constructor.
     }
@@ -42,6 +61,11 @@ public class PaymentFragment extends Fragment {
 
         // Tells Android that it has its own options menu on the appbar.
         setHasOptionsMenu(true);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
     }
 
 
@@ -70,16 +94,38 @@ public class PaymentFragment extends Fragment {
             mPaymentList = getView().findViewById(R.id.housemate_balances);
         }
 
-        // Get the task list from the database.
+        // TODO: get payment list form database.
         housematePayment = initializePayments();
 
-        // Creates the adapter.
-        paymentListAdapter = new PaymentAdapter(housematePayment);
-        mPaymentList.setAdapter(paymentListAdapter);
+        Query mQueryHouseholdPayments = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
+        mQueryHouseholdPayments.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        // Creates the layout manager.
-        paymentListManager = new LinearLayoutManager(getContext());
-        mPaymentList.setLayoutManager(paymentListManager);
+                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
+                    HousemateBalance housemateBalance = balanceSnapshot.getValue(HousemateBalance.class);
+                    Log.d("PaymentFregment", "Housemate balances: " + housemateBalance.getHousemate_first_name());
+                    housematePayment.add(housemateBalance);
+
+                }
+
+                // Creates the adapter.
+                paymentListAdapter = new PaymentAdapter(housematePayment);
+                mPaymentList.setAdapter(paymentListAdapter);
+
+                // Creates the layout manager.
+                paymentListManager = new LinearLayoutManager(getContext());
+                mPaymentList.setLayoutManager(paymentListManager);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     /**
@@ -114,10 +160,6 @@ public class PaymentFragment extends Fragment {
      */
     private ArrayList<HousemateBalance> initializePayments() {
         ArrayList<HousemateBalance> housemateList = new ArrayList<HousemateBalance>();
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        HousemateBalance housemate1 = new HousemateBalance("John", "Eammons", imageUri, 20);
-        housemateList.add(housemate1);
         return housemateList;
     }
 
@@ -126,5 +168,8 @@ public class PaymentFragment extends Fragment {
      */
     private void createNewPayment() {
         // TODO: Method to create the new payment.
+        // Redirects to CreatePaymentActivity.
+        Intent createPaymentIntent = new Intent(getActivity(), CreatePaymentActivity.class);
+        startActivity(createPaymentIntent);
     }
 }

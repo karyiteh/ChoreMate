@@ -20,7 +20,7 @@
             android:fontFamily="cursive"
             android:gravity="center"
             android:text="@string/create_task"
-            android:textColor="#4d4dce"
+            android:textColor="@color/create_header"
             android:textSize="30sp" />
 
         <EditText
@@ -52,10 +52,9 @@
             android:id="@+id/task_due_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/due_date"
-            android:datePickerMode="spinner"
             android:calendarViewShown="false"
-            />
+            android:datePickerMode="spinner"
+            android:hint="@string/due_date" />
 
         <TextView
             android:id="@+id/assign_task"
@@ -77,10 +76,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:background="@color/white"
+            android:background="@drawable/button_main"
             android:gravity="start|center_vertical"
+            android:paddingLeft="5dp"
             android:text="@string/recurrence_options"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/white" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
@@ -92,8 +92,8 @@
             android:id="@+id/btn_create_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:text="@string/create_task"
+            android:background="@drawable/button_main"
+            android:text="+ Create Task"
             android:textColor="@color/white" />
 
     </LinearLayout>

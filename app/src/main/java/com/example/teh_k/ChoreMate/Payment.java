@@ -3,11 +3,17 @@ package com.example.teh_k.ChoreMate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Object class for payments in the app.
  * Implements Parcelable for passing payment object between activities.
  */
 public class Payment implements Parcelable {
+
+    private String household;
+
     // strings representing the names and details of payments
     private String payment_name;
     private String payment_detail;
@@ -16,8 +22,8 @@ public class Payment implements Parcelable {
     private double amount;
 
     // the two users involved in the payment
-    private User payer;
-    private User receiver;
+    private String payer;
+    private String receiver;
 
     // whether the payment has been paid or not
     private boolean status;
@@ -27,6 +33,12 @@ public class Payment implements Parcelable {
     }
 
     // getters and setters for the payment names and details
+    public String getHousehold() {
+        return household;
+    }
+    public void setHousehold(String household) {
+        this.household = household;
+    }
     public String getPayment_name() {
         return payment_name;
     }
@@ -49,16 +61,16 @@ public class Payment implements Parcelable {
     }
 
     // getters and setters of the users of the payment
-    public User getPayer() {
+    public String getPayer() {
         return payer;
     }
-    public void setPayer(User payer) {
+    public void setPayer(String payer) {
         this.payer = payer;
     }
-    public User getReceiver() {
+    public String getReceiver() {
         return receiver;
     }
-    public void setReceiver(User receiver) {
+    public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
 
@@ -77,11 +89,12 @@ public class Payment implements Parcelable {
      * Constructor method for when passing object through activities.
      */
     protected Payment(Parcel in) {
+        household = in.readString();
         payment_name = in.readString();
         payment_detail = in.readString();
         amount = in.readDouble();
-        payer = (User) in.readValue(User.class.getClassLoader());
-        receiver = (User) in.readValue(User.class.getClassLoader());
+        payer = in.readString();
+        receiver = in.readString();
         status = in.readByte() != 0x00;
     }
 
@@ -95,11 +108,12 @@ public class Payment implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(household);
         dest.writeString(payment_name);
         dest.writeString(payment_detail);
         dest.writeDouble(amount);
-        dest.writeValue(payer);
-        dest.writeValue(receiver);
+        dest.writeString(payer);
+        dest.writeString(receiver);
         dest.writeByte((byte) (status ? 0x01 : 0x00));
     }
 
@@ -120,4 +134,18 @@ public class Payment implements Parcelable {
         }
     };
 
+    public Map<String, Object> toMap() {
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("household", household);
+        result.put("payment_name", payment_name);
+        result.put("payment_detail", payment_detail);
+        result.put("amount", amount);
+        result.put("payer", payer);
+        result.put("receiver", receiver);
+        result.put("status", status);
+
+        return result;
+    }
 }

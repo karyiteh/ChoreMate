@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,7 +93,6 @@ public class UserProfileFragment extends Fragment {
 
     // Choice made by user.
     private int userChoice;
-    private String imageFilePath = "";
 
     /**
      * Database references.
@@ -121,6 +121,9 @@ public class UserProfileFragment extends Fragment {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 // Redirect login screen
                 if(firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(getActivity(), "Logged Out", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(getContext(), LoginActivity.class);
+                    startActivity(loginIntent);
                 }
             }
         };
@@ -151,43 +154,8 @@ public class UserProfileFragment extends Fragment {
             mTaskList = getView().findViewById(R.id.user_task_scroll);
         }
 
-        // Gets the user profile from the database.
-        //currentUser = getUserFromDatabase();
-        // funny async
-        // TODO: Implement obtaining user data from the database.
-        String user_id = mCurrentUser.getUid();
-        DatabaseReference mCurrUser = mDatabase.child("Users").child(user_id);
-        mCurrUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currentUser = dataSnapshot.getValue(User.class);
-                Log.d("UserProfileFregment", "Found user: " + currentUser.getAvatar());
-
-                // Updates the UI elements to the user profile obtained.
-                mAvatar.setImageURI(Uri.parse(currentUser.getAvatar()));
-                mUserName.setText(currentUser.getFirst_name());
-
-                // Set up listener for the avatar to change avatar.
-                mAvatar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        changeAvatar();
-                    }
-                });
-
-                // Set up the recycler view for the tasks.
-                getTasksFromDatabase();
-                taskListAdapter = new TaskAdapter(userTasks);
-                mTaskList.setAdapter(taskListAdapter);
-                taskListManager = new LinearLayoutManager(getContext());
-                mTaskList.setLayoutManager(taskListManager);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-            }
-        });
+        getUserFromDatabase();
+        getTasksFromDatabase();
     }
 
 
@@ -233,13 +201,25 @@ public class UserProfileFragment extends Fragment {
      */
     private User getUserFromDatabase() {
         // TODO: Implement obtaining user data from the database.
-        String user_id = mCurrentUser.getUid();
-        DatabaseReference mCurrUser = mDatabase.child("Users").child(user_id);
-        mCurrUser.addValueEventListener(new ValueEventListener() {
+        DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
+        mCurrUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 currentUser = dataSnapshot.getValue(User.class);
                 Log.d("UserProfileFregment", "Found user: " + currentUser.getLast_name());
+
+                // Updates the UI elements to the user profile obtained.
+                Picasso.get().load(Uri.parse(currentUser.getAvatar())).into(mAvatar);
+                mUserName.setText(currentUser.getFirst_name());
+
+                // Set up listener for the avatar to change avatar.
+                mAvatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeAvatar();
+                    }
+                });
             }
 
             @Override
@@ -258,17 +238,23 @@ public class UserProfileFragment extends Fragment {
         userTasks = new ArrayList<Task>();
 
         // TODO: Gets housemate's tasks from database.
-        String user_id = mCurrentUser.getUid();
-        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("uid").equalTo(user_id);
+        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("indexUid").startAt(mCurrentUser.getUid()).endAt(mCurrentUser.getUid()+ "\uf8ff");
 
         mQueryUserTasks.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+
                     Task task = taskSnapshot.getValue(Task.class);
                     Log.d("UserProfileFregment", "Found user task: " + task.getTask_name());
                     userTasks.add(task);
+
+                    // Set up the recycler view for the tasks.
+                    taskListAdapter = new TaskAdapter(userTasks);
+                    mTaskList.setAdapter(taskListAdapter);
+                    taskListManager = new LinearLayoutManager(getContext());
+                    mTaskList.setLayoutManager(taskListManager);
 
                 }
 
@@ -422,7 +408,7 @@ public class UserProfileFragment extends Fragment {
 
         // Create file location to store the image taken.
         if (pictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            File photoFile = null;
+            File photoFile;
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
@@ -450,7 +436,6 @@ public class UserProfileFragment extends Fragment {
         String imageFileName = "IMG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        imageFilePath = image.getAbsolutePath();
         return image;
 
     }
@@ -493,7 +478,7 @@ public class UserProfileFragment extends Fragment {
         saveImage(image);
 
         // Updates the current user.
-        mAvatar.setImageURI(image);
+        Picasso.get().load(image).into(mAvatar);
         currentUser.setAvatar(image.toString());
 
     }
@@ -510,7 +495,7 @@ public class UserProfileFragment extends Fragment {
         saveImage(image);
 
         // Updates the current user.
-        mAvatar.setImageURI(image);
+        Picasso.get().load(image).into(mAvatar);
         currentUser.setAvatar(image.toString());
 
     }
@@ -518,16 +503,43 @@ public class UserProfileFragment extends Fragment {
     private void saveImage(Uri uri) {
         // Firebase storage stuff
         StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());
-        // On sucess upload image to storage.
+        // On success upload image to storage.
         filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
 
                 // Update user avatar uri
+                DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
                 mCurrUser.child("avatar").setValue(downloadUrl.toString());
+
+                // Update task avatar uri
+                DatabaseReference mTask = mDatabase.child("Tasks");
+                for(int i = 0; i < userTasks.size(); i++ ){
+                    mTask.child(userTasks.get(i).getKey()).child("housemateAvatar").setValue(downloadUrl.toString());
+                }
+
+                // Update payment balance uri
+                final DatabaseReference mBalance = mDatabase.child("Balances");
+                Query mQueryUserBalances = mBalance.orderByChild("housemate_uid").equalTo(mCurrentUser.getUid());
+                mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
+                            mBalance.child(balanceSnapshot.getKey()).child("housemate_avatar").setValue(downloadUrl.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+
                 Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
 
             }

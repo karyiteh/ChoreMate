@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -62,7 +63,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private GregorianCalendar calendar;
 
     private boolean fragmentShown;
-    private boolean isRecurring;
 
     private String householdKey;
     private String user_id;
@@ -74,7 +74,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -86,14 +85,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mCurrentUser = mAuth.getCurrentUser();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                // Redirect login screen
-                if(firebaseAuth.getCurrentUser() == null){
-                }
-            }
-        };
 
         // Set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.pick_housemates);
@@ -123,7 +114,6 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                             User user =  housemate.getValue(User.class);
                             housemateList.add(user);
                             Log.d("CreateTaskAvtivity", "roommate populated: " + user.getLast_name());
-                            Log.d("CreateTaskAvtivity", "uri: " + user.getAvatar());
                         }
 
                     }
@@ -164,6 +154,9 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         buttonRecurrence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                MyUtils.HideSoftKeyboard(CreateTaskActivity.this);
+
                 if (recurFrag == null) {
                     recurFrag = new RecurringTaskFragment();
                     loadFragment(recurFrag);
@@ -218,27 +211,42 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
      * @param task Task object to save in database
      */
     private void createTask(Task task) {
+        View focusView;
         task.setTask_name(editTaskName.getText().toString().trim());
         task.setTask_detail(editTaskDescription.getText().toString().trim());
 
         // Get the currently selected housemates by checking CheckBox state of each housemate
         // and add housemate to array if true
+        boolean isFirstUser = true;
+        User target = new User();
         ArrayList<String> selectedHousemates = new ArrayList<>();
         CheckBox checkBox;
-        // Log.d("CreateTaskAvtivity", housemateList.get(0).getAvatar().toString());
         for (int i = 0; i < housemateList.size(); i++) {
             checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
             if (checkBox.isChecked()) {
+                // TODO: this task first goes to the first one who appears on the checklist, really?
                 selectedHousemates.add(housemateList.get(i).getUid());
+                if(isFirstUser){
+                    target = housemateList.get(i);
+                    isFirstUser = false;
+                }
             }
         }
 
+        if(selectedHousemates.size() == 0){
+            // Set error and focus view
+            focusView = recyclerView;
+            focusView.requestFocus();
+            Toast.makeText(CreateTaskActivity.this, "Please select at least one housemate.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         task.setUser_list(selectedHousemates);
-        task.setHousemateAvatar(housemateList.get(0).getAvatar().toString());
 
         // Set amount and unit of time from recurring options fragment
         if (recurFrag != null && recurFrag.getAmountOfTime() != 0 && recurFrag.getSpinnerOption() != null) {
             getRecurringOptions();
+            task.setRecur(true);
             task.setAmountOfTime(amountOfTime);
             task.setUnitOfTime(unitOfTime);
         }
@@ -248,9 +256,16 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         calendar.set(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
         String time = formatter.format(calendar.getTime());
-
         task.setTime(time);
-        task.setUid(mCurrentUser.getUid());
+
+        SimpleDateFormat indexingFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String indexHousehold = householdKey + indexingFormatter.format(calendar.getTime());
+        String indexUid = target.getUid() + indexingFormatter.format(calendar.getTime());
+
+        task.setIndexUid(indexUid);
+        task.setIndexHousehold(indexHousehold);
+        task.setUid(target.getUid());
+        task.setHousemateAvatar(target.getAvatar().toString());
         task.setHousehold(householdKey);
         task.setIndex(0);
 

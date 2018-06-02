@@ -1,6 +1,7 @@
 package com.example.teh_k.ChoreMate;
 
-import android.net.Uri;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -8,9 +9,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -24,16 +38,31 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
     // Initialize field variables
     private ArrayList<User> housemateList = new ArrayList<>();
-    private ArrayList<HousemateBalance> balanceList=  new ArrayList<>();
     private RecyclerView recyclerView;
     private AssignHousemateAdapter assignHousemateAdapter;
 
     public Payment payment;
 
+    private String householdKey;
+    private double paymentToEach;
+    private String housemateUid;
+
+    /**
+     * Database references.
+     */
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_payment);
+
+        // Set up user database reference.
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = mAuth.getCurrentUser();
 
         // Set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_housemates);
@@ -44,9 +73,41 @@ public class CreatePaymentActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(assignHousemateAdapter);
 
-        // TODO: Test purposes. Remove after database implementation
-        loadSampleHousemates();
-        // TODO: Loading current housemates from DB into housemateList goes here
+        // TODO: populate housemates
+        DatabaseReference mUser = mDatabase.child("Users").child(mCurrentUser.getUid());
+        mUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User user = dataSnapshot.getValue(User.class);
+                householdKey = user.getHousehold();
+                Query mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+
+                mQueryHousemateMatch.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for(DataSnapshot housemate: dataSnapshot.getChildren()){
+                            User user =  housemate.getValue(User.class);
+                            if(!user.getUid().equals(mCurrentUser.getUid())){
+                                housemateList.add(user);
+                                Log.d("CreatePaymentAvtivity", "roommate populated: " + user.getLast_name());
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
 
         // Initialize the views
         editPaymentName = (EditText) findViewById(R.id.edit_payment_name);
@@ -59,6 +120,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         createPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MyUtils.HideSoftKeyboard(CreatePaymentActivity.this);
                 createPayment(false);
             }
         });
@@ -67,6 +129,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         createCharge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MyUtils.HideSoftKeyboard(CreatePaymentActivity.this);
                 createPayment(true);
             }
         });
@@ -78,14 +141,9 @@ public class CreatePaymentActivity extends AppCompatActivity {
      */
     private void createPayment(boolean isCharge) {
         View focusView;
-        HousemateBalance currBalance;
-        String housemateFirstName;
-        String housemateLastName;
 
         String paymentName = editPaymentName.getText().toString().trim();
         String paymentToEachStr = editPaymentAmount.getText().toString().trim();
-        double paymentToEach;
-        double currAmount;
 
         // Empty field check for payment name
         if (paymentName.equals("")) {
@@ -124,32 +182,77 @@ public class CreatePaymentActivity extends AppCompatActivity {
             }
         }
 
+        if(selectedHousemates.size() == 0){
+            // Set error and focus view
+            focusView = recyclerView;
+            focusView.requestFocus();
+            Toast.makeText(CreatePaymentActivity.this, "Please select at least one housemate.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         // Calculate total payments. If checkbox is split, split the payment amount
         if (checkBoxSplit.isChecked()) {
             paymentToEach = paymentToEach / selectedHousemates.size();
             paymentToEach = (double) Math.round(paymentToEach * 100) / 100;
         }
+        Log.d("CreatePaymentAvtivity", "paymentToEach: " + String.valueOf(paymentToEach));
 
+        // TODO: Loading current housemates from DB into housemateList goes here
         // Update Balances for each selected housemate
         for (int i = 0; i < selectedHousemates.size(); i++) {
 
-            // Get details of housemate
-            housemateFirstName = selectedHousemates.get(i).getFirst_name();
-            housemateLastName = selectedHousemates.get(i).getLast_name();
-            balanceList = selectedHousemates.get(i).getCurrent_balances();
+            // Get uid from housemate
+            housemateUid = selectedHousemates.get(i).getUid();
 
-            // Parse through balanceList and check for existing balance between user and housemate
-            for (int j = 0; j < balanceList.size(); j++) {
-                currBalance = balanceList.get(j);
+            // TODO: UPDATE BALANCE FOR HOUSEMATE
+            Query mQueryHousemateBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(housemateUid);
+            mQueryHousemateBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (currBalance.getHousemateFirstName().equals(housemateFirstName) &&
-                    currBalance.getHousemateLastName().equals(housemateLastName)) {
-                    currAmount = currBalance.getBalance() + paymentToEach;
-                    currBalance.setBalance(currAmount);
+                    for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
 
-                    break;
+                        HousemateBalance myBalance =  balanceSnapshot.getValue(HousemateBalance.class);
+
+                        if (myBalance.getHousemate_uid().equals(mCurrentUser.getUid()))
+                        {
+                            String key = balanceSnapshot.getKey();
+                            mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() + paymentToEach);
+                            break;
+                        }
+                    }
                 }
-            }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            // TODO: UPDATE BALANCE FOR MY SELF
+            Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("housemate_uid").equalTo(housemateUid);
+            mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
+                        HousemateBalance housemateBalance =  balanceSnapshot.getValue(HousemateBalance.class);
+
+                        if (housemateBalance.getUid().equals(mCurrentUser.getUid()))
+                        {
+                            String key = balanceSnapshot.getKey();
+                            mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() - paymentToEach);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+            });
 
             // Create payment object for each payment
             payment = new Payment();
@@ -158,37 +261,36 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
             // Set the payer and the receiver accordingly to whether it is a charge.
             if(isCharge) {
-                payment.setPayer(selectedHousemates.get(i));
-                // TODO: payment.setReceiver(DATABASE);
+                payment.setPayer(selectedHousemates.get(i).getUid());
+                payment.setReceiver(mCurrentUser.getUid());
             }
             else {
-                // TODO: payment.setPayer(DATABASE)
-                payment.setReceiver(selectedHousemates.get(i));
+                payment.setPayer(mCurrentUser.getUid());
+                payment.setReceiver(selectedHousemates.get(i).getUid());
             }
-            // TODO Add Payment object to database
+
+            // TODO: Add Payment object to database
+            DatabaseReference mPayment = mDatabase.child("Payments").push();
+            mPayment.setValue(payment.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("CreatePaymentAvtivity", "Create Balance: success");
+                    Toast.makeText(CreatePaymentActivity.this, "Payment Created",
+                            Toast.LENGTH_SHORT).show();
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("CreatePaymentAvtivity", "Create Balance:failure");
+                    Toast.makeText(CreatePaymentActivity.this, "Error",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
-        // TODO: UPDATE BALANCE FOR SELF (CURRENT USER) (?) DATABASE NEEDED
-
         // TODO: Bring user back to MainActivity.class after successful task creation.
-    }
-
-
-    // TODO: For testing purposes. Remove later after database implementation
-    private void loadSampleHousemates() {
-        Uri imageUri = Uri.parse("android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-
-        User user1 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        housemateList.add(user1);
-
-        User user2 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        housemateList.add(user2);
-
-        User user3 = new User("John", "Emmons", "android.resource://com.example.teh_k.ChoreMate/" +
-                R.drawable.john_emmons_headshot);
-        housemateList.add(user3);
+        Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);
+        startActivity(mainIntent);
     }
 }
