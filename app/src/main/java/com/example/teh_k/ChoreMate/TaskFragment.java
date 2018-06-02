@@ -138,6 +138,15 @@ public class TaskFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Clears all the data that is in this fragment.
+        taskListAdapter.clear();
+        tasks.clear();
+    }
+
     // PRIVATE METHODS!
     /**
      * Fetches the task list from the database.
