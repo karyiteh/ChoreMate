@@ -271,7 +271,7 @@ public class ViewTaskActivity extends AppCompatActivity {
 
     private void remindTask() {
 
-        String message = "Sup bitch xd";
+        String message = "Don't forget: " + task.getTask_name();
 
         Map<String, Object> notificationMessage = new HashMap<>();
         notificationMessage.put("message", message);
