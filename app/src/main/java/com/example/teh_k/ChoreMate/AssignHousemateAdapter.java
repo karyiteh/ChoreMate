@@ -19,6 +19,13 @@ public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemate
 
     private ArrayList<User> housemates;
 
+    /**
+     * Clears the data in the adapter.
+     */
+    public void clear() {
+        housemates.clear();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public LinearLayout row;
         public TextView name;

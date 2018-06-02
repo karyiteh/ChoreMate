@@ -23,6 +23,13 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.ViewHold
     private ArrayList<HousemateBalance> housemateBalances;
 
     /**
+     * Clears the data that is stored in the adapter.
+     */
+    public void clear() {
+        housemateBalances.clear();
+    }
+
+    /**
      * Provides reference to the views for each data item.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
