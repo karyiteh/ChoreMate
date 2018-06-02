@@ -33,17 +33,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -69,8 +77,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private UserLoginTask mAuthTask = null;
 
+    /**
+     * Database references.
+     */
     private FirebaseAuth mAuth;
     private DatabaseReference mUser;
+    private FirebaseFirestore mFirestore;
+    private FirebaseUser mCurrentUser;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -86,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up user database reference.
         mAuth = FirebaseAuth.getInstance();
         mUser = FirebaseDatabase.getInstance().getReference().child("Users");
+        mFirestore = FirebaseFirestore.getInstance();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -241,52 +255,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: Not sure if this is supposed to be here.
             /* TODO 2: WILL NAVIGATE TO NOHOUSEHOLDACTIVITY BY DEFAULT. Implementation for
                TODO 2: logged in checking/household exist checking later */
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        final String user_id = mAuth.getCurrentUser().getUid();
-                        mUser.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.hasChild(user_id)){
-
-                                    User currentUser = dataSnapshot.child(user_id).getValue(User.class);
-                                    if(currentUser.getHousehold().isEmpty()){
-
-                                        Log.d("LoginAvtivity", "New user detected");
-                                        Intent noHouseIntent = new Intent(LoginActivity.this, NoHouseholdActivity.class);
-                                        startActivity(noHouseIntent);
-                                        Toast.makeText(LoginActivity.this, "Time to join/create a household.", Toast.LENGTH_LONG).show();
-
-                                    } else {
-
-                                        // If login is successful, this moves the user to the correct screen.
-                                        Log.d("LoginAvtivity", "User signed in : go to main activity");
-                                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(mainIntent);
-                                        Toast.makeText(LoginActivity.this, "Signed in as: " + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
-
-                                    }
-
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                // Dismiss the loading screen and show error message.
-                                showProgress(false);
-                                Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } else {
-                        // Dismiss the loading screen and show error message.
-                        showProgress(false);
-                        Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
+            userLoginDb( email, password );
         }
 
     }
@@ -458,6 +427,89 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    public void userLoginDb(String email , String password){
+
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                mCurrentUser = mAuth.getCurrentUser();
+
+                if(task.isSuccessful()){
+
+                    checkNewUserDb();
+
+                } else {
+
+                    // Dismiss the loading screen and show error message.
+                    showProgress(false);
+                    Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+    }
+
+    public void checkNewUserDb(){
+
+        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(mCurrentUser.getUid())){
+
+                    final User currentUser = dataSnapshot.child(mCurrentUser.getUid()).getValue(User.class);
+
+                    checkUpdateDeviceTokenDb(currentUser);
+
+                    if(currentUser.getHousehold().isEmpty()){
+
+                        Log.d("LoginAvtivity", "New user detected");
+                        Intent noHouseIntent = new Intent(LoginActivity.this, NoHouseholdActivity.class);
+                        startActivity(noHouseIntent);
+                        Toast.makeText(LoginActivity.this, "Time to join/create a household.", Toast.LENGTH_LONG).show();
+
+                    } else {
+
+                        // If login is successful, this moves the user to the correct screen.
+                        Log.d("LoginAvtivity", "User signed in : go to main activity");
+                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(mainIntent);
+                        Toast.makeText(LoginActivity.this, "Signed in as: " + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Dismiss the loading screen and show error message.
+                showProgress(false);
+                Toast.makeText(LoginActivity.this, "Incorrect Username/Password Combination.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    public void checkUpdateDeviceTokenDb(final User user){
+
+        String token_id = FirebaseInstanceId.getInstance().getToken();
+        String current_id = mCurrentUser.getUid();
+        String name = user.getFirst_name() + " " + user.getLast_name();
+
+        Map<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("token_id", token_id);
+        tokenMap.put("user_id", current_id);
+        tokenMap.put("name", name);
+
+        mFirestore.collection("Users").document(current_id).set(tokenMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+        });
     }
 }
 

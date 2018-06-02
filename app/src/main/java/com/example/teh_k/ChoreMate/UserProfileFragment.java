@@ -2,7 +2,6 @@ package com.example.teh_k.ChoreMate;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,12 +32,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -50,8 +51,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -102,6 +105,8 @@ public class UserProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseFirestore mFirestore;
+
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -113,6 +118,7 @@ public class UserProfileFragment extends Fragment {
 
         // Set up user database reference.
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirestore = FirebaseFirestore.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
@@ -333,7 +339,29 @@ public class UserProfileFragment extends Fragment {
      */
     private void logout () {
         // TODO: Implement user log out here.
-        mAuth.signOut();
+
+        Map<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("token_id", "");
+
+        mFirestore.collection("Users").document(mCurrentUser.getUid()).update(tokenMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        mAuth.signOut();
+                        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(mainIntent);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.d("UserProfileFregment", "Error");
+
+            }
+        });
+
     }
 
     /**
@@ -502,45 +530,51 @@ public class UserProfileFragment extends Fragment {
 
     private void saveImage(Uri uri) {
         // Firebase storage stuff
-        StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());
+        final StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());
         // On success upload image to storage.
         filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                final Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                // Update user avatar uri
-                DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
-                mCurrUser.child("avatar").setValue(downloadUrl.toString());
-
-                // Update task avatar uri
-                DatabaseReference mTask = mDatabase.child("Tasks");
-                for(int i = 0; i < userTasks.size(); i++ ){
-                    mTask.child(userTasks.get(i).getKey()).child("housemateAvatar").setValue(downloadUrl.toString());
-                }
-
-                // Update payment balance uri
-                final DatabaseReference mBalance = mDatabase.child("Balances");
-                Query mQueryUserBalances = mBalance.orderByChild("housemate_uid").equalTo(mCurrentUser.getUid());
-                mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+                 filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onSuccess(Uri uri) {
 
-                        for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+                        final Uri downloadUrl = uri;
 
-                            mBalance.child(balanceSnapshot.getKey()).child("housemate_avatar").setValue(downloadUrl.toString());
+                        // Update user avatar uri
+                        DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
+                        mCurrUser.child("avatar").setValue(downloadUrl.toString());
 
+                        // Update task avatar uri
+                        DatabaseReference mTask = mDatabase.child("Tasks");
+                        for(int i = 0; i < userTasks.size(); i++ ){
+                            mTask.child(userTasks.get(i).getKey()).child("housemateAvatar").setValue(downloadUrl.toString());
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                        // Update payment balance uri
+                        final DatabaseReference mBalance = mDatabase.child("Balances");
+                        Query mQueryUserBalances = mBalance.orderByChild("housemate_uid").equalTo(mCurrentUser.getUid());
+                        mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
+                                    mBalance.child(balanceSnapshot.getKey()).child("housemate_avatar").setValue(downloadUrl.toString());
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
                     }
                 });
-
-                Toast.makeText(getActivity(), "Avatar uploaded.", Toast.LENGTH_LONG).show();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
