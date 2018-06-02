@@ -19,5 +19,8 @@
     <color name="cool_blue">#A2D0DB</color>
     <color name="rose">#FFA17F</color>
     <color name="bloo"> #00223E</color>
+    <color name="orange">#FFC371</color>
+    <color name="red_orange">#FF5F6D</color>
+    <color name="grey">#808080</color>
 
 </resources>
