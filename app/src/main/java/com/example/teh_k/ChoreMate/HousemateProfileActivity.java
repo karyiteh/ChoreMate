@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -51,6 +53,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
     // The housemate to be displayed.
     private User currentHousemate;
     private ArrayList<Task> currentHousemateTask;
+    private ArrayList<User> currentHousemateList = new ArrayList<User>();
 
     /**
      * Database references.
@@ -149,14 +152,15 @@ public class HousemateProfileActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO: Delete the housemate in the database
-                mDatabase.child("Users").child(currentHousemate.getUid()).removeValue();
-                mDatabase.child("Household").child("user_list").child(currentHousemate.getUid()).removeValue();
+
+                deleteHousemateDb();
 
                 // Send the toast message as confirmation.
                 String message = "Remove request sent to " + currentHousemate.getFirst_name();
+
                 Toast confirmation = Toast.makeText(HousemateProfileActivity.this, message, Toast.LENGTH_LONG);
                 confirmation.show();
+
             }
         });
 
@@ -168,5 +172,161 @@ public class HousemateProfileActivity extends AppCompatActivity {
         });
 
         builder.show();
+
+    }
+
+    private void deleteHousemateDb(){
+
+        Query mQueryUsers = mDatabase.child("Users").orderByChild("household").equalTo(currentHousemate.getHousehold());
+
+        mQueryUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+
+                    Log.d("HousemateProfAvtivity", "found user " + userSnapshot.getValue(User.class).getLast_name());
+                    currentHousemateList.add(userSnapshot.getValue(User.class));
+
+                }
+
+                // TODO: Delete this household from the housemate
+                deleteHousemateTaskDb(currentHousemate.getUid());
+                deleteHousemateBalanceDb(currentHousemate.getUid());
+                deleteHousematePaymentDb(currentHousemate.getUid());
+                mDatabase.child("Users").child(currentHousemate.getUid()).child("household").setValue("");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteHousemateBalanceDb(String uid){
+
+        // delete our balances to the housemate
+        Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("housemate_uid").equalTo(uid);
+
+        mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Balances").child(balanceSnapshot.getKey()).removeValue();
+                    removeHousemateBalanceListDb(balanceSnapshot.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // delete the housemate's balances to the us
+        Query mQueryHousemateBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(uid);
+
+        mQueryHousemateBalances.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Balances").child(balanceSnapshot.getKey()).removeValue();
+                    removeHousemateBalanceListDb(balanceSnapshot.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteHousemateTaskDb(String uid){
+
+        // delete all the tasks from that household
+        Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("uid").equalTo(uid);
+
+        mQueryUserTasks.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Tasks").child(taskSnapshot.getKey()).removeValue();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteHousematePaymentDb(String uid){
+
+        // delete all payment from the housemate
+        Query mQueryPayerPayments = mDatabase.child("Payments").orderByChild("payer").equalTo(uid);
+
+        mQueryPayerPayments.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot paymentSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Payments").child(paymentSnapshot.getKey()).removeValue();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // delete all payment to the housemate
+        Query mQueryReceiverPayments = mDatabase.child("Payments").orderByChild("receiver").equalTo(uid);
+
+        mQueryReceiverPayments.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot paymentSnapshot: dataSnapshot.getChildren()){
+                    mDatabase.child("Payments").child(paymentSnapshot.getKey()).removeValue();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void removeHousemateBalanceListDb(final String balanceKey){
+
+        for( User user : currentHousemateList) {
+
+            List<String> balance_list = user.getCurrent_balances();
+
+            for (int i = 0; i < user.getCurrent_balances().size(); i++) {
+
+                if (balance_list.get(i).equals(balanceKey)) {
+                    Log.d("HousemateProfAvtivity", "remove balance Key " + balanceKey);
+                    balance_list.remove(i);
+                    break;
+                }
+
+            }
+
+            mDatabase.child("Users").child(user.getUid()).child("current_balances").setValue(balance_list);
+        }
     }
 }

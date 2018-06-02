@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -74,6 +75,7 @@ public class ViewTaskActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private FirebaseFirestore mFirestore;
+    private DatabaseReference mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,7 @@ public class ViewTaskActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mFirestore = FirebaseFirestore.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        mUser = mDatabase.child("Users");
 
         setContentView(R.layout.activity_view_task);
 
@@ -107,34 +110,13 @@ public class ViewTaskActivity extends AppCompatActivity {
 
         // Updates the text fields.
         appbar.setTitle(task.getTask_name());
-        DatabaseReference mUser = mDatabase.child("Users");
+
 
         // If theres a list of user -> task is rotational
         if(task.getUser_list().size() > 1){
 
-            // normalize the index
-            newIndex = task.getIndex() + 1;
-            if(newIndex == task.getUser_list().size()){
-                newIndex = 0;
-            }
+            getNextUserDb();
 
-            // get uid of next user
-            String userNextUid = task.getUser_list().get(newIndex);
-
-            // get next user object from db
-            mUser.child(userNextUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    userNext = dataSnapshot.getValue(User.class);
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.d("ViewTaskAvtivity", "Error.");
-                }
-            });
         } else {
 
             // otherwise set next user to null;
@@ -413,6 +395,61 @@ public class ViewTaskActivity extends AppCompatActivity {
                 Log.d("ViewTaskAvtivity", "Create Task: failure");
                 Toast.makeText(ViewTaskActivity.this, "Error",
                         Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private boolean handleUserNonexistDb(User user) {
+
+        // if the housemate nolonger lives in the household.
+        if(!user.getHousehold().equals(task.getHousehold())){
+
+            DatabaseReference mTask = mDatabase.child("Tasks");
+
+            // remove housemate and update new list.
+            List<String> user_list = task.getUser_list();
+            user_list.remove(newIndex);
+
+            mTask.child(task.getKey()).child("user_list").setValue(user_list);
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    private void getNextUserDb() {
+
+        // normalize the index
+        newIndex = task.getIndex() + 1;
+        if(newIndex >= task.getUser_list().size()){
+            newIndex = 0;
+        }
+
+        final List<String> user_list = task.getUser_list();
+        // get uid of next user
+        String userNextUid = user_list.get(newIndex);
+
+        // get next user object from db
+        mUser.child(userNextUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                userNext = dataSnapshot.getValue(User.class);
+
+                if(handleUserNonexistDb(userNext)){
+
+                    getNextUserDb();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("ViewTaskAvtivity", "Error.");
             }
         });
 

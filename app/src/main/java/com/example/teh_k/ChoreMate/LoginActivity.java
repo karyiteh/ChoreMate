@@ -453,7 +453,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public void checkNewUserDb(){
 
-        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        mUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(mCurrentUser.getUid())){
