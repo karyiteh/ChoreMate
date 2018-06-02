@@ -57,7 +57,7 @@ public class RecurringTaskFragment extends Fragment {
 
         // Set minimum and maximum values for the number picker
         amountOfTime.setMinValue(1);
-        amountOfTime.setMaxValue(365);
+        amountOfTime.setMaxValue(31);
 
         // Set up listener for NumberPicker object
         amountOfTime.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {

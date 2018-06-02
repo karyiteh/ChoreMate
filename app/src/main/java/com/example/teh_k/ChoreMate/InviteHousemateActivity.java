@@ -34,6 +34,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private String firstname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                firstname = user.getFirst_name();
                 String householdKey = user.getHousehold();
 
                 DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
@@ -96,7 +98,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
                         String householdName = household.getHouse_name();
                         String householdCode = household.getHouse_code();
 
-                        String subject = "[USER] is inviting you to " + householdName + " on ChoreMate!";
+                        String subject = firstname + " is inviting you to " + householdName + " on ChoreMate!";
                         String message = "Your invite code to " + householdName + " is: " + householdCode;
 
                         // Parse the String of emails
