@@ -200,6 +200,15 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Clears the task list that is stored in the app.
+        taskListAdapter.clear();
+        userTasks.clear();
+    }
+
     // HELPER METHODS HERE!
     /**
      * Gets the user information from the database.
@@ -349,15 +358,15 @@ public class UserProfileFragment extends Fragment {
                     public void onSuccess(Void aVoid) {
 
                         mAuth.signOut();
-                        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
-                        startActivity(mainIntent);
+                        Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(loginIntent);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                Log.d("UserProfileFregment", "Error");
+                Log.d("UserProfileFragment", "Error");
 
             }
         });

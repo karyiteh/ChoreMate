@@ -36,7 +36,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private Toolbar appbar;
 
     //TODO: Replace all instances of dummyCode when database is set up
-    private boolean correctCode = false;
+    private boolean correctCode = true;
     private ArrayList<User> housemateList;
     private List<String> userHousemateBalance;
 
@@ -144,7 +144,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 for(DataSnapshot household: dataSnapshot.getChildren()){
                     Household addHousehold =  household.getValue(Household.class);
                     Toast.makeText(NoHouseholdActivity.this, "Added household: " + addHousehold.getHouse_name() , Toast.LENGTH_LONG).show();
-                    Log.d("NoHouseholdAvtivity", "added household: " + addHousehold.getHouse_name());
+                    Log.d("NoHouseholdActivity", "added household: " + addHousehold.getHouse_name());
                     mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey());
                 }
                 correctCode = true;

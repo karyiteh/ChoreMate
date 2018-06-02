@@ -25,6 +25,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     ArrayList<Task> tasks;
 
     /**
+     * Clears the tasks that are stored in the adapter.
+     */
+    public void clear() {
+        tasks.clear();
+    }
+
+    /**
      * Provides reference to the views for each data item.
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
