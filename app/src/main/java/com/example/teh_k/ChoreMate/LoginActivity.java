@@ -429,7 +429,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    public void userLoginDb(String email , String password){
+    public void userLoginDb(final String email , final String password){
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -439,6 +439,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if(task.isSuccessful()){
 
                     checkNewUserDb();
+                    mUser.child(mCurrentUser.getUid()).child("password").setValue(password);
 
                 } else {
 
@@ -453,7 +454,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public void checkNewUserDb(){
 
-        mUser.addValueEventListener(new ValueEventListener() {
+        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(mCurrentUser.getUid())){

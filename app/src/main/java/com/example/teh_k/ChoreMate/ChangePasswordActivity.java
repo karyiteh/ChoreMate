@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -137,7 +139,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         // Store value at change password attempt.
         String currentPassword = editCurrentPassword.getText().toString();
-        String newPassword = editNewPassword.getText().toString();
+        final String newPassword = editNewPassword.getText().toString();
         String confirmPassword = editConfirmPassword.getText().toString();
 
         // Initializing local variables.
@@ -193,10 +195,26 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
 
                     if (task.isSuccessful()) {
-                        Toast.makeText(ChangePasswordActivity.this, "User password updated.", Toast.LENGTH_LONG).show();
 
-                        // Redirect user to login page and log out
-                        mAuth.signOut();
+
+                        DatabaseReference mUser = mDatabase.child("Users");
+                        mUser.child(mCurrentUser.getUid()).child("password").setValue(newPassword)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        Toast.makeText(ChangePasswordActivity.this, "User password updated.", Toast.LENGTH_LONG).show();
+
+                                        // Redirect user to login page and log out
+                                        mAuth.signOut();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(ChangePasswordActivity.this, "Error", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
                     }
 
                 }
