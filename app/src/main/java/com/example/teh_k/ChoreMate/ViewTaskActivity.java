@@ -20,12 +20,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -33,6 +36,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -68,6 +73,7 @@ public class ViewTaskActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,7 @@ public class ViewTaskActivity extends AppCompatActivity {
         // Set up user database reference.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirestore = FirebaseFirestore.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
 
         setContentView(R.layout.activity_view_task);
@@ -263,6 +270,29 @@ public class ViewTaskActivity extends AppCompatActivity {
     }
 
     private void remindTask() {
+
+        String message = "Sup bitch xd";
+
+        Map<String, Object> notificationMessage = new HashMap<>();
+        notificationMessage.put("message", message);
+        notificationMessage.put("from", mCurrentUser.getUid());
+
+        mFirestore.collection("Users/" + user.getUid() + "/Notifications")
+                .add(notificationMessage)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(ViewTaskActivity.this, "Notification Sent.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ViewTaskActivity.this, "Error",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // TODO: Somehow remind the person in charge of the task to complete it through firebase
         Intent remind = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(remind);
