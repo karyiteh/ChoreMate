@@ -114,7 +114,7 @@ public class ViewTaskActivity extends AppCompatActivity {
 
 
         // If theres a list of user -> task is rotational
-        if(task.getUser_list().size() > 1){
+        if(task.isRecur()){
 
             getNextUserDb();
 
