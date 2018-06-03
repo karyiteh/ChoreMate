@@ -202,6 +202,7 @@ public class HouseholdFragment extends Fragment {
                 // Brings the user to NoHousehold activity.
                 Intent deletedHousehold = new Intent(getContext(), NoHouseholdActivity.class);
                 startActivity(deletedHousehold);
+
             }
         });
 

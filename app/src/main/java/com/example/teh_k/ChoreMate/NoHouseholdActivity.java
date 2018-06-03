@@ -101,6 +101,12 @@ public class NoHouseholdActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        // Minimizes the app when user presses back.
+        moveTaskToBack(true);
+    }
+
     /**
      * String compare the code entered with the actual household code
      * @param code: Code entered by user
