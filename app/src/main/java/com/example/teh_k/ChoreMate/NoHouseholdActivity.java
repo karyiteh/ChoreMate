@@ -2,6 +2,7 @@ package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +39,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private Toolbar appbar;
 
     // Private variables for the activity.
-    private boolean correctCode = false; // This has to be FALSE because if not, any code will pass. and the user can see all the task form the entire database.
+    private boolean correctCode;
     private ArrayList<User> housemateList;
     private List<String> userHousemateBalance;
 
@@ -90,49 +93,60 @@ public class NoHouseholdActivity extends AppCompatActivity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String code = inviteCode.getText().toString();
-
-                if (checkCode(code)) {
-
-                    // Redirects users back to the main sign in page.
-                    Intent mainIntent = new Intent(NoHouseholdActivity.this, MainActivity.class);
-                    startActivity(mainIntent);
-                }
+                checkCode(code);
 
             }
         });
     }
-
-
-    /**
-     * Function that handles the code inserted by the user in the text field
-     * @param code: Code entered by the user.
-     * @return true if the code is correct, false otherwise
-     */
-    private boolean checkCode(String code){
-        // Reset the error message
-        inviteCode.setError(null);
-
-        // Check if the code is correct
-        if (isCorrectCode(code)){
-            return true;
-        }
-
-        else {
-            // Set the error
-            inviteCode.setError("Please Enter a Valid Code");
-            return false;
-        }
-    }
-
 
     /**
      * String compare the code entered with the actual household code
      * @param code: Code entered by user
      * @return true if the string matches, false otherwise.
      */
-    private boolean isCorrectCode(String code){
+    private void checkCode(final String code){
 
+        // Reset the error message
+        inviteCode.setError(null);
+
+        // Search for matching household code in database.
+        Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
+        mQueryHouseholdMatch.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()) {
+
+                    // If checkCode is successful, join the household.
+                    joinHousehold(code);
+
+                    // Redirects users back to the main sign in page.
+                    Intent mainIntent = new Intent(NoHouseholdActivity.this, MainActivity.class);
+                    startActivity(mainIntent);
+
+                } else {
+
+                    // Set the error
+                    inviteCode.setError("Please Enter a Valid Code");
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Database code to join the household.
+     * @param code  The code that is entered by the user.
+     */
+    private void joinHousehold(String code) {
         // Search for matching household code in database.
         Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
         final DatabaseReference mUser = mDatabase.child("Users");
@@ -142,22 +156,27 @@ public class NoHouseholdActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot household: dataSnapshot.getChildren()){
+
+
                     Household addHousehold =  household.getValue(Household.class);
                     Toast.makeText(NoHouseholdActivity.this, "Added household: " + addHousehold.getHouse_name() , Toast.LENGTH_LONG).show();
                     Log.d("NoHouseholdActivity", "added household: " + addHousehold.getHouse_name());
-                    mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey());
+                    mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey())
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                }
+                            });
                 }
-                correctCode = true;
                 updateUserBalances();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
-                correctCode = false;
             }
         });
-        return correctCode;
     }
 
     /**

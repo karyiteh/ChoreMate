@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,11 +27,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,6 +67,8 @@ public class HousemateProfileActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +77,21 @@ public class HousemateProfileActivity extends AppCompatActivity {
         // Set up user database reference.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirestore = FirebaseFirestore.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                // Redirect login screen
+                if(firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(HousemateProfileActivity.this, "Logged Out", Toast.LENGTH_LONG).show();
+                    Intent loginIntent = new Intent(HousemateProfileActivity.this, LoginActivity.class);
+                    startActivity(loginIntent);
+                }
+
+            }
+        };
 
         setContentView(R.layout.activity_housemate_profile);
 
@@ -160,6 +182,19 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
                 Toast confirmation = Toast.makeText(HousemateProfileActivity.this, message, Toast.LENGTH_LONG);
                 confirmation.show();
+
+                if(currentHousemate.getUid().equals(mCurrentUser.getUid())) {
+
+                    // redirect user to noHouseholdActivity.
+                    Intent noHouseholdIntent = new Intent(HousemateProfileActivity.this, NoHouseholdActivity.class);
+                    startActivity(noHouseholdIntent);
+
+                } else {
+                    // redirect user to household fragment.
+                    Intent householdIntent = new Intent(HousemateProfileActivity.this, HouseholdFragment.class);
+                    startActivity(householdIntent);
+                }
+
 
             }
         });
@@ -347,5 +382,36 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             mDatabase.child("Users").child(user.getUid()).child("current_balances").setValue(balance_list);
         }
+    }
+
+    /**
+     * Logs the user out of the app.
+     */
+    private void logout () {
+
+        // Token for notifications.
+        Map<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("token_id", "");
+
+        // Signs the user out from the app and stops connection to the database.
+        mFirestore.collection("Users").document(mCurrentUser.getUid()).update(tokenMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        mAuth.signOut();
+                        Intent loginIntent = new Intent(HousemateProfileActivity.this, LoginActivity.class);
+                        startActivity(loginIntent);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.d("UserProfileFragment", "Error");
+
+            }
+        });
+
     }
 }
