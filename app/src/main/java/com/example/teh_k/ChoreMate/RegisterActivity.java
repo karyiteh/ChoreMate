@@ -193,7 +193,7 @@ public class RegisterActivity extends AppCompatActivity {
                         newUser.setPassword(password);
                         newUser.setHousehold("");
                         // this is default uri
-                        newUser.setAvatar("https://firebasestorage.googleapis.com/v0/b/choremate-e0c86.appspot.com/o/seijya.jpg?alt=media&token=bd590602-b3ad-4177-8c8a-1af1ba26f615");
+                        newUser.setAvatar("https://firebasestorage.googleapis.com/v0/b/choremate-e0c86.appspot.com/o/icon-people-circle.png?alt=media&token=221a62ea-f405-43da-b07d-d1b9625cc14e");
 
                         curr_user_db.setValue(newUser.toMap());
 

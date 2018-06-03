@@ -147,16 +147,20 @@ public class TaskFragment extends Fragment {
         tasks = new ArrayList<Task>();
 
         // populate task (from database)
-        DatabaseReference mUser = mDatabase.child("Users").child(user_id);
-        mUser.addValueEventListener(new ValueEventListener() {
+        DatabaseReference mUserHousehold = mDatabase.child("Users").child(user_id).child("household");
+        mUserHousehold.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                String householdKey = user.getHousehold();
+                final String householdKey = dataSnapshot.getValue(String.class);
+
+                // return if household key is null
+                if(householdKey.isEmpty()){
+                    return;
+                }
 
                 Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexHousehold").startAt(householdKey).endAt(householdKey + "\uf8ff");
 
-                mQueryUserTask.addValueEventListener(new ValueEventListener() {
+                mQueryUserTask.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){

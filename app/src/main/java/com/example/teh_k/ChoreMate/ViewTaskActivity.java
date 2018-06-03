@@ -319,6 +319,13 @@ public class ViewTaskActivity extends AppCompatActivity {
                     // set new thumbnails
                     newTask.setIndex(newIndex);
                     newTask.setUid(userNext.getUid());
+
+                    // get the last 14 digit (time stamp) from current task "YYYY MM DD : HH mm ss"
+                    String index_uid = newTask.getIndexUid();
+
+                    // update the index
+                    newTask.setIndexUid(userNext.getUid() + index_uid.substring(index_uid.length() - 14 ));
+
                     newTask.setHousemateAvatar(userNext.getAvatar());
 
                     // Assign to new user

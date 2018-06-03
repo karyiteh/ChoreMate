@@ -253,13 +253,13 @@ public class UserProfileFragment extends Fragment {
                     Log.d("UserProfileFregment", "Found user task: " + task.getTask_name());
                     userTasks.add(task);
 
-                    // Set up the recycler view for the tasks.
-                    taskListAdapter = new TaskAdapter(userTasks);
-                    mTaskList.setAdapter(taskListAdapter);
-                    taskListManager = new LinearLayoutManager(getContext());
-                    mTaskList.setLayoutManager(taskListManager);
-
                 }
+
+                // Set up the recycler view for the tasks.
+                taskListAdapter = new TaskAdapter(userTasks);
+                mTaskList.setAdapter(taskListAdapter);
+                taskListManager = new LinearLayoutManager(getContext());
+                mTaskList.setLayoutManager(taskListManager);
 
             }
 

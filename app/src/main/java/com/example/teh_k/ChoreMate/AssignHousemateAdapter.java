@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.CheckBox;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -130,7 +132,7 @@ public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemate
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.name.setText(housemates.get(position).getFirst_name());
-        holder.avatar.setImageURI(Uri.parse(housemates.get(position).getAvatar()));
+        Picasso.get().load(Uri.parse(housemates.get(position).getAvatar())).into(holder.avatar);
         holder.bind(position);
     }
 

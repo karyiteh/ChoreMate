@@ -36,7 +36,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private Toolbar appbar;
 
     // Private variables for the activity.
-    private boolean correctCode = true;
+    private boolean correctCode = false; // This has to be FALSE because if not, any code will pass. and the user can see all the task form the entire database.
     private ArrayList<User> housemateList;
     private List<String> userHousemateBalance;
 
@@ -137,7 +137,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
         Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
         final DatabaseReference mUser = mDatabase.child("Users");
 
-        mQueryHouseholdMatch.addValueEventListener(new ValueEventListener() {
+        mQueryHouseholdMatch.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
