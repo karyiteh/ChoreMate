@@ -142,8 +142,12 @@ public class HouseholdFragment extends Fragment {
         super.onPause();
 
         // Clears all the data and adapter that is in the app.
-        housemateListAdapter.clear();
-        housemates.clear();
+        if(housemateListAdapter != null) {
+            housemateListAdapter.clear();
+        }
+        if(housemates!= null) {
+            housemates.clear();
+        }
         householdKey = "";
     }
 

@@ -143,8 +143,12 @@ public class TaskFragment extends Fragment {
         super.onPause();
 
         // Clears all the data that is in this fragment.
-        taskListAdapter.clear();
-        tasks.clear();
+        if(taskListAdapter != null) {
+            taskListAdapter.clear();
+        }
+        if(tasks != null) {
+            tasks.clear();
+        }
     }
 
     // PRIVATE METHODS!

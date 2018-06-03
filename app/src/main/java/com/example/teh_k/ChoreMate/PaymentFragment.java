@@ -157,8 +157,12 @@ public class PaymentFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        paymentListAdapter.clear();
-        housematePayment.clear();
+        if(paymentListAdapter != null) {
+            paymentListAdapter.clear();
+        }
+        if(housematePayment != null) {
+            housematePayment.clear();
+        }
     }
 
     /**

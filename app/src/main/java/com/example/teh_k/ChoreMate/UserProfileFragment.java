@@ -204,8 +204,12 @@ public class UserProfileFragment extends Fragment {
         super.onPause();
 
         // Clears the task list that is stored in the app.
-        taskListAdapter.clear();
-        userTasks.clear();
+        if(taskListAdapter != null) {
+            taskListAdapter.clear();
+        }
+        if(userTasks != null) {
+            userTasks.clear();
+        }
     }
 
     // HELPER METHODS HERE!
