@@ -154,16 +154,6 @@ public class PaymentFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(paymentListAdapter != null) {
-            paymentListAdapter.clear();
-        }
-        if(housematePayment != null) {
-            housematePayment.clear();
-        }
-    }
 
     /**
      * Gets the housemates and their respective balances.

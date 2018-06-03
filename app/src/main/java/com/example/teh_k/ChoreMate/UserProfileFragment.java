@@ -195,19 +195,7 @@ public class UserProfileFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // Clears the task list that is stored in the app.
-        if(taskListAdapter != null) {
-            taskListAdapter.clear();
-        }
-        if(userTasks != null) {
-            userTasks.clear();
-        }
-    }
+    
 
     // HELPER METHODS HERE!
     /**
