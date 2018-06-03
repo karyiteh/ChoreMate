@@ -3,6 +3,8 @@ package com.example.teh_k.ChoreMate;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemateAdapter.ViewHolder> {
 
+    //public static final int LARGE_ARRAY_SIZE = 50;
+
     private ArrayList<User> housemates;
+
+    // sparse boolean array for checking the state of the items
+    private SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
     /**
      * Clears the data in the adapter.
@@ -42,11 +49,30 @@ public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemate
 
             // Set the onclick listener.
             row.setOnClickListener(this);
+            checkBox.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (checkBox.isChecked()) {
+            int adapterPosition = getAdapterPosition();
+            Log.d("AssignHousemateAdapter", "Adapter position chosen is: " + adapterPosition);
+            if (!itemStateArray.get(adapterPosition, false)) {
+                checkBox.setChecked(true);
+                itemStateArray.put(adapterPosition, true);
+                Log.d("AssignHousemateAdapter", "Check box at position " + adapterPosition +
+                        " set to true.");
+            }
+            else {
+                checkBox.setChecked(false);
+                itemStateArray.put(adapterPosition, false);
+                Log.d("AssignHousemateAdapter", "Check box at position " + adapterPosition +
+                        " set to false.");
+            }
+        }
+
+        void bind(int position) {
+            // Use the boolean array to check
+            if(!itemStateArray.get(position, false)) {
                 checkBox.setChecked(false);
             }
             else {
@@ -56,11 +82,21 @@ public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemate
     }
 
     /**
+     * Getter method for itemStateArray.
+     * @return  The item state array.
+     */
+    public SparseBooleanArray getItemStateArray() {
+        return itemStateArray;
+    }
+
+    /**
      * Constructor to feed the housemate list data.
      * @param myDataset The dataset that contains the housemates.
      */
     public AssignHousemateAdapter(ArrayList<User> myDataset) {
+
         housemates = myDataset;
+
     }
 
     /**
@@ -95,6 +131,7 @@ public class AssignHousemateAdapter extends RecyclerView.Adapter<AssignHousemate
         // - replace the contents of the view with that element
         holder.name.setText(housemates.get(position).getFirst_name());
         holder.avatar.setImageURI(Uri.parse(housemates.get(position).getAvatar()));
+        holder.bind(position);
     }
 
     /**
