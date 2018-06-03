@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -243,7 +244,7 @@ public class UserProfileFragment extends Fragment {
         // Gets housemate's tasks from database.
         Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("indexUid").startAt(mCurrentUser.getUid()).endAt(mCurrentUser.getUid()+ "\uf8ff");
 
-        mQueryUserTasks.addValueEventListener(new ValueEventListener() {
+        mQueryUserTasks.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -544,6 +545,8 @@ public class UserProfileFragment extends Fragment {
                         for(int i = 0; i < userTasks.size(); i++ ){
                             mTask.child(userTasks.get(i).getKey()).child("housemateAvatar").setValue(downloadUrl.toString());
                         }
+
+                        getTasksFromDatabase();
 
                         // Update payment balance uri
                         final DatabaseReference mBalance = mDatabase.child("Balances");
