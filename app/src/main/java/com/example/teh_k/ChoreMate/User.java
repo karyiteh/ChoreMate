@@ -38,7 +38,6 @@ public class User implements Parcelable{
         // Default empty constructor.
     }
 
-    // TODO: Constructor used for testing. Remove later
     public User(String first_name, String last_name, String avatar) {
         this.first_name = first_name;
         this.last_name = last_name;

@@ -18,6 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Controls the invite housemate page.
+ */
 public class InviteHousemateActivity extends AppCompatActivity {
 
     // UI elements on the screen.
@@ -72,12 +75,15 @@ public class InviteHousemateActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Checks the information that is entered by the user and invites the housemate.
+     */
     private void attemptInvite() {
         // Getting content for email
         final String emails = editHousemateEmail.getText().toString().trim();
 
-        // TODO: Replace [USER] with name of user
-        // TODO: GET HOUSE NAME AND CODE FROM DATABASE (FROM HOUSEHOLD OBJECT)
+        // Replace [USER] with name of user
+        // GET HOUSE NAME AND CODE FROM DATABASE (FROM HOUSEHOLD OBJECT)
         final String user_id = mCurrentUser.getUid();
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
         mUser.addValueEventListener(new ValueEventListener() {

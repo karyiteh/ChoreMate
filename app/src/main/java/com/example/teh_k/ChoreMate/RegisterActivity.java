@@ -171,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
             focusView.requestFocus();
         }
         else {
-            // TODO: Kick off background task to register the user to the database.
+            // Kick off background task to register the user to the database.
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {

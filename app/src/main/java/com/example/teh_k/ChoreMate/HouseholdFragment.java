@@ -102,7 +102,7 @@ public class HouseholdFragment extends Fragment {
         mHouseholdName = (TextView) getView().findViewById(R.id.txt_household_name);
         mHousemateList = (RecyclerView) getView().findViewById(R.id.housemate_list);
 
-        // TODO: Method to retrieve user list from database.
+        // Retrieve user list from database.
         populateHouseholdDb();
     }
 
@@ -193,6 +193,7 @@ public class HouseholdFragment extends Fragment {
             }
         });
 
+        // Show the dialog.
         builder.show();
 
     }
@@ -220,6 +221,7 @@ public class HouseholdFragment extends Fragment {
             }
         });
 
+        // Show the dialog.
         builder.show();
     }
 

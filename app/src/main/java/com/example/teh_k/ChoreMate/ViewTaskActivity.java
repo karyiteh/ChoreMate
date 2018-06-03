@@ -42,7 +42,8 @@ import java.util.Map;
 
 
 /**
- * Class that controls the elements on the view task page.
+ * Class that controls the elements on the view task page. Allows user to do functionalities related
+ * to tasks.
  */
 public class ViewTaskActivity extends AppCompatActivity {
 
@@ -131,12 +132,12 @@ public class ViewTaskActivity extends AppCompatActivity {
                 user = dataSnapshot.getValue(User.class);
                 Log.d("ViewTaskAvtivity", "Target user :" + user.getLast_name());
                 textUser.setText(user.getFirst_name());
-                // TODO: Do more processing to the date to be displayed nicely.
+                // Do more processing to the date to be displayed nicely.
                 String dueDate = task.getTime();
                 textDueDate.setText(dueDate);
                 textTaskInfo.setText(task.getTask_detail());
 
-                // TODO: Set the button listeners and logic.
+                // Set the button listeners and logic.
                 finishBttn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -176,6 +177,9 @@ public class ViewTaskActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Marks the task as finished and pass it to the next user if it's recurring.
+     */
     private void finishTask(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -187,7 +191,7 @@ public class ViewTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // TODO: Remove the task from the task list and database
+                // Remove the task from the task list and database
                 deleteTaskDb();
 
                 // if next user is not null; reschedule and assign to new user;
@@ -199,7 +203,7 @@ public class ViewTaskActivity extends AppCompatActivity {
                     newTask.setUid(userNext.getUid());
                     newTask.setHousemateAvatar(userNext.getAvatar());
 
-                    // TODO: Reschedule and assign to new user
+                    // Reschedule and assign to new user
                     assignTaskDb(rescheduleTaskDb(newTask));
                 }
 
@@ -216,10 +220,13 @@ public class ViewTaskActivity extends AppCompatActivity {
             }
         });
 
-
+        // Shows the dialog.
         builder.show();
     }
 
+    /**
+     * Deletes the task from the database permanently.
+     */
     private void deleteTask() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -230,9 +237,10 @@ public class ViewTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // TODO: Remove the task from the task list and database
+                // Remove the task from the task list and database
                 deleteTaskDb();
 
+                // Redirect user back to MainActivity.
                 Intent delete = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(delete);
 
@@ -246,13 +254,17 @@ public class ViewTaskActivity extends AppCompatActivity {
             }
         });
 
-
+        // Show the dialog.
         builder.show();
 
     }
 
+    /**
+     * Sends a notification to the housemate for the task.
+     */
     private void remindTask() {
 
+        // Message in the notification.
         String message = "Don't forget: " + task.getTask_name();
 
         Map<String, Object> notificationMessage = new HashMap<>();
@@ -264,7 +276,7 @@ public class ViewTaskActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(ViewTaskActivity.this, "Notification Sent.",
+                Toast.makeText(ViewTaskActivity.this, "Notification sent.",
                         Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -275,12 +287,15 @@ public class ViewTaskActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: Somehow remind the person in charge of the task to complete it through firebase
+        // Send the user back to main activity.
         Intent remind = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(remind);
 
     }
 
+    /**
+     * Assigns the task to another housemate without changing the date.
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void skipTask() {
 
@@ -293,10 +308,10 @@ public class ViewTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                // TODO: Remove the task from the task list and database
+                // Remove the task from the task list and database
                 deleteTaskDb();
 
-                // TODO: Assign the task to the next person in line according to database
+                // Assign the task to the next person in line according to database
                 // if next user is not null; reschedule and assign to new user;
                 if(userNext != null && task.isRecur()){
                     Task newTask = task;
@@ -306,10 +321,11 @@ public class ViewTaskActivity extends AppCompatActivity {
                     newTask.setUid(userNext.getUid());
                     newTask.setHousemateAvatar(userNext.getAvatar());
 
-                    // TODO: Assign to new user
+                    // Assign to new user
                     assignTaskDb(newTask);
                 }
 
+                // Send the user to MainActivity.
                 Intent skip = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(skip);
 
@@ -323,10 +339,13 @@ public class ViewTaskActivity extends AppCompatActivity {
             }
         });
 
-
+        // Show the dialog.
         builder.show();
     }
 
+    /**
+     * Deletes the task in the database.
+     */
     private void deleteTaskDb() {
 
         mDatabase.child("Tasks").child(task.getKey()).removeValue();
@@ -334,6 +353,11 @@ public class ViewTaskActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Reschedule the task in the database.
+     * @param newTask   The task to be rescheduled.
+     * @return  The rescheduled task
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private Task rescheduleTaskDb(Task newTask) {
 
@@ -377,6 +401,10 @@ public class ViewTaskActivity extends AppCompatActivity {
         return newTask;
     }
 
+    /**
+     * Assign the task to a user in the database.
+     * @param newTask   The task to be assigned.
+     */
     private void assignTaskDb(Task newTask) {
 
         DatabaseReference mTask = mDatabase.child("Tasks").push();
@@ -400,6 +428,11 @@ public class ViewTaskActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Handler for if the housemate no longer lives in the household.
+     * @param user  The housemate that no longer lives in the household.
+     * @return  True if successful, false otherwise.
+     */
     private boolean handleUserNonexistDb(User user) {
 
         // if the housemate nolonger lives in the household.
@@ -420,6 +453,9 @@ public class ViewTaskActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Gets the next user assigned from the database.
+     */
     private void getNextUserDb() {
 
         // normalize the index
@@ -440,9 +476,7 @@ public class ViewTaskActivity extends AppCompatActivity {
                 userNext = dataSnapshot.getValue(User.class);
 
                 if(handleUserNonexistDb(userNext)){
-
                     getNextUserDb();
-
                 }
 
             }

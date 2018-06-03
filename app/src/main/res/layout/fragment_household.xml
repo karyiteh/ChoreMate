@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_household_name"
+        android:layout_margin="10dp"
         tools:showIn="@layout/fragment_household">
 
     </android.support.v7.widget.RecyclerView>

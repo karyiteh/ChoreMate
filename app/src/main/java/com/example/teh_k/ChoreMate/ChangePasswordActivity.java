@@ -189,7 +189,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         }
         else {
 
-            // TODO: Change the user's password in the database.
+            // Change the user's password in the database.
             mCurrentUser.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {

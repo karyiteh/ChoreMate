@@ -159,7 +159,7 @@ public class TaskFragment extends Fragment {
         Log.d("TaskFragment", "Inside initializeTask");
         tasks = new ArrayList<Task>();
 
-        // TODO: populate task (from database)
+        // populate task (from database)
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
         mUser.addValueEventListener(new ValueEventListener() {
             @Override
