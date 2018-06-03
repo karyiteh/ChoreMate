@@ -94,6 +94,9 @@ public class NoHouseholdActivity extends AppCompatActivity {
 
                 if (checkCode(code)) {
 
+                    // If checkCode is successful, join the household.
+                    joinHousehold(code);
+
                     // Redirects users back to the main sign in page.
                     Intent mainIntent = new Intent(NoHouseholdActivity.this, MainActivity.class);
                     startActivity(mainIntent);
@@ -132,7 +135,17 @@ public class NoHouseholdActivity extends AppCompatActivity {
      * @return true if the string matches, false otherwise.
      */
     private boolean isCorrectCode(String code){
+        // TODO: Just check whether there is such code in the database.
 
+
+        return true;
+    }
+
+    /**
+     * Database code to join the household.
+     * @param code  The code that is entered by the user.
+     */
+    private void joinHousehold(String code) {
         // Search for matching household code in database.
         Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
         final DatabaseReference mUser = mDatabase.child("Users");
@@ -147,17 +160,14 @@ public class NoHouseholdActivity extends AppCompatActivity {
                     Log.d("NoHouseholdActivity", "added household: " + addHousehold.getHouse_name());
                     mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey());
                 }
-                correctCode = true;
                 updateUserBalances();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
-                correctCode = false;
             }
         });
-        return correctCode;
     }
 
     /**
