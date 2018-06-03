@@ -286,7 +286,7 @@ public class ViewTaskActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Are you sure you want to delete this task?");
+        builder.setTitle("Are you sure you want to skip this task?");
 
         // Set up the buttons
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
