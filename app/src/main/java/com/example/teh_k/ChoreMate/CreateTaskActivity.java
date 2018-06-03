@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CreateTaskActivity extends AppCompatActivity implements RecurringTaskFragment.OnFragmentInteractionListener {
@@ -269,7 +270,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // Set the task deadline
         calendar = new GregorianCalendar();
         calendar.set(dueDate.getYear(), dueDate.getMonth(), dueDate.getDayOfMonth());
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d, yyyy" , Locale.US);
         String time = formatter.format(calendar.getTime());
         task.setTime(time);
 
