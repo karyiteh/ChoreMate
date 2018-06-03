@@ -93,9 +93,31 @@ public class NoHouseholdActivity extends AppCompatActivity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String code = inviteCode.getText().toString();
 
-                if (checkCode(code)) {
+                String code = inviteCode.getText().toString();
+                checkCode(code);
+
+            }
+        });
+    }
+
+    /**
+     * String compare the code entered with the actual household code
+     * @param code: Code entered by user
+     * @return true if the string matches, false otherwise.
+     */
+    private void checkCode(final String code){
+
+        // Reset the error message
+        inviteCode.setError(null);
+
+        // Search for matching household code in database.
+        Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
+        mQueryHouseholdMatch.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()) {
 
                     // If checkCode is successful, join the household.
                     joinHousehold(code);
@@ -103,54 +125,12 @@ public class NoHouseholdActivity extends AppCompatActivity {
                     // Redirects users back to the main sign in page.
                     Intent mainIntent = new Intent(NoHouseholdActivity.this, MainActivity.class);
                     startActivity(mainIntent);
-                }
 
-            }
-        });
-    }
+                } else {
 
+                    // Set the error
+                    inviteCode.setError("Please Enter a Valid Code");
 
-    /**
-     * Function that handles the code inserted by the user in the text field
-     * @param code: Code entered by the user.
-     * @return true if the code is correct, false otherwise
-     */
-    private boolean checkCode(String code){
-        // Reset the error message
-        inviteCode.setError(null);
-
-        // Check if the code is correct
-        if (isCorrectCode(code)){
-            return true;
-        }
-
-        else {
-            // Set the error
-            inviteCode.setError("Please Enter a Valid Code");
-            return false;
-        }
-    }
-
-
-    /**
-     * String compare the code entered with the actual household code
-     * @param code: Code entered by user
-     * @return true if the string matches, false otherwise.
-     */
-    private boolean isCorrectCode(String code){
-        // TODO: Just check whether there is such code in the database.
-        // I have to query anyways? isn't this redundant?
-        // Search for matching household code in database.
-
-        Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
-        correctCode = false;
-
-        mQueryHouseholdMatch.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot != null) {
-                    correctCode = true;
                 }
 
             }
@@ -160,8 +140,6 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
             }
         });
-
-        return correctCode;
     }
 
     /**
