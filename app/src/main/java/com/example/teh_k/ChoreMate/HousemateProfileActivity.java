@@ -156,7 +156,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
                 deleteHousemateDb();
 
                 // Send the toast message as confirmation.
-                String message = "Remove request sent to " + currentHousemate.getFirst_name();
+                String message = "Removed " + currentHousemate.getFirst_name();
 
                 Toast confirmation = Toast.makeText(HousemateProfileActivity.this, message, Toast.LENGTH_LONG);
                 confirmation.show();
