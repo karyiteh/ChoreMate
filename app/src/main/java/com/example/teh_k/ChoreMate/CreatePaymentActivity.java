@@ -217,7 +217,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
             // Get uid from housemate
             housemateUid = selectedHousemates.get(i).getUid();
 
-            // Update balance for housemate in the database.
+            // Update balance for current user in the database.
             Query mQueryHousemateBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(housemateUid);
             mQueryHousemateBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -230,7 +230,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                         if (myBalance.getHousemate_uid().equals(mCurrentUser.getUid()))
                         {
                             String key = balanceSnapshot.getKey();
-                            mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() + paymentToEach);
+                            mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() - paymentToEach);
                             break;
                         }
                     }
@@ -242,7 +242,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 }
             });
 
-            // Update balance for myself in the database.
+            // Update balance for housemates in the database.
             Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("housemate_uid").equalTo(housemateUid);
             mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -255,7 +255,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                         if (housemateBalance.getUid().equals(mCurrentUser.getUid()))
                         {
                             String key = balanceSnapshot.getKey();
-                            mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() - paymentToEach);
+                            mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() + paymentToEach);
                             break;
                         }
                     }
