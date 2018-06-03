@@ -95,7 +95,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 if (checkCode(code)) {
 
                     // Redirects users back to the main sign in page.
-                    Intent mainIntent = new Intent(NoHouseholdActivity.this, LoginActivity.class);
+                    Intent mainIntent = new Intent(NoHouseholdActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                 }
 
