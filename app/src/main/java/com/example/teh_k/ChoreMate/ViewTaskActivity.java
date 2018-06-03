@@ -125,6 +125,7 @@ public class ViewTaskActivity extends AppCompatActivity {
 
         }
 
+        // Get the data from the database.
         mUser.child(task.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -394,7 +395,7 @@ public class ViewTaskActivity extends AppCompatActivity {
         }
 
         // Set the new deadline
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd' 'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy");
         newTask.setTime(formatter.format(now));
 
         // set db sorting index
