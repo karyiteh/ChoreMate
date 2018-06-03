@@ -2,6 +2,7 @@ package com.example.teh_k.ChoreMate;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +39,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private Toolbar appbar;
 
     // Private variables for the activity.
-    private boolean correctCode = false; // This has to be FALSE because if not, any code will pass. and the user can see all the task form the entire database.
+    private boolean correctCode;
     private ArrayList<User> housemateList;
     private List<String> userHousemateBalance;
 
@@ -136,9 +139,29 @@ public class NoHouseholdActivity extends AppCompatActivity {
      */
     private boolean isCorrectCode(String code){
         // TODO: Just check whether there is such code in the database.
+        // I have to query anyways? isn't this redundant?
+        // Search for matching household code in database.
 
+        Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
+        correctCode = false;
 
-        return true;
+        mQueryHouseholdMatch.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot != null) {
+                    correctCode = true;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        return correctCode;
     }
 
     /**
@@ -155,10 +178,18 @@ public class NoHouseholdActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot household: dataSnapshot.getChildren()){
+
+
                     Household addHousehold =  household.getValue(Household.class);
                     Toast.makeText(NoHouseholdActivity.this, "Added household: " + addHousehold.getHouse_name() , Toast.LENGTH_LONG).show();
                     Log.d("NoHouseholdActivity", "added household: " + addHousehold.getHouse_name());
-                    mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey());
+                    mUser.child(mCurrentUser.getUid()).child("household").setValue(household.getKey())
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                }
+                            });
                 }
                 updateUserBalances();
             }
