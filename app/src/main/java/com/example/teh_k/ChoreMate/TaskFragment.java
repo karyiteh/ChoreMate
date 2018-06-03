@@ -138,15 +138,6 @@ public class TaskFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // Clears all the data that is in this fragment.
-        taskListAdapter.clear();
-        tasks.clear();
-    }
-
     // PRIVATE METHODS!
     /**
      * Fetches the task list from the database.
@@ -155,7 +146,7 @@ public class TaskFragment extends Fragment {
         Log.d("TaskFragment", "Inside initializeTask");
         tasks = new ArrayList<Task>();
 
-        // TODO: populate task (from database)
+        // populate task (from database)
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
         mUser.addValueEventListener(new ValueEventListener() {
             @Override

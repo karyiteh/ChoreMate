@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 
 /**
  * Class that supports the behavior behind the change notification settings screen.
+ * TO BE IMPLEMENTED.
  */
 public class NotificationSettingsActivity extends AppCompatActivity {
 

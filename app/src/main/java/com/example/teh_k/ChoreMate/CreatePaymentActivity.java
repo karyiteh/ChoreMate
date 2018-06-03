@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -73,7 +74,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(assignHousemateAdapter);
 
-        // TODO: populate housemates
+        // populate housemates from the database.
         DatabaseReference mUser = mDatabase.child("Users").child(mCurrentUser.getUid());
         mUser.addValueEventListener(new ValueEventListener() {
             @Override
@@ -171,22 +172,34 @@ public class CreatePaymentActivity extends AppCompatActivity {
             paymentToEach = - paymentToEach;
         }
 
+        // Getting the housemate array.
+        SparseBooleanArray selectedHousematesArray = assignHousemateAdapter.getItemStateArray();
+
+        // Debugging purposes. printing out contents of selectedHousematesArray
+        Log.d("CreatePaymentActivity", "Size of selectedHousematesArray: " +
+                selectedHousematesArray.size());
+        for(int i = 0; i < selectedHousematesArray.size(); i++) {
+            Log.d("CreatePaymentActivity", "selectedHousematesArray[" + i + "] = " +
+                    selectedHousematesArray.get(i));
+        }
+
         /* Get the currently selected housemates by checking CheckBox state of each housemate
            and add housemate to array if true */
         ArrayList<User> selectedHousemates = new ArrayList<>();
-        CheckBox checkBox;
         for (int i = 0; i < housemateList.size(); i++) {
-            checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
-            if (checkBox.isChecked()) {
+            // If the housemate is selected, add housemate to selected housemates.
+            if (selectedHousematesArray.get(i)) {
                 selectedHousemates.add(housemateList.get(i));
             }
         }
 
+        // Makes sure that at least one housemate is selected.
         if(selectedHousemates.size() == 0){
             // Set error and focus view
             focusView = recyclerView;
             focusView.requestFocus();
-            Toast.makeText(CreatePaymentActivity.this, "Please select at least one housemate.", Toast.LENGTH_LONG).show();
+            Toast.makeText(CreatePaymentActivity.this, "Please select at least one housemate.",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -197,14 +210,14 @@ public class CreatePaymentActivity extends AppCompatActivity {
         }
         Log.d("CreatePaymentAvtivity", "paymentToEach: " + String.valueOf(paymentToEach));
 
-        // TODO: Loading current housemates from DB into housemateList goes here
+        // Loading current housemates from DB into housemateList goes here
         // Update Balances for each selected housemate
         for (int i = 0; i < selectedHousemates.size(); i++) {
 
             // Get uid from housemate
             housemateUid = selectedHousemates.get(i).getUid();
 
-            // TODO: UPDATE BALANCE FOR HOUSEMATE
+            // Update balance for current user in the database.
             Query mQueryHousemateBalances = mDatabase.child("Balances").orderByChild("uid").equalTo(housemateUid);
             mQueryHousemateBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -217,7 +230,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                         if (myBalance.getHousemate_uid().equals(mCurrentUser.getUid()))
                         {
                             String key = balanceSnapshot.getKey();
-                            mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() + paymentToEach);
+                            mDatabase.child("Balances").child(key).child("balance").setValue(myBalance.getBalance() - paymentToEach);
                             break;
                         }
                     }
@@ -229,7 +242,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 }
             });
 
-            // TODO: UPDATE BALANCE FOR MY SELF
+            // Update balance for housemates in the database.
             Query mQueryUserBalances = mDatabase.child("Balances").orderByChild("housemate_uid").equalTo(housemateUid);
             mQueryUserBalances.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -242,7 +255,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                         if (housemateBalance.getUid().equals(mCurrentUser.getUid()))
                         {
                             String key = balanceSnapshot.getKey();
-                            mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() - paymentToEach);
+                            mDatabase.child("Balances").child(key).child("balance").setValue(housemateBalance.getBalance() + paymentToEach);
                             break;
                         }
                     }
@@ -270,7 +283,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 payment.setReceiver(selectedHousemates.get(i).getUid());
             }
 
-            // TODO: Add Payment object to database
+            // Add Payment object to database
             DatabaseReference mPayment = mDatabase.child("Payments").push();
             mPayment.setValue(payment.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -290,7 +303,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
             });
         }
 
-        // TODO: Bring user back to MainActivity.class after successful task creation.
+        // Bring user back to MainActivity.class after successful task creation.
         Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);
         startActivity(mainIntent);
     }

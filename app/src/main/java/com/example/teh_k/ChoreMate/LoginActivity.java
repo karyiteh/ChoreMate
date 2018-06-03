@@ -66,13 +66,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
@@ -252,27 +245,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
 
-            // TODO: Not sure if this is supposed to be here.
-            /* TODO 2: WILL NAVIGATE TO NOHOUSEHOLDACTIVITY BY DEFAULT. Implementation for
-               TODO 2: logged in checking/household exist checking later */
+            // Logs into the database.
             userLoginDb( email, password );
         }
 
     }
 
 
+    /**
+     * Checks if the email is valid.
+     * @param email The email that is entered.
+     * @return  true if email is valid.
+     */
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+        //Checks if the email contains the @ sign
         return email.contains("@");
     }
 
     /**
      * Checks if the password is valid - i.e. password is alphanumeric.
-     * @param password
+     * @param password  The password that is entered.
      * @return true if password is valid, false otherwise.
      */
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         for(int i = 0; i < password.length(); i++) {
 
             // Get the current password character.
@@ -403,9 +398,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            // TODO: register the new account here.
             return true;
         }
 

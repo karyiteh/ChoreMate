@@ -14,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -89,13 +90,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // Set up the RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.pick_housemates);
 
-        assignHousemateAdapter = new AssignHousemateAdapter(housemateList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(assignHousemateAdapter);
-
-        // TODO: populate housemates
+        // Populate housemates from the database.
         user_id = mCurrentUser.getUid();
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
         mUser.addValueEventListener(new ValueEventListener() {
@@ -110,12 +105,12 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        // Get the housemate value and add it to the list.
                         for(DataSnapshot housemate: dataSnapshot.getChildren()){
                             User user =  housemate.getValue(User.class);
                             housemateList.add(user);
-                            Log.d("CreateTaskAvtivity", "roommate populated: " + user.getLast_name());
+                            Log.d("CreateTaskActivity", "roommate populated: " + user.getLast_name());
                         }
-
                     }
 
                     @Override
@@ -138,6 +133,13 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         buttonRecurrence = (Button) findViewById(R.id.recurrence_options);
 
         dueDate = (DatePicker) findViewById(R.id.task_due_date);
+
+        // Set up the adapter for the housemate list.
+        assignHousemateAdapter = new AssignHousemateAdapter(housemateList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(assignHousemateAdapter);
 
         // Initialize the due date to be current date
         dueDate.getAutofillValue();
@@ -211,21 +213,32 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
      * @param task Task object to save in database
      */
     private void createTask(Task task) {
+        // Getting the task name and detail from the input.
         View focusView;
         task.setTask_name(editTaskName.getText().toString().trim());
         task.setTask_detail(editTaskDescription.getText().toString().trim());
 
-        // Get the currently selected housemates by checking CheckBox state of each housemate
+        // Get the currently selected housemates by checking checkBox state of each housemate
         // and add housemate to array if true
         boolean isFirstUser = true;
         User target = new User();
         ArrayList<String> selectedHousemates = new ArrayList<>();
-        CheckBox checkBox;
+
+        // Getting the housemate array.
+        SparseBooleanArray selectedHousematesArray = assignHousemateAdapter.getItemStateArray();
+
+        // Debugging purposes. printing out contents of selectedHousematesArray
+        Log.d("CreateTaskActivity", "Size of selectedHousematesArray: " + selectedHousematesArray.size());
+        for(int i = 0; i < selectedHousematesArray.size(); i++) {
+            Log.d("CreateTaskActivity", "selectedHousematesArray[" + i + "] = " +selectedHousematesArray.get(i));
+        }
+
+        // Getting the list of housemates that are assigned to the task.
         for (int i = 0; i < housemateList.size(); i++) {
-            checkBox = recyclerView.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.checkBox);
-            if (checkBox.isChecked()) {
-                // TODO: this task first goes to the first one who appears on the checklist, really?
+            // If the housemate is selected, add the housemate to selectedHousemates.
+            if (selectedHousematesArray.get(i)) {
                 selectedHousemates.add(housemateList.get(i).getUid());
+                Log.d("CreateTaskActivity", "Task assigned to: " + housemateList.get(i).getFirst_name());
                 if(isFirstUser){
                     target = housemateList.get(i);
                     isFirstUser = false;
@@ -233,11 +246,13 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
             }
         }
 
+        // Makes sure that the user selects at least one housemate.
         if(selectedHousemates.size() == 0){
             // Set error and focus view
             focusView = recyclerView;
             focusView.requestFocus();
-            Toast.makeText(CreateTaskActivity.this, "Please select at least one housemate.", Toast.LENGTH_LONG).show();
+            Toast.makeText(CreateTaskActivity.this, "Please select at least one housemate.",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -258,18 +273,20 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         String time = formatter.format(calendar.getTime());
         task.setTime(time);
 
+        // Formatting the date.
         SimpleDateFormat indexingFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String indexHousehold = householdKey + indexingFormatter.format(calendar.getTime());
         String indexUid = target.getUid() + indexingFormatter.format(calendar.getTime());
 
+        // Creating the task object.
         task.setIndexUid(indexUid);
         task.setIndexHousehold(indexHousehold);
         task.setUid(target.getUid());
-        task.setHousemateAvatar(target.getAvatar().toString());
+        task.setHousemateAvatar(target.getAvatar());
         task.setHousehold(householdKey);
         task.setIndex(0);
 
-        // TODO: Add Task object to database
+        // Add Task object to database.
         DatabaseReference mTask = mDatabase.child("Tasks").push();
         String key = mTask.getKey();
         task.setKey(key);
@@ -277,7 +294,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         mTask.setValue(task.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("CreateTaskAvtivity", "Create Task: success");
+                Log.d("CreateTaskActivity", "Create Task: success");
                 Toast.makeText(CreateTaskActivity.this, "Task Created",
                         Toast.LENGTH_SHORT).show();
 
@@ -289,7 +306,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("CreateTaskAvtivity", "Create Task:failure");
+                Log.d("CreateTaskActivity", "Create Task:failure");
                 Toast.makeText(CreateTaskActivity.this, "Error",
                         Toast.LENGTH_SHORT).show();
             }

@@ -159,6 +159,7 @@ public class UserProfileFragment extends Fragment {
             mTaskList = getView().findViewById(R.id.user_task_scroll);
         }
 
+        // Get user profile and tasks from the database.
         getUserFromDatabase();
         getTasksFromDatabase();
     }
@@ -186,10 +187,6 @@ public class UserProfileFragment extends Fragment {
                 // Call method to start change password activity.
                 changePassword();
                 return true;
-            case R.id.action_notificationSettings:
-                // Call method to start notification settings activity.
-                changeNotificationSettings();
-                return true;
             case R.id.action_logout:
                 // Call method to logout.
                 logout();
@@ -198,15 +195,7 @@ public class UserProfileFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // Clears the task list that is stored in the app.
-        taskListAdapter.clear();
-        userTasks.clear();
-    }
+    
 
     // HELPER METHODS HERE!
     /**
@@ -214,7 +203,7 @@ public class UserProfileFragment extends Fragment {
      * @return  The user data of the current user logged in the app.
      */
     private User getUserFromDatabase() {
-        // TODO: Implement obtaining user data from the database.
+        // Obtain user data from the database.
         DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
         mCurrUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -251,7 +240,7 @@ public class UserProfileFragment extends Fragment {
     private void getTasksFromDatabase() {
         userTasks = new ArrayList<Task>();
 
-        // TODO: Gets housemate's tasks from database.
+        // Gets housemate's tasks from database.
         Query mQueryUserTasks = mDatabase.child("Tasks").orderByChild("indexUid").startAt(mCurrentUser.getUid()).endAt(mCurrentUser.getUid()+ "\uf8ff");
 
         mQueryUserTasks.addValueEventListener(new ValueEventListener() {
@@ -334,23 +323,15 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Starts the change notification settings activity.
-     */
-    private void changeNotificationSettings() {
-        // Creates the change notification settings intent and starts the activity.
-        Intent changeNotificationSettingsIntent = new Intent(getContext(), NotificationSettingsActivity.class);
-        startActivity(changeNotificationSettingsIntent);
-    }
-
-    /**
      * Logs the user out of the app.
      */
     private void logout () {
-        // TODO: Implement user log out here.
 
+        // Token for notifications.
         Map<String, Object> tokenMap = new HashMap<>();
         tokenMap.put("token_id", "");
 
+        // Signs the user out from the app and stops connection to the database.
         mFirestore.collection("Users").document(mCurrentUser.getUid()).update(tokenMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -510,7 +491,7 @@ public class UserProfileFragment extends Fragment {
             image = data.getData();
         }
 
-        // TODO: Upload the image to the database.
+        // Upload the image to the database.
         saveImage(image);
 
         // Updates the current user.
@@ -527,7 +508,7 @@ public class UserProfileFragment extends Fragment {
         // Get the image URI.
         Uri image = data.getData();
 
-        // TODO: Upload the image into the database.
+        // Upload the image into the database.
         saveImage(image);
 
         // Updates the current user.
@@ -536,6 +517,10 @@ public class UserProfileFragment extends Fragment {
 
     }
 
+    /**
+     * Saves the image to the database.
+     * @param uri   The avatar of the user.
+     */
     private void saveImage(Uri uri) {
         // Firebase storage stuff
         final StorageReference filepath = mStorage.child("Avatar").child(uri.getLastPathSegment());

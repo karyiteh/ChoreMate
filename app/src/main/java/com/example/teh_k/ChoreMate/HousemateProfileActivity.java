@@ -110,7 +110,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
     private void getTasksFromDatabase() {
         currentHousemateTask = new ArrayList<Task>();
 
-        // TODO: Gets housemate's tasks from database.
+        // Gets housemate's tasks from database.
         Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexUid").startAt(currentHousemate.getUid()).endAt(currentHousemate.getUid()+ "\uf8ff");
 
         mQueryUserTask.addValueEventListener(new ValueEventListener() {
@@ -175,6 +175,9 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Deletes the housemate from the database.
+     */
     private void deleteHousemateDb(){
 
         Query mQueryUsers = mDatabase.child("Users").orderByChild("household").equalTo(currentHousemate.getHousehold());
@@ -190,7 +193,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
                 }
 
-                // TODO: Delete this household from the housemate
+                // Delete this household from the housemate
                 deleteHousemateTaskDb(currentHousemate.getUid());
                 deleteHousemateBalanceDb(currentHousemate.getUid());
                 deleteHousematePaymentDb(currentHousemate.getUid());
@@ -204,6 +207,10 @@ public class HousemateProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Deletes all the housemate's balance in the database.
+     * @param uid   The housemate's uid.
+     */
     private void deleteHousemateBalanceDb(String uid){
 
         // delete our balances to the housemate
@@ -247,6 +254,10 @@ public class HousemateProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Deletes all the housemate's task in the database.
+     * @param uid   The housemate's uid.
+     */
     private void deleteHousemateTaskDb(String uid){
 
         // delete all the tasks from that household
@@ -269,6 +280,10 @@ public class HousemateProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Delete all the payments related to this housemate in the database.
+     * @param uid   The uid of the housemate.
+     */
     private void deleteHousematePaymentDb(String uid){
 
         // delete all payment from the housemate
@@ -310,6 +325,10 @@ public class HousemateProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Removes all the housemate balances related to the housemate.
+     * @param balanceKey The balance key of the user in the database.
+     */
     private void removeHousemateBalanceListDb(final String balanceKey){
 
         for( User user : currentHousemateList) {

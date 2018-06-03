@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 /**
  * Class that controls the elements for activity_housemate_transaction_history.xml
+ * TO BE IMPLEMENTED.
  */
 public class HousemateTransactionHistoryActivity extends AppCompatActivity {
 

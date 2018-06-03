@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Controls the password recovery page.
+ */
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     // The UI elements on the screen.
@@ -126,9 +129,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
      * @return true if send reset password email is successful, false otherwise.
      */
     private boolean sendResetPasswordEmail() {
-        // TODO: Database implementation here.
+        // The email that is entered.
         final String email = mEditEmail.getText().toString().trim();
 
+        // Sends the reset password email.
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

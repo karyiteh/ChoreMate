@@ -13,23 +13,25 @@
         android:id="@+id/img_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.25"
         android:src="@drawable/icon_profile" />
 
-        <TextView
-            android:id="@+id/text_task_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="0.5"
-            android:gravity="center_vertical"
-            android:text="Task Title"
-            android:textColor="@color/white"
-            android:textSize="30sp" />
+    <TextView
+        android:id="@+id/text_task_title"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical"
+        android:text="Housemate"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
 </LinearLayout>

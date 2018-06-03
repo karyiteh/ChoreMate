@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An Activity that allows user to create/join a household
+ * An Activity that allows user to create/join a household.
  */
 public class NoHouseholdActivity extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     // Appbar of the screen.
     private Toolbar appbar;
 
-    //TODO: Replace all instances of dummyCode when database is set up
+    // Private variables for the activity.
     private boolean correctCode = true;
     private ArrayList<User> housemateList;
     private List<String> userHousemateBalance;
@@ -95,7 +95,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 if (checkCode(code)) {
 
                     // Redirects users back to the main sign in page.
-                    Intent mainIntent = new Intent(NoHouseholdActivity.this, LoginActivity.class);
+                    Intent mainIntent = new Intent(NoHouseholdActivity.this, MainActivity.class);
                     startActivity(mainIntent);
                 }
 
@@ -133,7 +133,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
      */
     private boolean isCorrectCode(String code){
 
-        // TODO: Search for matching household code in database.
+        // Search for matching household code in database.
         Query mQueryHouseholdMatch = mDatabase.child("Households").orderByChild("house_code").equalTo(code);
         final DatabaseReference mUser = mDatabase.child("Users");
 
@@ -154,6 +154,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+                correctCode = false;
             }
         });
         return correctCode;
@@ -168,7 +169,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
         housemateList = new ArrayList<>();
         userHousemateBalance = new ArrayList<>();
 
-        // TODO: Get housemateList from database here
+        // Get housemateList from database
         mCurrUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -94,7 +94,7 @@ public class PaymentFragment extends Fragment {
             mPaymentList = getView().findViewById(R.id.housemate_balances);
         }
 
-        // TODO: get payment list form database.
+        // Get payment list form database.
         housematePayment = initializePayments();
 
         Query mQueryHouseholdPayments = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
@@ -154,12 +154,6 @@ public class PaymentFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        paymentListAdapter.clear();
-        housematePayment.clear();
-    }
 
     /**
      * Gets the housemates and their respective balances.
@@ -174,7 +168,7 @@ public class PaymentFragment extends Fragment {
      * Starts intent to create new payment.
      */
     private void createNewPayment() {
-        // TODO: Method to create the new payment.
+        // Method to create the new payment.
         // Redirects to CreatePaymentActivity.
         Intent createPaymentIntent = new Intent(getActivity(), CreatePaymentActivity.class);
         startActivity(createPaymentIntent);

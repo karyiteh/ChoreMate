@@ -5,16 +5,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Button;
 
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +40,13 @@ public class CreateHouseholdActivity extends AppCompatActivity {
 
     private boolean cancel = false;
 
+    private String first_name;
+
     /**
      * Database references.
      */
     private FirebaseAuth mAuth;
+    private FirebaseUser mCurrUser;
     private DatabaseReference mDatabase;
 
     @Override
@@ -47,6 +57,7 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         // Set up user database reference.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrUser = mAuth.getCurrentUser();
 
         // Initialize the views
         editHouseholdName = (EditText) findViewById(R.id.edit_household_name);
@@ -79,6 +90,21 @@ public class CreateHouseholdActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // get my user name
+        DatabaseReference mUser = mDatabase.child("Users").child(mCurrUser.getUid());
+        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                first_name = dataSnapshot.getValue(User.class).getFirst_name();
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreateHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void attemptCreate() {
@@ -102,7 +128,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         InviteCodeGenerator code = new InviteCodeGenerator(getRandomLength());
         String house_code = code.nextString();
 
-        // TODO: STORE HOUSEHOLD OBJECT IN DATABASE
         // Create new Household object and update fields
         house.setHouse_code(house_code);
         house.setHouse_name(householdName);
@@ -121,10 +146,11 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         // Initialize local variables
         View focusView;
 
+
+
         // Getting content for email
         String emails = editHousematesList.getText().toString().trim();
-        // TODO: Replace [USER] with name of user
-        String subject = "[USER] is inviting you to " + house.getHouse_name() + " on ChoreMate!";
+        String subject = first_name + " is inviting you to " + house.getHouse_name() + " on ChoreMate!";
         String message = "Your invite code to " + house.getHouse_name() + " is: "
                          + house.getHouse_code();
 
