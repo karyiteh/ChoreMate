@@ -167,7 +167,14 @@ public class HouseholdFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                renameHouseholdDb(input.getText().toString());
+                // Get the name that is entered.
+                String newHouseholdName = input.getText().toString();
+
+                // Update the name in the database.
+                renameHouseholdDb(newHouseholdName);
+
+                // Updates the UI to reflect name change.
+                mHouseholdName.setText(newHouseholdName);
 
             }
         });
