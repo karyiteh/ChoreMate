@@ -21,9 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An Activity that allows user to create/join a household.
@@ -33,6 +36,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     // UI elements on the screen.
     private Button mCreateButton;
     private Button joinButton;
+    private Button logoutButton;
     private EditText inviteCode;
 
     // Appbar of the screen.
@@ -50,6 +54,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mCurrUser;
+    private FirebaseFirestore mFirestore;
 
     /**
      * Creates the main screen. Called when main page is loaded.
@@ -62,9 +67,11 @@ public class NoHouseholdActivity extends AppCompatActivity {
 
         // Set up user database reference.
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
+
 
         // Creates the appbar.
         appbar = findViewById(R.id.appbar_no_household);
@@ -72,6 +79,7 @@ public class NoHouseholdActivity extends AppCompatActivity {
 
         mCreateButton = (Button) findViewById(R.id.btn_create_household);
         joinButton = (Button) findViewById(R.id.btn_join_household);
+        logoutButton = (Button) findViewById(R.id.btn_logout);
         inviteCode = (EditText) findViewById(R.id.edit_invite_code);
 
 
@@ -97,6 +105,14 @@ public class NoHouseholdActivity extends AppCompatActivity {
                 String code = inviteCode.getText().toString();
                 checkCode(code);
 
+            }
+        });
+
+        // Set up listener for log out button.
+        logoutButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                logout();
             }
         });
     }
@@ -281,6 +297,35 @@ public class NoHouseholdActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(NoHouseholdActivity.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Logs the user out.
+     */
+    private void logout() {
+        // Token for notifications.
+        Map<String, Object> tokenMap = new HashMap<>();
+        tokenMap.put("token_id", "");
+
+        // Signs the user out from the app and stops connection to the database.
+        mFirestore.collection("Users").document(mCurrentUser.getUid()).update(tokenMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        mAuth.signOut();
+                        Intent loginIntent = new Intent(NoHouseholdActivity.this, LoginActivity.class);
+                        startActivity(loginIntent);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.d("NoHouseholdActivity", "Logout error");
+
             }
         });
     }
