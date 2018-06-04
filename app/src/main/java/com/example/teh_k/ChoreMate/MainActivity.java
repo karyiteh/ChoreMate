@@ -72,6 +72,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        // Minimizes the app when back button is pressed.
+        moveTaskToBack(true);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // The fragment to be loaded.
         Fragment fragment = null;

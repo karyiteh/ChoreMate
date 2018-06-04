@@ -145,6 +145,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    @Override
+    public void onBackPressed() {
+        // Minimizes the app when back is pressed.
+        moveTaskToBack(true);
+    }
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -444,6 +450,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
+    /**
+     * Checks whether the user has a household.
+     */
     public void checkNewUserDb(){
 
         mUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -457,7 +466,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     if(currentUser.getHousehold().isEmpty()){
 
-                        Log.d("LoginAvtivity", "New user detected");
+                        Log.d("LoginActivity", "New user detected");
                         Intent noHouseIntent = new Intent(LoginActivity.this, NoHouseholdActivity.class);
                         startActivity(noHouseIntent);
                         Toast.makeText(LoginActivity.this, "Time to join/create a household.", Toast.LENGTH_LONG).show();
@@ -465,7 +474,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     } else {
 
                         // If login is successful, this moves the user to the correct screen.
-                        Log.d("LoginAvtivity", "User signed in : go to main activity");
+                        Log.d("LoginActivity", "User signed in : go to main activity");
                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(mainIntent);
                         Toast.makeText(LoginActivity.this, "Signed in as: " + mAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
