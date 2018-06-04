@@ -1,6 +1,6 @@
 # ChoreMate [![Build Status](https://travis-ci.com/karyiteh/ChoreMate.svg?token=YbEgce3bxeSS4LFDwdwp&branch=master)](https://travis-ci.com/karyiteh/ChoreMate)
 
-![Choremate Logo](https://drive.google.com/file/d/1WN9OCol6bqMJWaXCCWQcgf7mjofT2BJc/view?usp=sharing)
+![Choremate Logo](http://gdurl.com/A7D3t)
 
 **Team SEGFAULT**
 
