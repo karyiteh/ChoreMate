@@ -43,7 +43,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Class that controls the elements on create task page.
+ */
 public class CreateTaskActivity extends AppCompatActivity implements RecurringTaskFragment.OnFragmentInteractionListener {
+    // Constant for time delay.
+    private final static int TIME_DELAY = 1000;
+
     // Declare Text Fields
     private EditText editTaskName;
     private EditText editTaskDescription;
@@ -144,6 +150,9 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
         // Initialize the due date to be current date
         dueDate.getAutofillValue();
+
+        // Prevents date in the past to be chosen by the user.
+        dueDate.setMinDate(System.currentTimeMillis()- TIME_DELAY);
 
         // Set up listener for NumberPicker object
         dueDate.setOnDateChangedListener(new DatePicker.OnDateChangedListener() {

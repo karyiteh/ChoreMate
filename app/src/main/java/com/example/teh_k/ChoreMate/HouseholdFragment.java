@@ -196,7 +196,13 @@ public class HouseholdFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // Deletes the household from the database.
                 deleteHouseholdDb();
+
+                // Brings the user to NoHousehold activity.
+                Intent deletedHousehold = new Intent(getContext(), NoHouseholdActivity.class);
+                startActivity(deletedHousehold);
+
             }
         });
 
@@ -211,6 +217,10 @@ public class HouseholdFragment extends Fragment {
         builder.show();
     }
 
+    /**
+     * Updates the name of the household in the database.
+     * @param newHouseholdName  The new name of the household.
+     */
     private void renameHouseholdDb(final String newHouseholdName){
 
         // Update the new household name to the database.
@@ -251,6 +261,9 @@ public class HouseholdFragment extends Fragment {
         });
     }
 
+    /**
+     * Gets the housemates that are in that household.
+     */
     private void populateHouseholdDb(){
         String user_id = mCurrentUser.getUid();
         DatabaseReference mUser = mDatabase.child("Users");
@@ -319,6 +332,9 @@ public class HouseholdFragment extends Fragment {
         });
     }
 
+    /**
+     * Deletes the household and all the data related to the household from the database.
+     */
     private void deleteHouseholdDb(){
 
         // delete that household
@@ -332,6 +348,10 @@ public class HouseholdFragment extends Fragment {
 
     }
 
+    /**
+     * Deletes all the housemates in the household.
+     * @param householdKey  The household key in the database.
+     */
     private void deleteHouseholdUsersDb(String householdKey){
 
         // set all the user from that household reference to ''.
@@ -358,6 +378,10 @@ public class HouseholdFragment extends Fragment {
         });
     }
 
+    /**
+     * Deletes all the tasks in the household from the database.
+     * @param householdKey  The key of the household in the database.
+     */
     private void deleteHouseholdTaskDb(String householdKey){
 
         // delete all the tasks from that household
@@ -381,6 +405,10 @@ public class HouseholdFragment extends Fragment {
 
     }
 
+    /**
+     * Deletes all payments in the household from the database.
+     * @param householdKey  The key of the household in the database.
+     */
     private void deleteHouseholdPaymentsDb(String householdKey){
 
         // delete all the tasks from that household
@@ -404,6 +432,10 @@ public class HouseholdFragment extends Fragment {
 
     }
 
+    /**
+     * Deletes all the balances of the housemates from the database.
+     * @param uid   The user ids of the housemates in the household.
+     */
     private void deleteHouseholdBalanceDb(String uid){
 
         // delete all the tasks from that household
