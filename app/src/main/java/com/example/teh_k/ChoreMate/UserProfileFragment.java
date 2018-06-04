@@ -211,7 +211,7 @@ public class UserProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 currentUser = dataSnapshot.getValue(User.class);
-                Log.d("UserProfileFregment", "Found user: " + currentUser.getLast_name());
+                Log.d("UserProfileFragment", "Found user: " + currentUser.getLast_name());
 
                 // Updates the UI elements to the user profile obtained.
                 Picasso.get().load(Uri.parse(currentUser.getAvatar())).into(mAvatar);
@@ -251,7 +251,7 @@ public class UserProfileFragment extends Fragment {
                 for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
 
                     Task task = taskSnapshot.getValue(Task.class);
-                    Log.d("UserProfileFregment", "Found user task: " + task.getTask_name());
+                    Log.d("UserProfileFragment", "Found user task: " + task.getTask_name());
                     userTasks.add(task);
 
                 }
