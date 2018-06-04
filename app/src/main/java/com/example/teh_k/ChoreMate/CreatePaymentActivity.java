@@ -55,6 +55,12 @@ public class CreatePaymentActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
 
+    /**
+     * Database listeners
+     */
+    private Query mQueryHousemateMatch;
+    private ValueEventListener mHousemateListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,33 +82,15 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // populate housemates from the database.
         DatabaseReference mUser = mDatabase.child("Users").child(mCurrentUser.getUid());
-        mUser.addValueEventListener(new ValueEventListener() {
+        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 User user = dataSnapshot.getValue(User.class);
                 householdKey = user.getHousehold();
-                Query mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+                mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
 
-                mQueryHousemateMatch.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for(DataSnapshot housemate: dataSnapshot.getChildren()){
-                            User user =  housemate.getValue(User.class);
-                            if(!user.getUid().equals(mCurrentUser.getUid())){
-                                housemateList.add(user);
-                                Log.d("CreatePaymentAvtivity", "roommate populated: " + user.getLast_name());
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
+                mQueryHousemateMatch.addValueEventListener( initializeHouseholdListener() );
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -134,6 +122,26 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 createPayment(true);
             }
         });
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        if(this.mHousemateListener != null) {
+            mQueryHousemateMatch.removeEventListener(this.mHousemateListener);
+        }
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if(this.mHousemateListener != null) {
+            mQueryHousemateMatch.removeEventListener(this.mHousemateListener);
+        }
+
     }
 
     /**
@@ -238,7 +246,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreatePaymentActivity.this, "Error Create payment", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -263,7 +271,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(CreatePaymentActivity.this, "Error", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreatePaymentActivity.this, "Error Create payment", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -297,7 +305,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Log.d("CreatePaymentAvtivity", "Create Balance:failure");
-                    Toast.makeText(CreatePaymentActivity.this, "Error",
+                    Toast.makeText(CreatePaymentActivity.this, "Error Create payment",
                             Toast.LENGTH_SHORT).show();
                 }
             });
@@ -306,5 +314,28 @@ public class CreatePaymentActivity extends AppCompatActivity {
         // Bring user back to MainActivity.class after successful task creation.
         Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);
         startActivity(mainIntent);
+    }
+
+    private ValueEventListener initializeHouseholdListener() {
+
+        mHousemateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // Get the housemate value and add it to the list.
+                for(DataSnapshot housemate: dataSnapshot.getChildren()){
+                    User user =  housemate.getValue(User.class);
+                    housemateList.add(user);
+                    Log.d("CreateTaskActivity", "roommate populated: " + user.getLast_name());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreatePaymentActivity.this, "Error Create payment", Toast.LENGTH_LONG).show();
+            }
+        };
+
+        return mHousemateListener;
     }
 }

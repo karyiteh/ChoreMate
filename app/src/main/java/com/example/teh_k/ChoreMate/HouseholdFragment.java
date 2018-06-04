@@ -58,6 +58,12 @@ public class HouseholdFragment extends Fragment {
     private FirebaseUser mCurrentUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    /**
+     * Database listeners
+     */
+    private Query mQueryUserHousemates;
+    private ValueEventListener mUserHousematesListener;
+
     public HouseholdFragment() {
         // Required empty public constructor
     }
@@ -81,6 +87,26 @@ public class HouseholdFragment extends Fragment {
 
         // Telling Android that this fragment has an option menu.
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        if(this.mUserHousematesListener != null) {
+            mQueryUserHousemates.removeEventListener(this.mUserHousematesListener);
+        }
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if(this.mUserHousematesListener != null) {
+            mQueryUserHousemates.removeEventListener(this.mUserHousematesListener);
+        }
+
     }
 
     @Override
@@ -247,7 +273,7 @@ public class HouseholdFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Show confirm message.
-                        Toast.makeText(getActivity(), "Error",
+                        Toast.makeText(getActivity(), "Error household fragment",
                                 Toast.LENGTH_LONG).show();
                     }
                 });
@@ -288,46 +314,18 @@ public class HouseholdFragment extends Fragment {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
                     }
                 });
 
                 // Getting housemates from household.
-                Query mQueryUserHousemates = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
-                mQueryUserHousemates.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        housemates = new ArrayList<User>();
-
-                        for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
-                            User user = userSnapshot.getValue(User.class);
-                            housemates.add(user);
-                            Log.d("HouseholdFragment", "Adding housemate: " + user.getLast_name() );
-                        }
-
-                        // Creates the adapter.
-                        housemateListAdapter = new HousemateAdapter(housemates);
-
-                        // Attaches the adapter to the view.
-                        mHousemateList.setAdapter(housemateListAdapter);
-
-                        // Sets layout manager.
-                        housemateListManager = new LinearLayoutManager(getContext());
-                        mHousemateList.setLayoutManager(housemateListManager);
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
+                mQueryUserHousemates = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+                mQueryUserHousemates.addValueEventListener(initializeHouseholdListener());
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -373,7 +371,7 @@ public class HouseholdFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -399,7 +397,7 @@ public class HouseholdFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -426,7 +424,7 @@ public class HouseholdFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -453,8 +451,41 @@ public class HouseholdFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private ValueEventListener initializeHouseholdListener() {
+        mUserHousematesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                housemates = new ArrayList<User>();
+
+                for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                    User user = userSnapshot.getValue(User.class);
+                    housemates.add(user);
+                    Log.d("HouseholdFragment", "Adding housemate: " + user.getLast_name() );
+                }
+
+                // Creates the adapter.
+                housemateListAdapter = new HousemateAdapter(housemates);
+
+                // Attaches the adapter to the view.
+                mHousemateList.setAdapter(housemateListAdapter);
+
+                // Sets layout manager.
+                housemateListManager = new LinearLayoutManager(getContext());
+                mHousemateList.setLayoutManager(housemateListManager);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
+            }
+        };
+        return mUserHousematesListener;
     }
 }

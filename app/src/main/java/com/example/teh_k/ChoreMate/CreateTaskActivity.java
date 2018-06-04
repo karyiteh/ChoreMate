@@ -83,6 +83,12 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
 
+    /**
+     * Database listeners
+     */
+    private Query mQueryHousemateMatch;
+    private ValueEventListener mHousemateListener;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,35 +106,19 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
         // Populate housemates from the database.
         user_id = mCurrentUser.getUid();
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
-        mUser.addValueEventListener(new ValueEventListener() {
+        mUser.addListenerForSingleValueEvent( new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 User user = dataSnapshot.getValue(User.class);
                 householdKey = user.getHousehold();
-                Query mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
+                mQueryHousemateMatch = mDatabase.child("Users").orderByChild("household").equalTo(householdKey);
 
-                mQueryHousemateMatch.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        // Get the housemate value and add it to the list.
-                        for(DataSnapshot housemate: dataSnapshot.getChildren()){
-                            User user =  housemate.getValue(User.class);
-                            housemateList.add(user);
-                            Log.d("CreateTaskActivity", "roommate populated: " + user.getLast_name());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
-                    }
-                });
+                mQueryHousemateMatch.addListenerForSingleValueEvent( initializeHouseholdListener() );
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(CreateTaskActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(CreateTaskActivity.this, "Error  create task", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -187,6 +177,26 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
                 createTask(task);
             }
         });
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        if(this.mHousemateListener != null) {
+            mQueryHousemateMatch.removeEventListener(this.mHousemateListener);
+        }
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if(this.mHousemateListener != null) {
+            mQueryHousemateMatch.removeEventListener(this.mHousemateListener);
+        }
+
     }
 
     /**
@@ -317,7 +327,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("CreateTaskActivity", "Create Task:failure");
-                Toast.makeText(CreateTaskActivity.this, "Error",
+                Toast.makeText(CreateTaskActivity.this, "Error  create task",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -326,5 +336,28 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
     public void getRecurringOptions() {
         amountOfTime = recurFrag.getAmountOfTime();
         unitOfTime = recurFrag.getSpinnerOption();
+    }
+
+    private ValueEventListener initializeHouseholdListener() {
+
+        mHousemateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // Get the housemate value and add it to the list.
+                for(DataSnapshot housemate: dataSnapshot.getChildren()){
+                    User user =  housemate.getValue(User.class);
+                    housemateList.add(user);
+                    Log.d("CreateTaskActivity", "roommate populated: " + user.getLast_name());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CreateTaskActivity.this, "Error create task", Toast.LENGTH_LONG).show();
+            }
+        };
+
+        return mHousemateListener;
     }
 }

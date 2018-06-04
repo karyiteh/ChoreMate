@@ -99,14 +99,6 @@ public class TaskFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-
-        mUserHousehold.addValueEventListener(this.mHouseholdListener);
-
-    }
-
-    @Override
     public void onStop(){
         super.onStop();
 
@@ -230,14 +222,14 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Error task", Toast.LENGTH_LONG).show();
                     }
                 });
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error task", Toast.LENGTH_LONG).show();
             }
         };
         return mHouseholdListener;

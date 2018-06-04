@@ -125,12 +125,14 @@ public class UserProfileFragment extends Fragment {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
                 // Redirect login screen
                 if(firebaseAuth.getCurrentUser() == null){
                     Toast.makeText(getActivity(), "Logged Out", Toast.LENGTH_LONG).show();
                     Intent loginIntent = new Intent(getContext(), LoginActivity.class);
                     startActivity(loginIntent);
                 }
+
             }
         };
 
@@ -266,7 +268,7 @@ public class UserProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error userprofile", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -339,8 +341,6 @@ public class UserProfileFragment extends Fragment {
                     public void onSuccess(Void aVoid) {
 
                         mAuth.signOut();
-                        Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-                        startActivity(loginIntent);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -564,7 +564,7 @@ public class UserProfileFragment extends Fragment {
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Error userprofile", Toast.LENGTH_LONG).show();
                             }
                         });
 
@@ -576,7 +576,7 @@ public class UserProfileFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "Error.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error userprofile", Toast.LENGTH_LONG).show();
             }
         });
     }
