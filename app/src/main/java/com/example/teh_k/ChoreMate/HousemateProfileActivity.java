@@ -70,6 +70,12 @@ public class HousemateProfileActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseFirestore mFirestore;
 
+    /**
+     * Database listeners
+     */
+    private Query mQueryUserTask;
+    private ValueEventListener mUserTaskListener;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +131,26 @@ public class HousemateProfileActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        if(this.mUserTaskListener != null) {
+            mQueryUserTask.removeEventListener(this.mUserTaskListener);
+        }
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if(this.mUserTaskListener != null) {
+            mQueryUserTask.removeEventListener(this.mUserTaskListener);
+        }
+
+    }
+
     /**
      * Gets the tasks for the current user.
      * @return  A list of tasks that is assigned to the current user.
@@ -133,30 +159,9 @@ public class HousemateProfileActivity extends AppCompatActivity {
         currentHousemateTask = new ArrayList<Task>();
 
         // Gets housemate's tasks from database.
-        Query mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexUid").startAt(currentHousemate.getUid()).endAt(currentHousemate.getUid()+ "\uf8ff");
+        mQueryUserTask = mDatabase.child("Tasks").orderByChild("indexUid").startAt(currentHousemate.getUid()).endAt(currentHousemate.getUid()+ "\uf8ff");
 
-        mQueryUserTask.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
-                    currentHousemateTask.add(taskSnapshot.getValue(Task.class));
-
-                }
-
-                // Set up the adapter for the recycler view.
-                taskListAdapter = new TaskAdapter(currentHousemateTask);
-                mTaskList.setAdapter(taskListAdapter);
-                taskListManager = new LinearLayoutManager(HousemateProfileActivity.this);
-                mTaskList.setLayoutManager(taskListManager);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
-            }
-        });
+        mQueryUserTask.addValueEventListener( initializeHouseholdListener() );
     }
 
     /**
@@ -237,7 +242,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(HousemateProfileActivity.this, "Error housemate profile", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -264,7 +269,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(HousemateProfileActivity.this, "Error  housemate profile", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -284,7 +289,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(HousemateProfileActivity.this, "Error  housemate profile", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -310,7 +315,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(HousemateProfileActivity.this, "Error  housemate profile", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -336,7 +341,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(HousemateProfileActivity.this, "Error  housemate profile", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -355,7 +360,7 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(HousemateProfileActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(HousemateProfileActivity.this, "Error  housemate profile", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -384,34 +389,29 @@ public class HousemateProfileActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Logs the user out of the app.
-     */
-    private void logout () {
-
-        // Token for notifications.
-        Map<String, Object> tokenMap = new HashMap<>();
-        tokenMap.put("token_id", "");
-
-        // Signs the user out from the app and stops connection to the database.
-        mFirestore.collection("Users").document(mCurrentUser.getUid()).update(tokenMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                        mAuth.signOut();
-                        Intent loginIntent = new Intent(HousemateProfileActivity.this, LoginActivity.class);
-                        startActivity(loginIntent);
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+    private ValueEventListener initializeHouseholdListener() {
+        mUserTaskListener = new ValueEventListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Log.d("UserProfileFragment", "Error");
+                for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                    currentHousemateTask.add(taskSnapshot.getValue(Task.class));
+
+                }
+
+                // Set up the adapter for the recycler view.
+                taskListAdapter = new TaskAdapter(currentHousemateTask);
+                mTaskList.setAdapter(taskListAdapter);
+                taskListManager = new LinearLayoutManager(HousemateProfileActivity.this);
+                mTaskList.setLayoutManager(taskListManager);
 
             }
-        });
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(HousemateProfileActivity.this, "Error  housemate profile", Toast.LENGTH_LONG).show();
+            }
+        };
+        return mUserTaskListener;
     }
 }

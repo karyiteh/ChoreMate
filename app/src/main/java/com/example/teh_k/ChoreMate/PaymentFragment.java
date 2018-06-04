@@ -47,6 +47,12 @@ public class PaymentFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
 
+    /**
+     * Database listeners
+     */
+    private Query mQueryHouseholdPayment;
+    private ValueEventListener mHouseholdPaymentListener;
+
 
     public PaymentFragment() {
         // Required empty constructor.
@@ -68,6 +74,25 @@ public class PaymentFragment extends Fragment {
         mCurrentUser = mAuth.getCurrentUser();
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        if(this.mHouseholdPaymentListener != null) {
+            mQueryHouseholdPayment.removeEventListener(this.mHouseholdPaymentListener);
+        }
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if(this.mHouseholdPaymentListener != null) {
+            mQueryHouseholdPayment.removeEventListener(this.mHouseholdPaymentListener);
+        }
+
+    }
 
     /**
      * Parses the layout from the layout file and sets it as the fragment.
@@ -97,34 +122,8 @@ public class PaymentFragment extends Fragment {
         // Get payment list form database.
         housematePayment = initializePayments();
 
-        Query mQueryHouseholdPayments = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
-        mQueryHouseholdPayments.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
-
-                    HousemateBalance housemateBalance = balanceSnapshot.getValue(HousemateBalance.class);
-                    Log.d("PaymentFregment", "Housemate balances: " + housemateBalance.getHousemate_first_name());
-                    housematePayment.add(housemateBalance);
-
-                }
-
-                // Creates the adapter.
-                paymentListAdapter = new PaymentAdapter(housematePayment);
-                mPaymentList.setAdapter(paymentListAdapter);
-
-                // Creates the layout manager.
-                paymentListManager = new LinearLayoutManager(getContext());
-                mPaymentList.setLayoutManager(paymentListManager);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-            }
-        });
+        mQueryHouseholdPayment = mDatabase.child("Balances").orderByChild("uid").equalTo(mCurrentUser.getUid());
+        mQueryHouseholdPayment.addValueEventListener( initializeHouseholdListener() );
 
     }
 
@@ -172,5 +171,38 @@ public class PaymentFragment extends Fragment {
         // Redirects to CreatePaymentActivity.
         Intent createPaymentIntent = new Intent(getActivity(), CreatePaymentActivity.class);
         startActivity(createPaymentIntent);
+    }
+
+    private ValueEventListener initializeHouseholdListener() {
+
+        mHouseholdPaymentListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot balanceSnapshot: dataSnapshot.getChildren()){
+
+                    HousemateBalance housemateBalance = balanceSnapshot.getValue(HousemateBalance.class);
+                    Log.d("PaymentFregment", "Housemate balances: " + housemateBalance.getHousemate_first_name());
+                    housematePayment.add(housemateBalance);
+
+                }
+
+                // Creates the adapter.
+                paymentListAdapter = new PaymentAdapter(housematePayment);
+                mPaymentList.setAdapter(paymentListAdapter);
+
+                // Creates the layout manager.
+                paymentListManager = new LinearLayoutManager(getContext());
+                mPaymentList.setLayoutManager(paymentListManager);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Error payment", Toast.LENGTH_LONG).show();
+            }
+        };
+
+        return mHouseholdPaymentListener;
     }
 }

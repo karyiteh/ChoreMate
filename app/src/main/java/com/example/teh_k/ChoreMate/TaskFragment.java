@@ -49,6 +49,12 @@ public class TaskFragment extends Fragment {
     private FirebaseUser mCurrentUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    /**
+    * Database listeners
+    */
+    private DatabaseReference mUserHousehold;
+    private ValueEventListener mHouseholdListener;
+
     // Task list.
     private ArrayList<Task> tasks;
 
@@ -80,6 +86,26 @@ public class TaskFragment extends Fragment {
 
         // Tells Android that it has its own options menu on the appbar.
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        if(this.mHouseholdListener != null) {
+            mUserHousehold.removeEventListener(this.mHouseholdListener);
+        }
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+
+        if(this.mHouseholdListener != null) {
+            mUserHousehold.removeEventListener(this.mHouseholdListener);
+        }
+
     }
 
 
@@ -147,14 +173,30 @@ public class TaskFragment extends Fragment {
         tasks = new ArrayList<Task>();
 
         // populate task (from database)
-        DatabaseReference mUserHousehold = mDatabase.child("Users").child(user_id).child("household");
-        mUserHousehold.addValueEventListener(new ValueEventListener() {
+        mUserHousehold = mDatabase.child("Users").child(user_id).child("household");
+        this.mHouseholdListener = initializeHouseholdListener();
+        mUserHousehold.addValueEventListener( this.mHouseholdListener );
+
+    }
+
+    /**
+     * Starts intent to create new task.
+     */
+    private void createNewTask() {
+        // Intent to create the new task.
+        Intent intent = new Intent(getContext(), CreateTaskActivity.class);
+        startActivity(intent);
+    }
+
+    private ValueEventListener initializeHouseholdListener() {
+
+        ValueEventListener mHouseholdListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final String householdKey = dataSnapshot.getValue(String.class);
 
                 // return if household key is null
-                if(householdKey.isEmpty()){
+                if (householdKey.isEmpty()) {
                     return;
                 }
 
@@ -163,7 +205,7 @@ public class TaskFragment extends Fragment {
                 mQueryUserTask.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot taskSnapshot: dataSnapshot.getChildren()){
+                        for (DataSnapshot taskSnapshot : dataSnapshot.getChildren()) {
                             Task task = taskSnapshot.getValue(Task.class);
                             Log.d("TaskFregment", "Task populated: " + task.getTask_name());
                             tasks.add(task);
@@ -180,24 +222,16 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Error task", Toast.LENGTH_LONG).show();
                     }
                 });
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error task", Toast.LENGTH_LONG).show();
             }
-        });
-
-    }
-
-    /**
-     * Starts intent to create new task.
-     */
-    private void createNewTask() {
-        // Intent to create the new task.
-        Intent intent = new Intent(getContext(), CreateTaskActivity.class);
-        startActivity(intent);
+        };
+        return mHouseholdListener;
     }
 }
