@@ -38,12 +38,11 @@ inatetroLLL@gmail.com|garyispapi|garyispapi|UC
 cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
 
 ### Installation Instructions
-##### From the terminal
-*TODO: Insert instructions to install from terminal here*
-
 ##### From the device
-1. Download the APK file from *TODO: Insert where to find APK file here*
-2. Make sure that "Install unknown app" permissions are turned on.
+1. Make sure that "Install unknown app" permissions are turned on. This can be found in Settings ->
+    Apps & notifications -> Advanced -> Special app access -> Install unknown apps 
+    (*NOTE:* Might vary across devices).
+2. Download the APK file from *TODO: Insert where to find APK file here*
 3. Run the APK file on the Android device with "Package Installer" and install it.
 
 ### How-to-run Instructions
