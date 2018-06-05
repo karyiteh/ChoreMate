@@ -320,6 +320,7 @@ public class CreateTaskActivity extends AppCompatActivity implements RecurringTa
 
                 // Redirect user back to the main activity.
                 Intent intent = new Intent(CreateTaskActivity.this, MainActivity.class);
+                intent.putExtra(MainActivity.FRAGMENT, 't');
                 startActivity(intent);
 
             }

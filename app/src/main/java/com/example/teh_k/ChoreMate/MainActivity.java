@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements
     // Intent key.
     public static final String TASK = "com.example.teh_k.ChoreMate.TASK";
     public static final String HOUSEMATE = "com.example.teh_k.ChoreMate.HOUSEMATE";
+    public static final String FRAGMENT = "com.example.teh_k.ChoreMate.FRAGMENT";
 
     @Override
     public void onStart() {
@@ -62,12 +63,16 @@ public class MainActivity extends AppCompatActivity implements
         appbar = findViewById(R.id.appbar);
         setSupportActionBar(appbar);
 
-        // Loads the default fragment.
-        loadFragment(new TaskFragment());
+        // Gets the intent.
+        Intent intent = getIntent();
+        char fragmentToLoad = intent.getCharExtra(FRAGMENT, 't');
 
         // Create the bottom nav bar.
         navbar = findViewById(R.id.bottom_profile);
         navbar.setOnNavigationItemSelectedListener(this);
+
+        // Selects which fragment to load.
+        setSelectedItemId(fragmentToLoad);
 
     }
 
@@ -101,6 +106,27 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return loadFragment(fragment);
+    }
+
+
+    /**
+     * Sets the selected item in the bottom nav bar.
+     */
+    private void setSelectedItemId(char fragmentSelected) {
+        switch(fragmentSelected){
+            case 't':
+                navbar.setSelectedItemId(R.id.action_tasks);
+                break;
+            case 'p':
+                navbar.setSelectedItemId(R.id.action_transactions);
+                break;
+            case 'h':
+                navbar.setSelectedItemId(R.id.action_household);
+                break;
+            case 'u':
+                navbar.setSelectedItemId(R.id.action_profile);
+                break;
+        }
     }
 
     /**

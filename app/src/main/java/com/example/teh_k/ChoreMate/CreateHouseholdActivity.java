@@ -146,8 +146,6 @@ public class CreateHouseholdActivity extends AppCompatActivity {
         // Initialize local variables
         View focusView;
 
-
-
         // Getting content for email
         String emails = editHousematesList.getText().toString().trim();
         String subject = first_name + " is inviting you to " + house.getHouse_name() + " on ChoreMate!";

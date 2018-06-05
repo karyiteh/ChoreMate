@@ -187,7 +187,6 @@ public class HouseholdFragment extends Fragment {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -198,9 +197,6 @@ public class HouseholdFragment extends Fragment {
 
                 // Update the name in the database.
                 renameHouseholdDb(newHouseholdName);
-
-                // Updates the UI to reflect name change.
-                mHouseholdName.setText(newHouseholdName);
 
             }
         });
@@ -223,7 +219,6 @@ public class HouseholdFragment extends Fragment {
     private void deleteHousehold() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Are you sure you want to Delete this Household?");
-
 
         // Set up the buttons
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -251,6 +246,15 @@ public class HouseholdFragment extends Fragment {
     }
 
     /**
+     * Updates the household name after successful name change in database.
+     * @param newHouseholdName  The new household name
+     */
+    private void updateHouseholdUI(String newHouseholdName) {
+        mHouseholdName.setText(newHouseholdName);
+    }
+
+
+    /**
      * Updates the name of the household in the database.
      * @param newHouseholdName  The new name of the household.
      */
@@ -272,6 +276,9 @@ public class HouseholdFragment extends Fragment {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                // Updates the new household name.
+                                updateHouseholdUI(newHouseholdName);
+
                                 // Show confirm message.
                                 Toast.makeText(getActivity(), "Household Renamed",
                                         Toast.LENGTH_LONG).show();
@@ -463,6 +470,10 @@ public class HouseholdFragment extends Fragment {
         });
     }
 
+    /**
+     * Initializes the listener for value changes in database.
+     * @return  The listener for the database.
+     */
     private ValueEventListener initializeHouseholdListener() {
         mUserHousematesListener = new ValueEventListener() {
             @Override
@@ -493,6 +504,7 @@ public class HouseholdFragment extends Fragment {
                 Toast.makeText(getActivity(), "Error household fragment", Toast.LENGTH_LONG).show();
             }
         };
+        
         return mUserHousematesListener;
     }
 }

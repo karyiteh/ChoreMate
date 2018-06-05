@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,7 +87,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
         // GET HOUSE NAME AND CODE FROM DATABASE (FROM HOUSEHOLD OBJECT)
         final String user_id = mCurrentUser.getUid();
         DatabaseReference mUser = mDatabase.child("Users").child(user_id);
-        mUser.addValueEventListener(new ValueEventListener() {
+        mUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -94,7 +95,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
                 String householdKey = user.getHousehold();
 
                 DatabaseReference mHousehold = mDatabase.child("Households").child(householdKey);
-                mHousehold.addValueEventListener(new ValueEventListener() {
+                mHousehold.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         View focusView;
@@ -122,15 +123,21 @@ public class InviteHousemateActivity extends AppCompatActivity {
                         if (!cancel) {
                             // Create SendMail object and send invites
                             for (String email : emailsList) {
+                                Log.d("InviteHousemateActivity", "Invite email sent to: " + email);
                                 SendMail sm = new SendMail(InviteHousemateActivity.this, email, subject, message);
                                 sm.execute();
                             }
+
+                            // Brings user back to main activity.
+                            Intent mainIntent = new Intent(InviteHousemateActivity.this, MainActivity.class);
+                            mainIntent.putExtra(MainActivity.FRAGMENT, 'h');
+                            startActivity(mainIntent);
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(InviteHousemateActivity.this, "Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(InviteHousemateActivity.this, "Invite Housemate Error", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -139,7 +146,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(InviteHousemateActivity.this, "Error", Toast.LENGTH_LONG).show();
+                Toast.makeText(InviteHousemateActivity.this, "Invite Housemate Error", Toast.LENGTH_LONG).show();
             }
         });
     }
