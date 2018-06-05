@@ -47,7 +47,8 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
 
 ### How-to-run Instructions
 1. Navigate to "Apps" list on your device.
-2. Tap on "ChoreMate".
+2. Tap on "ChoreMate" or this app icon:
+    ![ChoreMate App Icon](http://gdurl.com/4FV5)
 
 ### Known Bugs
 1. On the rare occasion that a housemate's avatar is not updated in the "Payments" tab when the 
