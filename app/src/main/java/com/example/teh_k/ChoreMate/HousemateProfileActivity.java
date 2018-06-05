@@ -196,7 +196,8 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
                 } else {
                     // redirect user to household fragment.
-                    Intent householdIntent = new Intent(HousemateProfileActivity.this, HouseholdFragment.class);
+                    Intent householdIntent = new Intent(HousemateProfileActivity.this, MainActivity.class);
+                    householdIntent.putExtra(MainActivity.FRAGMENT, 'h');
                     startActivity(householdIntent);
                 }
 
