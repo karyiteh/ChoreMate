@@ -130,6 +130,7 @@ public class InviteHousemateActivity extends AppCompatActivity {
 
                             // Brings user back to main activity.
                             Intent mainIntent = new Intent(InviteHousemateActivity.this, MainActivity.class);
+                            mainIntent.putExtra(MainActivity.FRAGMENT, 'h');
                             startActivity(mainIntent);
                         }
                     }

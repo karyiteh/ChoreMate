@@ -296,7 +296,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
             mPayment.setValue(payment.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d("CreatePaymentAvtivity", "Create Balance: success");
+                    Log.d("CreatePaymentActivity", "Create Balance: success");
                     Toast.makeText(CreatePaymentActivity.this, "Payment Created",
                             Toast.LENGTH_SHORT).show();
 
@@ -304,7 +304,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("CreatePaymentAvtivity", "Create Balance:failure");
+                    Log.d("CreatePaymentActivity", "Create Balance:failure");
                     Toast.makeText(CreatePaymentActivity.this, "Error Create payment",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -313,6 +313,7 @@ public class CreatePaymentActivity extends AppCompatActivity {
 
         // Bring user back to MainActivity.class after successful task creation.
         Intent mainIntent = new Intent(CreatePaymentActivity.this, MainActivity.class);
+        mainIntent.putExtra(MainActivity.FRAGMENT, 'p');
         startActivity(mainIntent);
     }
 
