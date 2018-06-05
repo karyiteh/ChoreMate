@@ -25,25 +25,30 @@ to be accountable for their responsibilities in their respective households.
 
 ### Requirements
 - At least two Android devices running a minimum of API 23 (API 27 is preferred).
-- Latest version of Google Play services installed.
+- Google Play Services 15.0.0 or higher running on the Android devices.
 - Active Internet connection.
 
 ### Login Credentials
 The following login credentials are provided for testing purposes:
-*TODO: Insert test login credentials here*
+
+Email/ Username | Email Password | App account password | Use Cases 
+----------------|----------------|----------------------|----------- 
+garyispapi@gmail.com|cse110istroll|cse110istroll| UC
+inatetroLLL@gmail.com|garyispapi|garyispapi|UC
+cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
 
 ### Installation Instructions
-##### From the terminal
-*TODO: Insert instructions to install from terminal here*
-
 ##### From the device
-1. Download the APK file from *TODO: Insert where to find APK file here*
-2. Make sure that "Install unknown app" permissions are turned on.
+1. Make sure that "Install unknown app" permissions are turned on. This can be found in Settings ->
+    Apps & notifications -> Advanced -> Special app access -> Install unknown apps 
+    (*NOTE:* Might vary across devices).
+2. Download the APK file from *TODO: Insert where to find APK file here*
 3. Run the APK file on the Android device with "Package Installer" and install it.
 
 ### How-to-run Instructions
 1. Navigate to "Apps" list on your device.
-2. Tap on "ChoreMate".
+2. Tap on "ChoreMate" or this app icon:
+    ![ChoreMate App Icon](http://gdurl.com/4FV5)
 
 ### Known Bugs
 1. On the rare occasion that a housemate's avatar is not updated in the "Payments" tab when the 
@@ -56,5 +61,7 @@ following the steps mentioned in ***How-to-run Instructions***.
 
 ### Technical Support
 For any enquiries regarding the installation and proper running of the app, please contact:
-- Jam Tan (Project Manager)
-- Kai Teh (Software Development Lead)
+- Jam Tan (Project Manager) - 
+- Kai Teh (Software Development Lead) - (619) 381-2463
+- Sasha Hoang (Quality Assurance Lead) - 
+- Alex Lui (Quality Assurance Lead) - 
