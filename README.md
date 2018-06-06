@@ -28,6 +28,9 @@ to be accountable for their responsibilities in their respective households.
 - Google Play Services 15.0.0 or higher running on the Android devices.
 - Active Internet connection.
 
+*NOTE: If an emulator is used to test the app, it's best to use the Nexus 5X or Nexus 5 because they
+are the only emulators with Google Play Services installed.*
+
 ### Login Credentials
 The following login credentials are provided for testing purposes:
 
@@ -61,7 +64,7 @@ following the steps mentioned in ***How-to-run Instructions***.
 
 ### Technical Support
 For any enquiries regarding the installation and proper running of the app, please contact:
-- Jam Tan (Project Manager) - 
+- Jam Tan (Project Manager) - (310) 941-6056
 - Kai Teh (Software Development Lead) - (619) 381-2463
-- Sasha Hoang (Quality Assurance Lead) - 
-- Alex Lui (Quality Assurance Lead) - 
+- Sasha Hoang (Quality Assurance Lead) - (202) 873-3355
+- Alex Lui (Quality Assurance Lead) - (626) 235-6691

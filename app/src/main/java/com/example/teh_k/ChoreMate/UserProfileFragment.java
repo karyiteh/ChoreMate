@@ -165,6 +165,16 @@ public class UserProfileFragment extends Fragment {
         // Get user profile and tasks from the database.
         getUserFromDatabase();
         getTasksFromDatabase();
+
+        // Set up listener for the avatar to change avatar.
+        mAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeAvatar();
+            }
+        });
+
+
     }
 
 
@@ -203,9 +213,8 @@ public class UserProfileFragment extends Fragment {
     // HELPER METHODS HERE!
     /**
      * Gets the user information from the database.
-     * @return  The user data of the current user logged in the app.
      */
-    private User getUserFromDatabase() {
+    private void getUserFromDatabase() {
         // Obtain user data from the database.
         DatabaseReference mCurrUser = mDatabase.child("Users").child(mCurrentUser.getUid());
         mCurrUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -214,18 +223,11 @@ public class UserProfileFragment extends Fragment {
 
                 currentUser = dataSnapshot.getValue(User.class);
                 Log.d("UserProfileFragment", "Found user: " + currentUser.getLast_name());
-
                 // Updates the UI elements to the user profile obtained.
                 Picasso.get().load(Uri.parse(currentUser.getAvatar())).into(mAvatar);
-                mUserName.setText(currentUser.getFirst_name());
+                String userName = currentUser.getFirst_name() + " " + currentUser.getLast_name();
+                mUserName.setText(userName);
 
-                // Set up listener for the avatar to change avatar.
-                mAvatar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        changeAvatar();
-                    }
-                });
             }
 
             @Override
@@ -233,7 +235,6 @@ public class UserProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
             }
         });
-        return currentUser;
     }
 
     /**

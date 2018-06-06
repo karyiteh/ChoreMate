@@ -117,7 +117,8 @@ public class HousemateProfileActivity extends AppCompatActivity {
 
         // Update the fields.
         Picasso.get().load(Uri.parse(currentHousemate.getAvatar())).into(avatar);
-        mHousemateName.setText(currentHousemate.getFirst_name());
+        String housemateName = currentHousemate.getFirst_name() + " " + currentHousemate.getLast_name();
+        mHousemateName.setText(housemateName);
 
         // Getting the user task list from the database.
         getTasksFromDatabase();
