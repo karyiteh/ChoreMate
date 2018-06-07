@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -191,12 +192,7 @@ public class HouseholdFragment extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                // Get the name that is entered.
-                String newHouseholdName = input.getText().toString();
-
-                // Update the name in the database.
-                renameHouseholdDb(newHouseholdName);
+                // Button will be overridden later in the app.
 
             }
         });
@@ -209,7 +205,32 @@ public class HouseholdFragment extends Fragment {
         });
 
         // Show the dialog.
-        builder.show();
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Overriding the dialog button handler for positive button.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Reset the error.
+                input.setError(null);
+
+                // Get the name that is entered.
+                String newHouseholdName = input.getText().toString();
+
+                // If the input is empty, focus the view on the error.
+                if(TextUtils.isEmpty(newHouseholdName)) {
+                    input.setError("This field is required!");
+                    input.requestFocus();
+                }
+                // or else update the name in the database.
+                else {
+                    // Update the name in the database.
+                    renameHouseholdDb(newHouseholdName);
+                    dialog.dismiss();
+                }
+            }
+        });
 
     }
 
