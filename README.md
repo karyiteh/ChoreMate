@@ -45,7 +45,7 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
 1. Make sure that "Install unknown app" permissions are turned on. This can be found in Settings ->
     Apps & notifications -> Advanced -> Special app access -> Install unknown apps 
     (*NOTE:* Might vary across devices).
-2. Download the APK file ![here](https://drive.google.com/file/d/1et9CrXPBAlZ9og96hsy0E1YDkqKCDl0I/view?usp=sharing).
+2. Download the APK file [here](https://drive.google.com/open?id=1et9CrXPBAlZ9og96hsy0E1YDkqKCDl0I).
 3. Run the APK file on the Android device with "Package Installer" and install it.
 
 ### How-to-run Instructions
