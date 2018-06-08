@@ -42,7 +42,8 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
 
 ### Installation Instructions
 ##### From the device
-1. Make sure that "Install unknown app" permissions are turned on. This can be found in Settings ->
+1. Make sure that "Install unknown app" permissions are turned on for the browser or the app
+   that is used to download the APK. This can be found in Settings ->
     Apps & notifications -> Advanced -> Special app access -> Install unknown apps 
     (*NOTE:* Might vary across devices).
 2. Download the APK file [here](https://drive.google.com/open?id=1et9CrXPBAlZ9og96hsy0E1YDkqKCDl0I).
