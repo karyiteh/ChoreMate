@@ -47,7 +47,9 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
     Apps & notifications -> Advanced -> Special app access -> Install unknown apps 
     (*NOTE:* Might vary across devices).
 2. Download the APK file [here](https://drive.google.com/open?id=1et9CrXPBAlZ9og96hsy0E1YDkqKCDl0I).
-3. Run the APK file on the Android device with "Package Installer" and install it.
+3. Run the APK file on the Android device with "Package Installer".
+4. Tap on "Install" when Package Installer display the prompt "Do you want to install this application?".
+5. The app should be installed on the device.
 
 ### How-to-run Instructions
 1. Navigate to "Apps" list on your device.
@@ -60,11 +62,19 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
     included in "Update User Avatar" use case to fix the bug.
 
 ### Troubleshooting
-On rare occasions that the app is behaving abnormally, force quit the app and relaunch the app by 
-following the steps mentioned in ***How-to-run Instructions***.
+- On rare occasions that the app is behaving abnormally, force quit the app and relaunch the app by 
+  following the steps mentioned in ***How-to-run Instructions***.
+
+- If there is a notification that says "Update your Google Play services" when the user attempts to register 
+  or sign-in, make sure that Google Play services installed on that device is updated to version 15.0.0 or 
+  higher.
+  
+- For now, notifications can only be received when the user is running the app in the background. 
+  Therefore, if the notification does not show up, try closing the app on the receiver's device into the 
+  background and tap on "Remind" again on the sender's device. 
 
 ### Technical Support
-For any enquiries regarding the installation and proper running of the app, please contact:
+For any enquiries regarding the installation and the functioning of the app, please contact:
 - Jam Tan (Project Manager) - (310) 941-6056
 - Kai Teh (Software Development Lead) - (619) 381-2463
 - Sasha Hoang (Quality Assurance Lead) - (202) 873-3355
