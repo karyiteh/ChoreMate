@@ -24,7 +24,8 @@ as well as task notifications aim to improve communication between housemates an
 to be accountable for their responsibilities in their respective households.
 
 ### Requirements
-- At least two Android devices running a minimum of API 23 (API 27 is preferred).
+- At least two Android devices running a minimum of API 23 (Android Marshmallow) [API 27 (Android Oreo)
+  is preferred].
 - Google Play Services 15.0.0 or higher running on the Android devices.
 - Active Internet connection.
 
