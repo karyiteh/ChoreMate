@@ -58,7 +58,10 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
     ![ChoreMate App Icon](http://gdurl.com/4FV5)
 
 ### Known Bugs
-1. On the rare occasion that a housemate's avatar is not updated in the "Payments" tab when the 
+1. When a task/payment/charge is created and the user is redirected back to the corresponding tabs,
+   it is possible that duplicates of tasks/housemate balances are displayed. If that happens, reload the tab and 
+   the correct tasks/housemate balances will be displayed.
+2. On the rare occasion that a housemate's avatar is not updated in the "Payments" tab when the 
     housemate has recently updated their avatar, re-upload the new user avatar by following the steps 
     included in "Update User Avatar" use case to fix the bug.
 
