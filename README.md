@@ -61,7 +61,10 @@ cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
 1. When a task/payment/charge is created and the user is redirected back to the corresponding tabs,
    it is possible that duplicates of tasks/housemate balances are displayed. If that happens, reload the tab and 
    the correct tasks/housemate balances will be displayed.
-2. On the rare occasion that a housemate's avatar is not updated in the "Payments" tab when the 
+2. When the "Use Camera" option is selected when the user changes the avatar, the camera app might cause
+   the app to crash. If that occurs, simply restart the app and attempt to change the avatar again using
+   the steps mentioned in the workflow of UC-25.
+3. On the rare occasion that a housemate's avatar is not updated in the "Payments" tab when the 
     housemate has recently updated their avatar, re-upload the new user avatar by following the steps 
     included in "Update User Avatar" use case to fix the bug.
 
