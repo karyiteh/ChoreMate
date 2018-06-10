@@ -34,12 +34,7 @@ are the only emulators with Google Play Services installed.*
 
 ### Login Credentials
 The following login credentials are provided for testing purposes:
-
-Email/ Username | Email Password | App account password | Use Cases 
-----------------|----------------|----------------------|----------- 
-garyispapi@gmail.com|cse110istroll|cse110istroll| UC
-inatetroLLL@gmail.com|garyispapi|garyispapi|UC
-cse110segfault@yahoo.com|idon'tgotoclass|idontgotoclass| UC
+[User Login Credentials](https://docs.google.com/spreadsheets/d/15hcC5fQBeMzlauscEc4S894QZ2N_dOlJOxYqFJ1Sl0k/edit?usp=sharing)
 
 ### Installation Instructions
 ##### From the device
