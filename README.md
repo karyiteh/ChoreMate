@@ -32,10 +32,6 @@ to be accountable for their responsibilities in their respective households.
 *NOTE: If an emulator is used to test the app, it's best to use the Nexus 5X or Nexus 5 because they
 are the only emulators with Google Play Services installed.*
 
-### Login Credentials
-The following login credentials are provided for testing purposes:
-[User Login Credentials](https://docs.google.com/spreadsheets/d/15hcC5fQBeMzlauscEc4S894QZ2N_dOlJOxYqFJ1Sl0k/edit?usp=sharing)
-
 ### Installation Instructions
 ##### From the device
 1. Make sure that "Install unknown app" permissions are turned on for the browser or the app
@@ -74,10 +70,3 @@ The following login credentials are provided for testing purposes:
 - For now, notifications can only be received when the user is running the app in the background. 
   Therefore, if the notification does not show up, try closing the app on the receiver's device into the 
   background and tap on "Remind" again on the sender's device. 
-
-### Technical Support
-For any enquiries regarding the installation and the functioning of the app, please contact:
-- Jam Tan (Project Manager) - (310) 941-6056
-- Kai Teh (Software Development Lead) - (619) 381-2463
-- Sasha Hoang (Quality Assurance Lead) - (202) 873-3355
-- Alex Lui (Quality Assurance Lead) - (626) 235-6691
